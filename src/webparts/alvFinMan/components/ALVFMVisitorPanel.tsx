@@ -107,7 +107,7 @@ export function visitorPanelInfo( wpProps: IMinWPVisitorPanelInfo, performance: 
         const lbreak = '%0D%0A';
         let pageName = window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1);
         let mailTemplate = `mailto:${contact.email}`;
-        mailTemplate += `?subject=Secure Script Webpart Question or Issue on PAGE: ${ pageName }`;
+        mailTemplate += `?subject=ALV Financial Manual Webpart Question or Issue on PAGE: ${ pageName }`;
         mailTemplate += `&body=Add your question or comment here: ${ lbreak }${ lbreak }${ lbreak }`;
         mailTemplate += `Page Name: ${ pageName }${ lbreak }${ lbreak }`;
         mailTemplate += `Link to page:${ lbreak }${ window.location.href }${ lbreak }${ lbreak }`;

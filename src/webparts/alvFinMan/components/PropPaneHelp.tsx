@@ -233,7 +233,7 @@ export const WebPartHelpElement = <div>
 
           <div className={ styles.topic}>Gear, Go to Home, Parent audience</div>
           <div>Minimum permissions requied to see the Home and Parent site icons.</div>
-          <div>Use this to hide buttons from visitors if your Secure Script Web part is more of a single page app and you want to hide the site from a typical visitor.</div>
+          <div>Use this to hide buttons from visitors if your ALV Financial Manual Web part is more of a single page app and you want to hide the site from a typical visitor.</div>
           <div>NOTE:  Site Admins will always see the icons.</div>
           <ul>
             <li>Site Owners: have manageWeb permissions</li>

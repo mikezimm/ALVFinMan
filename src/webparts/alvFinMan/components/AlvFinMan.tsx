@@ -418,7 +418,7 @@ public async updateWebInfo ( mainPivotKey: ILayoutAll, bucketClickKey: string ) 
   //Exclude the props.bannerProps.title if the webpart is narrow to make more responsive
   let bannerTitle = bannerProps.bannerWidth < 900 ? bannerProps.title : `${bannerProps.title} - ${bannerSuffix}`;
   
-  if ( bannerTitle === '' ) { bannerTitle = 'Secure Script 7' ; }
+  if ( bannerTitle === '' ) { bannerTitle = 'ALV Financial Manual' ; }
   if ( this.props.displayMode === DisplayMode.Edit ) { bannerTitle += '' ; }
 
 

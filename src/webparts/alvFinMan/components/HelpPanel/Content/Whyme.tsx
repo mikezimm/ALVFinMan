@@ -45,7 +45,7 @@ export function whyContent( repoLinks: IRepoLinks ) {
         </ul>
     </div>;
 
-    table.rows.push( createWhyRow(<b>Secure Script 7</b>, <span style={{ color: 'darkgreen', fontSize: 'larger' }}><b>{ `Benefits` } </b></span>, repoLinks ) );
+    table.rows.push( createWhyRow(<b>ALV Financial Manual</b>, <span style={{ color: 'darkgreen', fontSize: 'larger' }}><b>{ `Benefits` } </b></span>, repoLinks ) );
     table.rows.push( createWhyRow(``, thisBenefits, repoLinks ) );
 
     table.rows.push( createWhyRow(<b>Pnp Script Editor</b>, <span>See notes below.</span>, repoLinks ) );
