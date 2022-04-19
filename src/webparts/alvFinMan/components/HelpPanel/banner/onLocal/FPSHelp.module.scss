@@ -1,0 +1,47 @@
+.fpsHelpAccordion {
+    // padding: '10px';
+    overflow: 'hidden';
+    // height: '450px';
+    // transition: height 300ms ease-out; // change this to transition
+
+}
+
+.fpsHelpAccordion:hover {
+    // height: '250px';
+    // padding: '10px';
+    // transition: height 300ms ease-out; // change this to transition
+}
+
+.fpsHelpContent {
+    transition: all 0.4s ease;
+    transition-delay: 0.3s;
+    opacity: 0;
+    height: 0;
+}
+
+.fpsHelpAccordion:hover .fpsHelpContent {
+    opacity: 1;
+}
+
+.fpsHelpAccordion:hover .fpsHelpContent250 {
+    height: 250px;
+}
+
+.fpsHelpAccordion:hover .fpsHelpContent300 {
+    height: 300px;
+}
+
+.fpsHelpAccordion:hover .fpsHelpContent350 {
+    height: 350px;
+}
+
+.fpsHelpAccordion:hover .fpsHelpContent400 {
+    height: 400px;
+}
+
+.fpsHelpAccordion:hover .fpsHelpContent550 {
+    height: 550px;
+}
+.fpsHelpAccordion:hover .fpsHelpContent700 {
+    height: 700px;
+}

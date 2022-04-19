@@ -50,7 +50,8 @@ export interface IAlvFinancialManualState {
   // description: string;
 
   refreshId: string;
-
+  lastStateChange: string;
+  
   appLinks: IAnyContent[];
   docs: IAnyContent[];
   stds: IAnyContent[]; //This is currently not used.... Originally considered it as Standards since the library was 'Standard Docs'.  Maybe could be list of relavant standards in the future?

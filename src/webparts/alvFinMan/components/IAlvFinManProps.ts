@@ -1,9 +1,37 @@
+import { PageContext } from '@microsoft/sp-page-context';
+import { WebPartContext } from "@microsoft/sp-webpart-base";
+
+import { IWebpartBannerProps, } from '@mikezimm/npmfunctions/dist/HelpPanel/onNpm/bannerProps';
+
+import { DisplayMode, Version } from '@microsoft/sp-core-library';
+
+import { IWebpartHistory, IWebpartHistoryItem2, } from '@mikezimm/npmfunctions/dist/Services/PropPane/WebPartHistoryInterface';
+
+
 export interface IAlvFinManProps {
+  //OOTB Props
   description: string;
   isDarkTheme: boolean;
   environmentMessage: string;
   hasTeamsContext: boolean;
   userDisplayName: string;
+
+  //FPS Banner and Options props
+  displayMode: DisplayMode;
+
+  //Environement props
+  // pageContext: PageContext;
+  context: WebPartContext;
+  urlVars: {};
+
+  //Banner related props
+  errMessage: any;
+  bannerProps: IWebpartBannerProps;
+
+  //ADDED FOR WEBPART HISTORY:  
+  webpartHistory: IWebpartHistory;
+
+
 
   defaultPivotKey: ILayoutAll;
   customSearch: string[];
@@ -49,6 +77,10 @@ export interface IAnyContent extends Partial<any> {
 
 export interface IAlvFinManState {
   // description: string;
+
+  showDevHeader: boolean;
+  lastStateChange: string;
+  showPropsHelp: boolean;
 
   refreshId: string;
 

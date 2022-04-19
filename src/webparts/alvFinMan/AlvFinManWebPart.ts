@@ -318,10 +318,21 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
         hasTeamsContext: !!this.context.sdks.microsoftTeams,
         userDisplayName: this.context.pageContext.user.displayName,
 
+        //Environement props
+        // pageContext: this.context.pageContext, //This can be found in the bannerProps now
+        context: this.context,
+        urlVars: getUrlVars(),
+        displayMode: this.displayMode,
+
         defaultPivotKey: this.properties.defaultPivotKey,
 
         customSearch: this.properties.customSearch,
         customSearchLC: this.properties.customSearchLC,
+
+        //Banner related props
+        errMessage: 'any',
+        bannerProps: this.bannerProps,
+        webpartHistory: this.properties.webpartHistory,
 
       }
     );
@@ -518,17 +529,19 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
           header: {
             description: strings.PropertyPaneDescription
           },
+          displayGroupsAsAccordion: true, //DONT FORGET THIS IF PROP PANE GROUPS DO NOT EXPAND
           groups: [
             {
-              groupName: strings.BasicGroupName,
+              groupName: 'ALV Financial Manual Options',
               groupFields: [
                 PropertyPaneTextField('defaultPivotKey', {
                   label: 'Default Tab',
                   description: 'Recent News always loads first though',
                 }),
-                PropertyPaneTextField('description', {
-                  label: strings.DescriptionFieldLabel
-                })
+                PropertyPaneTextField('customSearchStr', {
+                  label: 'Custom search keywords',
+                  description: 'Semi-colon separated words, no special charaters or spaces',
+                }),
               ]
             }, // this group
 

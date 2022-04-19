@@ -1,5 +1,7 @@
 import * as React from 'react';
 import styles from './AlvFinMan.module.scss';
+import { Icon, IIconProps } from 'office-ui-fabric-react/lib/Icon';
+import { DisplayMode, Version } from '@microsoft/sp-core-library';
 
 import { IAlvFinManProps, IAlvFinManState, IFMBuckets, ILayoutMPage, ILayoutSPage, ILayoutAll, ILayoutAPage, ILayoutQPage, IAnyContent } from './IAlvFinManProps';
 import { ILayout1Page, ILayout1PageProps, Layout1PageValues } from './ILayout1PageProps';
@@ -13,16 +15,38 @@ import "@pnp/sp/items";
 
 import { DefaultButton, PrimaryButton, CompoundButton, Stack, IStackTokens, elementContains } from 'office-ui-fabric-react';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
+// import { ISearchQuery, SearchResults, ISearchResult } from "@pnp/sp/search";
 
 import { Panel, IPanelProps, IPanelStyleProps, IPanelStyles, PanelType } from 'office-ui-fabric-react/lib/Panel';
 
 import { Pivot, PivotItem, IPivotItemProps, PivotLinkFormat, PivotLinkSize,} from 'office-ui-fabric-react/lib/Pivot';
 import { Dropdown, DropdownMenuItemType, IDropdownStyles, IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
 import { TextField,  IStyleFunctionOrObject, ITextFieldStyleProps, ITextFieldStyles } from "office-ui-fabric-react";
+import { Spinner, SpinnerSize, } from 'office-ui-fabric-react/lib/Spinner';
+
+
+// import WebpartBanner from "./HelpPanel/banner/onLocal/component";
+import WebpartBanner from "./HelpPanel/banner/onLocal/component";
+import { defaultBannerCommandStyles, } from "@mikezimm/npmfunctions/dist/HelpPanel/onNpm/defaults";
+import { _LinkIsValid, _LinkStatus } from "@mikezimm/npmfunctions/dist/Links/AllLinks";
+import { encodeDecodeString, } from "@mikezimm/npmfunctions/dist/Services/Strings/urlServices";
+
+import { IMyBigDialogProps, buildConfirmDialogBig } from "@mikezimm/npmfunctions/dist/Elements/dialogBox";
+
+//Added for Prop Panel Help
+import stylesP from './PropPanelHelp.module.scss';
+import { WebPartHelpElement } from './PropPaneHelp';
+
 
 import * as strings from 'AlvFinManWebPartStrings';
 
 import ReactJson from "react-json-view";
+
+
+import { IPerformanceOp, ILoadPerformanceALVFM, IHistoryPerformance } from './Performance/IPerformance';
+import { startPerformInit, startPerformOp, updatePerformanceEnd,  } from './Performance/functions';
+import stylesPerform from './Performance/performance.module.scss';
+import { createCacheTableSmall, createPerformanceTableSmall,  } from './Performance/tables';
 
 import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfunctions/dist/Lists/getFunctions';
 
@@ -82,11 +106,26 @@ const pivotItems = pivotKeys.map( ( key, idx ) => {
 
 // const pivotHeading6 = 'Function';
 
-
+const FetchingSpinner = <Spinner size={SpinnerSize.large} label={"FetchingSpinner ..."} style={{ padding: 30 }} />;
 
 
 export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinManState> {
 
+  private reStyleButtons( ) {
+    const buttonStyles = defaultBannerCommandStyles;
+    buttonStyles.margin = '0px 10px';
+    return buttonStyles;
+  }
+
+  private reStyleButtons2( background: string = null, color: string = null ) {
+    let buttonStyles = JSON.parse(JSON.stringify( defaultBannerCommandStyles )) ;
+    buttonStyles.margin = '0px 10px';
+
+    if ( background ) { buttonStyles.background = background; }
+    if ( color ) { buttonStyles.color = color; }
+
+    return buttonStyles;
+  }
 
   
   private newRefreshId() {
@@ -150,24 +189,74 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
   // }
 
-/***
- *          .o88b.  .d88b.  d8b   db .d8888. d888888b d8888b. db    db  .o88b. d888888b  .d88b.  d8888b. 
- *         d8P  Y8 .8P  Y8. 888o  88 88'  YP `~~88~~' 88  `8D 88    88 d8P  Y8 `~~88~~' .8P  Y8. 88  `8D 
- *         8P      88    88 88V8o 88 `8bo.      88    88oobY' 88    88 8P         88    88    88 88oobY' 
- *         8b      88    88 88 V8o88   `Y8b.    88    88`8b   88    88 8b         88    88    88 88`8b   
- *         Y8b  d8 `8b  d8' 88  V888 db   8D    88    88 `88. 88b  d88 Y8b  d8    88    `8b  d8' 88 `88. 
- *          `Y88P'  `Y88P'  VP   V8P `8888Y'    YP    88   YD ~Y8888P'  `Y88P'    YP     `Y88P'  88   YD 
- *                                                                                                       
- *                                                                                                       
+
+  /***
+ *    d8b   db d88888b  .d8b.  d8888b.      d88888b  .d8b.  d8888b.      d88888b db      d88888b 
+ *    888o  88 88'     d8' `8b 88  `8D      88'     d8' `8b 88  `8D      88'     88      88'     
+ *    88V8o 88 88ooooo 88ooo88 88oobY'      88ooo   88ooo88 88oobY'      88ooooo 88      88ooooo 
+ *    88 V8o88 88~~~~~ 88~~~88 88`8b        88~~~   88~~~88 88`8b        88~~~~~ 88      88~~~~~ 
+ *    88  V888 88.     88   88 88 `88.      88      88   88 88 `88.      88.     88booo. 88.     
+ *    VP   V8P Y88888P YP   YP 88   YD      YP      YP   YP 88   YD      Y88888P Y88888P Y88888P 
+ *                                                                                               
+ *                                                                                               
  */
 
+   private nearBannerElements = this.buildNearBannerElements();
+   private farBannerElements = this.buildFarBannerElements();
+ 
+   private buildNearBannerElements() {
+     //See banner/NearAndFarSample.js for how to build this.
+     let elements = [];
+     // defaultBannerCommandStyles.fontWeight = 'bolder';
+     // elements.push(<div style={{ paddingRight: null }} className={ '' } title={ title}>
+     //   <Icon iconName='WindDirection' onClick={ this.jumpToParentSite.bind(this) } style={ defaultBannerCommandStyles }></Icon>
+     // </div>);
+     return elements;
+   }
+ 
+   private buildFarBannerElements() {
+     //See banner/NearAndFarSample.js for how to build this.
+     // minimizeTiles= { this.minimizeTiles.bind(this) }
+     // searchMe= { this.searchMe.bind(this) }
+     // showAll= { this.showAll.bind(this) }
+     let farElements: any[] = [];
+ 
+     if ( this.props.bannerProps.showTricks === true ) {
+       farElements.push( null );
+     }
+     return farElements;
+   }
+ 
+ /***
+  *     .o88b.  .d88b.  d8b   db .d8888. d888888b d8888b. db    db  .o88b. d888888b  .d88b.  d8888b. 
+  *    d8P  Y8 .8P  Y8. 888o  88 88'  YP `~~88~~' 88  `8D 88    88 d8P  Y8 `~~88~~' .8P  Y8. 88  `8D 
+  *    8P      88    88 88V8o 88 `8bo.      88    88oobY' 88    88 8P         88    88    88 88oobY' 
+  *    8b      88    88 88 V8o88   `Y8b.    88    88`8b   88    88 8b         88    88    88 88`8b   
+  *    Y8b  d8 `8b  d8' 88  V888 db   8D    88    88 `88. 88b  d88 Y8b  d8    88    `8b  d8' 88 `88. 
+  *     `Y88P'  `Y88P'  VP   V8P `8888Y'    YP    88   YD ~Y8888P'  `Y88P'    YP     `Y88P'  88   YD 
+  *                                                                                                  
+  *                                                                                                  
+  */
+ 
+
+  private currentPageUrl = this.props.bannerProps.pageContext.web.absoluteUrl + this.props.bannerProps.pageContext.site.serverRequestPath;
 
 public constructor(props:IAlvFinManProps){
   super(props);
   console.log('pivotTitles', pivotTitles );
   console.log('pivotKeys', pivotKeys );
 
+  let urlVars : any = this.props.urlVars;
+  let debugMode = urlVars.debug === 'true' ? true : false;
+  let isWorkbench = this.currentPageUrl.indexOf('_workbench.aspx') > 0 ? true : false;
+
+  let showDevHeader = debugMode === true || isWorkbench === true ? true : false;
+
   this.state = {
+    showPropsHelp: false,
+    showDevHeader: showDevHeader,  
+    lastStateChange: '',
+
     mainPivotKey: this.props.defaultPivotKey ? this.props.defaultPivotKey : 'Main',
     fetchedDocs: false,
     fetchedAccounts: false,
@@ -265,8 +354,70 @@ public async updateWebInfo ( mainPivotKey: ILayoutAll, bucketClickKey: string ) 
 }
 
 
+  /***
+ *    d8888b. db    db d8888b. db      d888888b  .o88b.      d8888b. d88888b d8b   db d8888b. d88888b d8888b. 
+ *    88  `8D 88    88 88  `8D 88        `88'   d8P  Y8      88  `8D 88'     888o  88 88  `8D 88'     88  `8D 
+ *    88oodD' 88    88 88oooY' 88         88    8P           88oobY' 88ooooo 88V8o 88 88   88 88ooooo 88oobY' 
+ *    88~~~   88    88 88~~~b. 88         88    8b           88`8b   88~~~~~ 88 V8o88 88   88 88~~~~~ 88`8b   
+ *    88      88b  d88 88   8D 88booo.   .88.   Y8b  d8      88 `88. 88.     88  V888 88  .8D 88.     88 `88. 
+ *    88      ~Y8888P' Y8888P' Y88888P Y888888P  `Y88P'      88   YD Y88888P VP   V8P Y8888D' Y88888P 88   YD 
+ *                                                                                                            
+ *                                                                                                            
+ */
 
   public render(): React.ReactElement<IAlvFinManProps> {
+    const {
+      description,
+      isDarkTheme,
+      environmentMessage,
+      hasTeamsContext,
+      userDisplayName,
+      bannerProps,
+
+    } = this.props;
+
+    const {
+      // fetchInfo,
+      // toggleTag,
+      // showPanel,
+      // panelFileType,
+      // panelSource,
+    } = this.state;
+
+    
+   // let farBannerElementsArray = [];
+   let farBannerElementsArray = [...this.farBannerElements,
+    // this.props.showCodeIcon !== true ? null : <div title={'Show Code Details'}><Icon iconName={ 'Code' } onClick={ this.toggleOriginal.bind(this) } style={ bannerProps.bannerCmdReactCSS }></Icon></div>,
+  ];
+
+
+  if ( this.props.displayMode === DisplayMode.Edit ) {
+    farBannerElementsArray.push( 
+      <Icon iconName='OpenEnrollment' onClick={ this.togglePropsHelp.bind(this) } style={ bannerProps.bannerCmdReactCSS }></Icon>
+    );
+  }
+
+  /***
+   *    d8888b.  .d8b.  d8b   db d8b   db d88888b d8888b. 
+   *    88  `8D d8' `8b 888o  88 888o  88 88'     88  `8D 
+   *    88oooY' 88ooo88 88V8o 88 88V8o 88 88ooooo 88oobY' 
+   *    88~~~b. 88~~~88 88 V8o88 88 V8o88 88~~~~~ 88`8b   
+   *    88   8D 88   88 88  V888 88  V888 88.     88 `88. 
+   *    Y8888P' YP   YP VP   V8P VP   V8P Y88888P 88   YD 
+   *                                                      
+   *                                                      
+   */
+
+
+
+  let bannerSuffix = '';
+  //Exclude the props.bannerProps.title if the webpart is narrow to make more responsive
+  let bannerTitle = bannerProps.bannerWidth < 900 ? bannerProps.title : `${bannerProps.title} - ${bannerSuffix}`;
+  
+  if ( bannerTitle === '' ) { bannerTitle = 'Secure Script 7' ; }
+  if ( this.props.displayMode === DisplayMode.Edit ) { bannerTitle += '' ; }
+
+
 
     let componentPivot = 
     <Pivot
@@ -340,15 +491,83 @@ public async updateWebInfo ( mainPivotKey: ILayoutAll, bucketClickKey: string ) 
       searchProps = { AccountSearch }
     ></AlvAccounts>;
 
+
+        
+
+      /***
+     *    d8888b.  .d8b.  d8b   db d8b   db d88888b d8888b.      d88888b db      d88888b .88b  d88. d88888b d8b   db d888888b 
+     *    88  `8D d8' `8b 888o  88 888o  88 88'     88  `8D      88'     88      88'     88'YbdP`88 88'     888o  88 `~~88~~' 
+     *    88oooY' 88ooo88 88V8o 88 88V8o 88 88ooooo 88oobY'      88ooooo 88      88ooooo 88  88  88 88ooooo 88V8o 88    88    
+     *    88~~~b. 88~~~88 88 V8o88 88 V8o88 88~~~~~ 88`8b        88~~~~~ 88      88~~~~~ 88  88  88 88~~~~~ 88 V8o88    88    
+     *    88   8D 88   88 88  V888 88  V888 88.     88 `88.      88.     88booo. 88.     88  88  88 88.     88  V888    88    
+     *    Y8888P' YP   YP VP   V8P VP   V8P Y88888P 88   YD      Y88888P Y88888P Y88888P YP  YP  YP Y88888P VP   V8P    YP    
+     *                                                                                                                        
+     *                                                                                                                        
+     */
+
+      let Banner = <WebpartBanner 
+
+      FPSUser={ bannerProps.FPSUser }
+      exportProps={ bannerProps.exportProps }
+      showBanner={ bannerProps.showBanner }
+      // Adding this to adjust expected width for when prop pane could be opened
+      bannerWidth={ ( bannerProps.bannerWidth ) }
+      pageContext={ bannerProps.pageContext }
+      pageLayout={ bannerProps.pageLayout }
+      title ={ bannerTitle }
+      panelTitle = { bannerProps.panelTitle }
+      infoElement = { bannerProps.infoElement }
+      bannerReactCSS={ bannerProps.bannerReactCSS }
+      bannerCmdReactCSS={ bannerProps.bannerCmdReactCSS }
+      showTricks={ bannerProps.showTricks }
+      showGoToParent={ bannerProps.showGoToParent }
+      showGoToHome={ bannerProps.showGoToHome }
+      onHomePage={ bannerProps.onHomePage }
+
+      webpartHistory={ this.props.webpartHistory }
+      
+      showBannerGear={ bannerProps.showBannerGear }
+      
+      showFullPanel={ bannerProps.showFullPanel }
+      replacePanelHTML={ bannerProps.replacePanelHTML }
+      replacePanelWarning={ bannerProps.replacePanelWarning }
+
+      hoverEffect={ bannerProps.hoverEffect }
+      gitHubRepo={ bannerProps.gitHubRepo }
+      earyAccess={ bannerProps.earyAccess }
+      wideToggle={ bannerProps.wideToggle }
+      nearElements = { this.nearBannerElements }
+      farElements = { farBannerElementsArray }
+
+      showRepoLinks={ bannerProps.showRepoLinks }
+      showExport={ bannerProps.showExport }
+      //2022-02-17:  Added these for expandoramic mode
+      domElement = { bannerProps.domElement }
+      enableExpandoramic = { bannerProps.enableExpandoramic }
+      expandoDefault = { bannerProps.expandoDefault }
+      expandoStyle = { bannerProps.expandoStyle}
+      expandAlert = { bannerProps.expandAlert }
+      expandConsole = { bannerProps.expandConsole }
+      expandoPadding = { bannerProps.expandoPadding }
+      beAUser = { bannerProps.beAUser }
+      showBeAUserIcon = { bannerProps.showBeAUserIcon }
+        beAUserFunction={ bannerProps.beAUserFunction }
+
+    ></WebpartBanner>;
+
+    let devHeader = this.state.showDevHeader === true ? <div><b>Props: </b> { 'this.props.lastPropChange' + ', ' + 'this.props.lastPropDetailChange' } - <b>State: lastStateChange: </b> { this.state.lastStateChange  } </div> : null ;
+    
     return (
       <div className={ styles.alvFinMan }>
         <div className={ styles.container }>
           <div className={ styles.row }>
             {/* <div className={ styles.column }> */}
-              { componentPivot }
-              { showPage }
-              { userPanel }
-              { accounts }
+            { devHeader }
+            { Banner }
+            { componentPivot }
+            { showPage }
+            { userPanel }
+            { accounts }
             {/* </div> */}
           </div>
         </div>
@@ -416,6 +635,12 @@ public async updateWebInfo ( mainPivotKey: ILayoutAll, bucketClickKey: string ) 
   private _onClosePanel( ) {
     this.setState({ showItemPanel: false, showPanelItem: null });
   }
+
+  private togglePropsHelp(){
+    let newState = this.state.showPropsHelp === true ? false : true;
+    this.setState( { showPropsHelp: newState });
+}
+
 
   // private linkClick( this ) {
   //   console.log('linkClick', this);
