@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "alv-fin-man-7-client-side-solution",
+    "id": "6a0435ea-2625-4294-832f-45d61891debd",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.14.0"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "alv-fin-man-7 description"
+      },
+      "longDescription": {
+        "default": "alv-fin-man-7 description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "alv-fin-man-7 Feature",
+        "description": "The feature that activates elements of the alv-fin-man-7 solution.",
+        "id": "2b44bf22-a40e-4735-b91f-49593bf3cd40",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/alv-fin-man-7.sppkg"
+  }
+}

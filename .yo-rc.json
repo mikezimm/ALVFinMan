@@ -1,0 +1,16 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "version": "1.14.0",
+    "libraryName": "alv-fin-man-7",
+    "libraryId": "6a0435ea-2625-4294-832f-45d61891debd",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "alv-fin-man-7",
+    "solutionShortDescription": "alv-fin-man-7 description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}
