@@ -617,7 +617,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
             isCollapsed: true ,
             groupFields: [
               PropertyPaneTextField('fpsImportProps', {
-                label: `Import settings from another SecureScript webpart`,
+                label: `Import settings from another ALV Financial Manual webpart`,
                 description: 'For complex settings, use the link below to edit as JSON Object',
                 multiline: true,
               }),
