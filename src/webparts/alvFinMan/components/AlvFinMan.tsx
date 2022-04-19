@@ -385,6 +385,10 @@ public async updateWebInfo ( mainPivotKey: ILayoutAll, bucketClickKey: string ) 
     } = this.state;
 
     
+    let propsHelp = <div className={ this.state.showPropsHelp !== true ? stylesP.bannerHide : stylesP.helpPropsShow  }>
+        { WebPartHelpElement }
+    </div>;
+
    // let farBannerElementsArray = [];
    let farBannerElementsArray = [...this.farBannerElements,
     // this.props.showCodeIcon !== true ? null : <div title={'Show Code Details'}><Icon iconName={ 'Code' } onClick={ this.toggleOriginal.bind(this) } style={ bannerProps.bannerCmdReactCSS }></Icon></div>,
@@ -564,6 +568,7 @@ public async updateWebInfo ( mainPivotKey: ILayoutAll, bucketClickKey: string ) 
             {/* <div className={ styles.column }> */}
             { devHeader }
             { Banner }
+            { propsHelp }
             { componentPivot }
             { showPage }
             { userPanel }

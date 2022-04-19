@@ -34,6 +34,7 @@ export interface IMinWPVisitorPanelInfo {
     panelMessageDescription1: string; //
     panelMessageSupport: string;
     panelMessageDocumentation: string;
+    panelMessageIfYouStill: string;
 
     documentationLinkDesc: string;
     documentationLinkUrl: string;
@@ -62,6 +63,7 @@ export function visitorPanelInfo( wpProps: IMinWPVisitorPanelInfo, performance: 
         panelMessageDescription1,
         panelMessageSupport,
         panelMessageDocumentation,
+        panelMessageIfYouStill,
       } = wpProps;
 
     //    text-decoration: underline;
@@ -153,6 +155,8 @@ const loadSummary = createPerformanceTableVisitor( performance );
  */
 
 
+    let panelMessageIfYouStillContent = panelMessageIfYouStill ? panelMessageIfYouStill : ' - please contact the owner of this webpart before submitting an incident.';
+
     return <div style={{ fontSize: 'larger'}}>
         <h2 >{`Support information for: ${ bannerTitle ? bannerTitle : 'This web part' }`}</h2>
 
@@ -168,7 +172,7 @@ const loadSummary = createPerformanceTableVisitor( performance );
         { DocumentationMessage }
         { docsLink }
         <div style={ headingStyles }>If you still have issues...</div>
-        <div style={ subHeadingStyles }> - please contact the owner of this webpart before submitting an incident.</div>
+        <div style={ subHeadingStyles }>{ panelMessageIfYouStillContent } </div>
         <div style={ headingStyles }>Contact(s) for primary support or issues</div>
         <div>{ ContactInfo }</div>  
         <div>{ loadSummary }</div>  

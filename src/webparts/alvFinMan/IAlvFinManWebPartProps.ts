@@ -107,6 +107,7 @@ export interface IAlvFinManWebPartProps {
     panelMessageDescription1: string; //
     panelMessageSupport: string;
     panelMessageDocumentation: string;
+    panelMessageIfYouStill: string;
     documentationLinkDesc: string;
     documentationLinkUrl: string;
     documentationIsValid: boolean;

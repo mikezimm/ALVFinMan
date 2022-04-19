@@ -130,14 +130,20 @@ export const WebPartHelpElement = <div>
       //   onLinkClick= { null }  //{this.specialClick.bind(this)}
       //   selectedKey={ null }
       >
-      <PivotItem headerText={ 'Script Editor' } > 
+      <PivotItem headerText={ 'Financial Manual' } > 
         <div className={ styles.helpContent}>
 
-          <div className={ styles.topic}>Approved web url</div>
+          <div className={ styles.topic}>TBD To fill out</div>
+          <div>Bla bla bla.</div>
+          <div>Bla bla bla must be like this:  <b>/sites/SecureCDN/<span style={{ color: 'red', fontWeight: 600 }}>YourCodeStorageSite</span>/</b></div>
+          <div><mark><b>NOTE:</b></mark> {RequestStorageHere}</div>
+          
+          
+          {/* <div className={ styles.topic}>Approved web url</div>
           <div>Code must be stored in an approved site in our tenant.</div>
           <div>The URL must be like this:  <b>/sites/SecureCDN/<span style={{ color: 'red', fontWeight: 600 }}>YourCodeStorageSite</span>/</b></div>
-          <div><mark><b>NOTE:</b></mark> {RequestStorageHere}</div>
-
+          <div><mark><b>NOTE:</b></mark> {RequestStorageHere}</div> */}
+{/* 
           <div className={ styles.topic}>Pick an approved library</div>
           <div>Only store and use code in the library called <b>'CodeLibrary'</b> that is set up by the SharePoint Team or else people will not be able to use your web part.</div>
 
@@ -156,7 +162,7 @@ export const WebPartHelpElement = <div>
           <div>If enabled, your html file in the web part properties.</div>
           <div>In the end, this should save the load time of requesting the html file after the web part is loaded. The 'fetch' row of the Performance table in code pane shows how long it takes to do extra call.</div>
           <div>Security checks are still done on every page refresh even with this enabled.</div>
-          <div><b><mark>When this is enabled:</mark> Updates to your html file are only reflected</b> in the web part if you Edit the Page and Web Part props.</div>
+          <div><b><mark>When this is enabled:</mark> Updates to your html file are only reflected</b> in the web part if you Edit the Page and Web Part props.</div> */}
 
 
         </div>
@@ -188,7 +194,7 @@ export const WebPartHelpElement = <div>
 
         </div>
       </PivotItem>
-
+{/* 
       <PivotItem headerText={ 'Advanced' } > 
         <div className={ styles.helpContent}>
 
@@ -203,7 +209,7 @@ export const WebPartHelpElement = <div>
           <div>Allows you to reference Modern page context using window[TBD].property</div>
 
         </div>
-      </PivotItem>
+      </PivotItem> */}
 
       <PivotItem headerText={ 'Banner' } > 
         <div className={ styles.helpContent}>
@@ -363,7 +369,7 @@ export const WebPartHelpElement = <div>
         </div>
       </PivotItem>
 
-      <PivotItem headerText={ 'Debugging' } > 
+      {/* <PivotItem headerText={ 'Debugging' } > 
         <div className={ styles.helpContent}>
             <div className={ styles.topic}>Are your js/css references showing 404?</div>
             <div>Make sure any ../SiteAssets/.. type of references are pointing the correct site.</div>
@@ -375,7 +381,7 @@ export const WebPartHelpElement = <div>
             <div>This does increase load time but may be required due to SharePoint 'Smart Navigation' caching :(</div>
 
         </div>
-      </PivotItem>
+      </PivotItem> */}
       {/* <PivotItem headerText={ 'Refiner Rules' } > 
         <div className={ styles.helpContent}>
             <div className={ styles.topic}></div>
