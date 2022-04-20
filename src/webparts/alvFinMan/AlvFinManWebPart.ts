@@ -30,6 +30,8 @@ import { FPSOptionsExpando, expandAudienceChoicesAll } from '@mikezimm/npmfuncti
 
 import { WebPartInfoGroup, JSON_Edit_Link } from '@mikezimm/npmfunctions/dist/Services/PropPane/zReusablePropPane';
 
+
+import { _LinkIsValid } from '@mikezimm/npmfunctions/dist/Links/AllLinks';
 import * as links from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
 
 import { importProps, } from '@mikezimm/npmfunctions/dist/Services/PropPane/ImportFunctions';
@@ -69,10 +71,7 @@ import { IWebpartBannerProps } from '@mikezimm/npmfunctions/dist/HelpPanel/onNpm
 
 require('../../services/propPane/GrayPropPaneAccordions.css');
 
-export const repoLink: IRepoLinks = links.gitRepoSecureScript7Small;
-
-
-
+export const repoLink: IRepoLinks = links.gitRepoALVFinManSmall;
 
 import * as strings from 'AlvFinManWebPartStrings';
 import AlvFinMan from './components/AlvFinMan';
@@ -341,13 +340,6 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
   }
 
 
-
-
-
-
-
-
-    
   private beAUserFunction() {
     if ( this.displayMode === DisplayMode.Edit ) {
       alert("'Be a regular user' mode is only available while viewing the page.  \n\nOnce you are out of Edit mode, please refresh the page (CTRL-F5) to reload the web part.");
@@ -358,28 +350,6 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
     }
 
   }
-
-  private async _LinkIsValid(url)
-  {
-      //Require this is filled out.
-      if ( !url ) { return false; }
-
-      var http = new XMLHttpRequest();
-      http.open('HEAD', url, false);
-      let isValid = true;
-      try {
-        await http.send();
-        isValid = http.status!=404 ? true : false;
-      }catch(e) {
-        isValid = false;
-      }
-
-      return isValid;
-  } 
-
-
-
-
 
 
   /***
@@ -444,7 +414,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
 
 
     if ( propertyPath === 'documentationLinkUrl' || propertyPath === 'fpsImportProps' ) {
-      this.properties.documentationIsValid = await this._LinkIsValid( newValue );
+      this.properties.documentationIsValid = await _LinkIsValid( newValue ) === "" ? true : false;
       console.log( `${ newValue ? newValue : 'Empty' } Docs Link ${ this.properties.documentationIsValid === true ? ' IS ' : ' IS NOT ' } Valid `);
       
     } else {
