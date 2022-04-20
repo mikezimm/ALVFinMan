@@ -343,7 +343,6 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
       }
     );
     console.log('mainWebPart: ReactDom ~ 345',   );
-
     ReactDom.render(element, this.domElement);
   }
 

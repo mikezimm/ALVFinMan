@@ -311,6 +311,7 @@ public async updateWebInfo (   ) {
   private _onSearchChange ( NewSearch ){
   
     const SearchValue = NewSearch.target.value;
+    
     if ( !SearchValue ) {
       this.setState({ filtered: this.props.accounts, searchText: '', searchTime: null });
     } else {
