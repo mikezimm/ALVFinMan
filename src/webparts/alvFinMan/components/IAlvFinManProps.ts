@@ -31,13 +31,29 @@ export interface IAlvFinManProps {
   //ADDED FOR WEBPART HISTORY:  
   webpartHistory: IWebpartHistory;
 
-
-
   defaultPivotKey: ILayoutAll;
-  customSearch: string[];
-  customSearchLC: string[];
+
+  search: IFinManSearch ;
 
 }
+
+export interface IFinManSearch {
+  
+  leftSearchFixed: boolean; //Locks the search options
+  leftSearchStr: string; // Primary/Fixed search for left side of search page
+  leftSearch: string[]; //For easy display of casing
+  leftSearchLC: string[]; //For easy string compare
+
+  topSearchFixed: boolean; //Locks the search options
+  topSearchStr: string;
+  topSearch: string[]; //For easy display of casing
+  topSearchLC: string[]; //For easy string compare
+
+  searchPlural: boolean; //Future use, basically search for the keywords specified in props but also look for ones with an s after it.
+  searchType:  boolean; //Choose to also filter on type of content:
+
+}
+
 
 import { ILayout1Page } from './Layout1Page/ILayout1PageProps';
 
@@ -51,12 +67,12 @@ export interface IFMBuckets {
 }
 
 export interface IFMBucketItems {
-  Functions: any[];
-  Topics: any[];
-  ALGroup: any[];
-  Sections: any[];
-  Processes: any[];
-  DocumentType: any[];
+  Functions: IAnyContent[];
+  Topics: IAnyContent[];
+  ALGroup: IAnyContent[];
+  Sections: IAnyContent[];
+  Processes: IAnyContent[];
+  DocumentType: IAnyContent[];
 }
 
 
@@ -68,10 +84,27 @@ export type ILayoutAll = ILayout1Page | ILayoutSPage | ILayoutMPage | ILayoutAPa
 
 export type IAppFormat = 'docs' | 'stds' | 'sups' | 'appLinks';
 
+
+// leftSearchFixed: boolean; //Locks the search options
+// leftSearchStr: string; // Primary/Fixed search for left side of search page
+// leftSearch: string[]; //For easy display of casing
+// leftSearchLC: string[]; //For easy string compare
+
+// topSearchFixed: boolean; //Locks the search options
+// topSearchStr: string;
+// topSearch: string[]; //For easy display of casing
+// topSearchLC: string[]; //For easy string compare
+
+
 export interface IAnyContent extends Partial<any> {
   format: IAppFormat;
   searchText: string;
   searchTextLC: string;
+  leftSearch: string[]; //For easy display of casing
+  leftSearchLC: string[]; //For easy string compare
+  topSearch: string[]; //For easy display of casing
+  topSearchLC: string[]; //For easy string compare
+
   meta: string[];
 }
 

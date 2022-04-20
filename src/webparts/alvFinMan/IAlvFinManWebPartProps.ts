@@ -138,9 +138,20 @@ export interface IAlvFinManWebPartProps {
 
   //For ALVFinancialManual
   defaultPivotKey: ILayoutAll;
-  customSearchStr: string;
-  customSearch: string[]; //For easy display of casing
-  customSearchLC: string[]; //For easy string compare
+
+  leftSearchFixed: boolean; //Locks the search options
+  leftSearchStr: string; // Primary/Fixed search for left side of search page
+  leftSearch: string[]; //For easy display of casing
+  leftSearchLC: string[]; //For easy string compare
+
+  topSearchFixed: boolean; //Locks the search options
+  topSearchStr: string;
+  topSearch: string[]; //For easy display of casing
+  topSearchLC: string[]; //For easy string compare
+
+  searchPlural: boolean; //Future use, basically search for the keywords specified in props but also look for ones with an s after it.
+  searchType:  boolean; //Choose to also filter on type of content:
+  searchDefault:  boolean; //Resets all values to default and locks them.  Turning on and off resets all values
 
   loadPerformance: ILoadPerformanceALVFM;
 

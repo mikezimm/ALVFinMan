@@ -79,6 +79,9 @@ import { IAlvFinManProps, ILayoutAll } from './components/IAlvFinManProps';
 import { IAlvFinManWebPartProps, exportIgnoreProps, importBlockProps, } from './IAlvFinManWebPartProps';
 import { baseFetchInfo, IFetchInfo } from './components/IFetchInfo';
 
+const leftSearchDefault = 'Assets;Inventory;Payable;Payroll;Receivable;Tax;Treasury;';
+const topSearchDefault = 'Capex;Inventory;Template;Policy;Weekly;Monthly;Quarterly;';
+
 export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWebPartProps> {
 
   //Added in v1.14
@@ -219,6 +222,8 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
 
       // DEFAULTS SECTION:  ALVFinMan   <<< ================================================================
       if ( !this.properties.defaultPivotKey ) { this.properties.defaultPivotKey = 'Main' ; }
+      this.resetAllSearch();
+
     });
 
 
@@ -332,9 +337,21 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
 
         defaultPivotKey: this.properties.defaultPivotKey,
 
-        customSearch: this.properties.customSearch,
-        customSearchLC: this.properties.customSearchLC,
-
+        search: {
+          leftSearchFixed: this.properties.leftSearchFixed,
+          leftSearchStr: this.properties.leftSearchStr,
+          leftSearch: this.properties.leftSearch,
+          leftSearchLC: this.properties.leftSearchLC,
+        
+          topSearchFixed: this.properties.topSearchFixed,
+          topSearchStr: this.properties.topSearchStr,
+          topSearch: this.properties.topSearch,
+          topSearchLC: this.properties.topSearchLC,
+        
+          searchPlural: this.properties.searchPlural,
+          searchType: this.properties.searchType,
+        },
+        
         //Banner related props
         errMessage: 'any',
         bannerProps: this.bannerProps,
@@ -480,24 +497,55 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
 
       }
 
-    } else if ( propertyPath === 'customSearchStr' ) {
+    } else if ( propertyPath === 'topSearchStr' || propertyPath === 'leftSearchStr' ) {
 
-      if ( !newValue || newValue.length === 0 ) { 
-        console.log( "customSearchKeys IS EMPTY - No Categories will be shown!");
-        this.properties.customSearch = [];
-        this.properties.customSearchLC = [];
-        
+      this.updateSearchProps( propertyPath, newValue );
+    
+    } else if ( propertyPath === 'searchDefault' ) {
+      //Reset all search props and lock
+
+      if ( newValue === true ) {
+        this.resetAllSearch();
       }
-      else { 
-        this.properties.customSearch = newValue.split(';');
-        this.properties.customSearch = this.properties.customSearch.map(s => s.trim());
-        this.properties.customSearchLC = JSON.parse(JSON.stringify(this.properties.customSearch).toLowerCase()) ;
-       }
     
     }
+
     this.context.propertyPane.refresh();
 
     this.render();
+
+  }
+
+  protected resetAllSearch () {
+
+    if ( this.properties.leftSearchFixed !== false ) { this.properties.leftSearchFixed = true ; }
+    if ( this.properties.topSearchFixed !== false ) { this.properties.topSearchFixed = true ; }
+
+    if ( this.properties.searchPlural !== true ) { this.properties.searchPlural = false ; }
+    if ( this.properties.searchDefault !== false ) { this.properties.searchDefault = true ; }
+
+    if ( this.properties.searchType !== false ) { this.properties.searchType = true ; }
+
+    if ( !this.properties.leftSearchStr ) { this.updateSearchProps( 'leftSearchStr', leftSearchDefault ); }
+    if ( !this.properties.topSearchStr ) { this.updateSearchProps( 'topSearchStr', topSearchDefault ); }
+  }
+
+  protected updateSearchProps( propertyPath: string , newValue ) {
+
+    let baseKey = propertyPath.replace('Str','');
+
+    if ( !newValue || newValue.length === 0 ) { 
+      console.log( "topSearchKeys IS EMPTY - No Categories will be shown!");
+      this.properties[ baseKey ] = [];
+      this.properties[ baseKey + 'LC' ] = [];
+      
+    } else { 
+      let newSearch = newValue.split(';');
+      newSearch = !newSearch ? newSearch : newSearch.map(s => s.trim());
+      this.properties[ baseKey + 'LC' ] = JSON.parse(JSON.stringify( newSearch ).toLowerCase()) ;
+      this.properties[ baseKey ] = newSearch ;
+     }
+
   }
 
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
@@ -510,16 +558,58 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
           displayGroupsAsAccordion: true, //DONT FORGET THIS IF PROP PANE GROUPS DO NOT EXPAND
           groups: [
             {
-              groupName: 'ALV Financial Manual Options',
+              groupName: 'ALV Financial Manual - Basic',
               groupFields: [
                 PropertyPaneTextField('defaultPivotKey', {
                   label: 'Default Tab',
                   description: 'Recent News always loads first though',
                 }),
-                PropertyPaneTextField('customSearchStr', {
-                  label: 'Custom search keywords',
-                  description: 'Semi-colon separated words, no special charaters or spaces',
+              ]
+            }, // this group
+            // searchPlural: boolean; //Future use, basically search for the keywords specified in props but also look for ones with an s after it.
+  
+            // leftSearchFixed: boolean; //Locks the search options
+            // leftSearchStr: string; // Primary/Fixed search for left side of search page
+            // leftSearch: string[]; //For easy display of casing
+            // leftSearchLC: string[]; //For easy string compare
+          
+            // topSearchFixed: boolean; //Locks the search options
+            // topSearchStr: string;
+            // topSearch: string[]; //For easy display of casing
+            // topSearchLC: string[]; //For easy string compare
+            {
+              groupName: 'ALV Financial Manual Search',
+              groupFields: [
+                PropertyPaneToggle("leftSearchFixed", {
+                  label: "Use Default Left Search categories",
+                  onText: "Default",
+                  offText: "Custom"
                 }),
+
+                PropertyPaneTextField('leftSearchStr', {
+                  label: 'Left Search categories',
+                  description: 'Single Words semi-colon (;) separated',
+                  disabled: this.properties.leftSearchFixed === true ? true : false,
+                }),
+
+                PropertyPaneToggle("topSearchFixed", {
+                  label: "Use Default Top Search categories",
+                  onText: "Default",
+                  offText: "Custom"
+                }),
+
+                PropertyPaneTextField('topSearchStr', {
+                  label: 'Top Search categories',
+                  description: 'Single Words semi-colon (;) separated',
+                  disabled: this.properties.topSearchFixed === true ? true : false,
+                }),
+
+                PropertyPaneToggle("searchPlural", {
+                  label: "Search plural categories - Just searchs for your word OR keyword with 's' at end like keyword.  NOTE this does not have ability to check the actual plural spelling of a word :(",
+                  onText: "Off",
+                  offText: "On"
+                }),
+
               ]
             }, // this group
 

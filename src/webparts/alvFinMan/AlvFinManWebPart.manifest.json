@@ -23,9 +23,22 @@
     "officeFabricIconFontName": "Page",
     "properties": {
       "description": "ALV Financial Manual",
-      "customSearch": [],
-      "customSearchLC": [],
+
       "defaultPivotKey": "Main",
+
+      "leftSearchFixed": true,
+      "leftSearchStr": "",
+      "leftSearchLC": [],
+      "leftSearch": [],
+
+      "topSearchFixed": true,
+      "topSearchStr": "",
+      "topSearchLC": [],
+      "topSearch": [],
+
+      "searchPlural": false,
+      "searchDefault": true,
+      "searchType": true,
 
       //Standard FPS Option defaults
       "enableExpandoramic": true,
