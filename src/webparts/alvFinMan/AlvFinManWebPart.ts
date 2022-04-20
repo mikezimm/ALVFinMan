@@ -251,6 +251,9 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
       */
 
     let replacePanelWarning = `Anyone with lower permissions than '${this.properties.fullPanelAudience}' will ONLY see this content in panel`;
+
+    console.log('mainWebPart: buildBannerSettings ~ 255',   );
+
     let buildBannerSettings : IBuildBannerSettings = {
 
       FPSUser: this.FPSUser,
@@ -282,6 +285,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
 
     };
 
+    console.log('mainWebPart: showTricks ~ 288',   );
     let showTricks: any = false;
     links.trickyEmails.map( getsTricks => {
       if ( this.context.pageContext.user.loginName && this.context.pageContext.user.loginName.toLowerCase().indexOf( getsTricks ) > -1 ) { 
@@ -290,6 +294,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
       }
       } );
 
+    console.log('mainWebPart: verifyAudienceVsUser ~ 297',   );
     this.properties.showBannerGear = verifyAudienceVsUser( this.FPSUser , showTricks, this.properties.homeParentGearAudience, null, renderAsReader );
     let bannerSetup = buildBannerProps( this.properties , this.FPSUser, buildBannerSettings, showTricks, renderAsReader );
     errMessage = bannerSetup.errMessage;
@@ -300,13 +305,15 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
 
     if ( this.bannerProps.showBeAUserIcon === true ) { this.bannerProps.beAUserFunction = this.beAUserFunction.bind(this); }
 
+    console.log('mainWebPart: baseFetchInfo ~ 308',   );
     this.fetchInfo = baseFetchInfo( '', this.performance );
 
+    console.log('mainWebPart: visitorPanelInfo ~ 311',   );
     this.properties.replacePanelHTML = visitorPanelInfo( this.properties, this.fetchInfo.performance ? this.fetchInfo.performance : null );
 
     this.bannerProps.replacePanelHTML = this.properties.replacePanelHTML;
 
-
+    console.log('mainWebPart: createElement ~ 316',   );
     const element: React.ReactElement<IAlvFinManProps> = React.createElement(
       AlvFinMan,
       {
@@ -335,12 +342,14 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
 
       }
     );
+    console.log('mainWebPart: ReactDom ~ 345',   );
 
     ReactDom.render(element, this.domElement);
   }
 
 
   private beAUserFunction() {
+    console.log('beAUserFunction:',   );
     if ( this.displayMode === DisplayMode.Edit ) {
       alert("'Be a regular user' mode is only available while viewing the page.  \n\nOnce you are out of Edit mode, please refresh the page (CTRL-F5) to reload the web part.");
 

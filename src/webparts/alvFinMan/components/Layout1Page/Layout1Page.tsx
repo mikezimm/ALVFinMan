@@ -74,61 +74,61 @@ const pivotItems = pivotKeys.map( ( key, idx ) => {
 export default class Layout1Page extends React.Component<ILayout1PageProps, ILayout1PageState> {
 
   private buildLay1Page( pivot: string, bucketClickKey: string, buckets: IFMBuckets, docs: any[] , sups: any[] ) {
+    console.log('buildLay1Page:', pivot,bucketClickKey  );
+    const key = pivot.split('|')[1] ? pivot.split('|')[1] : pivot.split('|')[0] ;
+    const firstTitle = buckets[key][0];
+    let titles = buckets[key].map( title => {
+      let classNames = [ styles.leftFilter ];
+      if ( title === bucketClickKey ) { classNames.push( styles.isSelected ) ; }
+      return <li className={ classNames.join( ' ' ) } onClick = { this.clickBucketItem.bind( this, key, title ) }> { title } </li>;
+    });
 
-      const key = pivot.split('|')[1] ? pivot.split('|')[1] : pivot.split('|')[0] ;
-      const firstTitle = buckets[key][0];
-      let titles = buckets[key].map( title => {
-        let classNames = [ styles.leftFilter ];
-        if ( title === bucketClickKey ) { classNames.push( styles.isSelected ) ; }
-        return <li className={ classNames.join( ' ' ) } onClick = { this.clickBucketItem.bind( this, key, title ) }> { title } </li>;
-      });
+    let showDocs : any[] = [];
+    let checkBucketKey = !bucketClickKey ? firstTitle : bucketClickKey;
+    docs.map( item => {
+      if ( Array.isArray( item [key] ) === true ) {
+        item [key].map( value => {
+          if ( consoleLineItemBuild === true ) console.log( 'key value - item', key, value, item ) ;
+          if ( value.Title === checkBucketKey ) { showDocs.push( 
+          <li onClick= { this.clickDocumentItem.bind( this, key, 'docs', item  )}> 
+            { item.Title0 ? item.Title0 : item.Title } </li> ) ; }
+        });
+      } else { //This is not a multi-select key
+          if ( item [key] && item [key].Title === checkBucketKey ) { showDocs.push(  
+          <li onClick= { this.clickDocumentItem.bind( this, key, 'docs', item  )}>
+            { item.Title0 ? item.Title0 : item.Title } </li>  ) ; }
+      }
+    });
 
-      let showDocs : any[] = [];
-      let checkBucketKey = !bucketClickKey ? firstTitle : bucketClickKey;
-      docs.map( item => {
-        if ( Array.isArray( item [key] ) === true ) {
-          item [key].map( value => {
-            if ( consoleLineItemBuild === true ) console.log( 'key value - item', key, value, item ) ;
-            if ( value.Title === checkBucketKey ) { showDocs.push( 
-            <li onClick= { this.clickDocumentItem.bind( this, key, 'docs', item  )}> 
-              { item.Title0 ? item.Title0 : item.Title } </li> ) ; }
-          });
-        } else { //This is not a multi-select key
-            if ( item [key] && item [key].Title === checkBucketKey ) { showDocs.push(  
-            <li onClick= { this.clickDocumentItem.bind( this, key, 'docs', item  )}>
-              { item.Title0 ? item.Title0 : item.Title } </li>  ) ; }
-        }
-      });
+    let showSups : any[] = [];
+    sups.map( item => {
+      if ( Array.isArray( item [key] ) === true ) {
+        item [key].map( value => {
+          if ( consoleLineItemBuild === true ) console.log( 'key value - item', key, value, item ) ;
+          if ( value.Title === checkBucketKey ) { showSups.push( 
+          <li  onClick= { this.clickDocumentItem.bind( this, key, 'sups', item  )}>
+            { item.Title0 ? item.Title0 : item.Title } </li> ) ; }
+        });
+      } else { //This is not a multi-select key
+          if ( item [key] && item [key].Title === checkBucketKey ) { showSups.push(  
+          <li  onClick= { this.clickDocumentItem.bind( this, key, 'sups', item  )}>
+            { item.FileLeafRef ? item.FileLeafRef : item.Title } </li>  ) ; }
 
-      let showSups : any[] = [];
-      sups.map( item => {
-        if ( Array.isArray( item [key] ) === true ) {
-          item [key].map( value => {
-            if ( consoleLineItemBuild === true ) console.log( 'key value - item', key, value, item ) ;
-            if ( value.Title === checkBucketKey ) { showSups.push( 
-            <li  onClick= { this.clickDocumentItem.bind( this, key, 'sups', item  )}>
-              { item.Title0 ? item.Title0 : item.Title } </li> ) ; }
-          });
-        } else { //This is not a multi-select key
-            if ( item [key] && item [key].Title === checkBucketKey ) { showSups.push(  
-            <li  onClick= { this.clickDocumentItem.bind( this, key, 'sups', item  )}>
-              { item.FileLeafRef ? item.FileLeafRef : item.Title } </li>  ) ; }
+      }
+    });
 
-        }
-      });
-
-      let page = <div className={ styles.layout1 } >
-        <div className={ styles.titleList }> { titles } </div>
-        <div className={ styles.docsList }> { showDocs } </div>
-        <div className={ styles.docsList }> { showSups } </div>
-      </div>;
-      return page;
+    let page = <div className={ styles.layout1 } >
+      <div className={ styles.titleList }> { titles } </div>
+      <div className={ styles.docsList }> { showDocs } </div>
+      <div className={ styles.docsList }> { showSups } </div>
+    </div>;
+    return page;
 
 
   }
 public constructor(props:ILayout1PageProps){
   super(props);
-
+  console.log('constructor:',   );
   this.state = {
     bucketClickKey: '',
     docItemKey: '',
@@ -140,11 +140,12 @@ public constructor(props:ILayout1PageProps){
 }
 
 public componentDidMount() {
+  console.log('componentDidMount:',   );
   this.updateWebInfo( '', false );
 }
 
 public async updateWebInfo ( webUrl: string, listChangeOnly : boolean ) {
-
+  console.log('updateWebInfo:',   );
   // this.setState({ docs: docs, buckets: buckets, sups: sups });
 
 }
@@ -164,6 +165,7 @@ public async updateWebInfo ( webUrl: string, listChangeOnly : boolean ) {
   public componentDidUpdate(prevProps){
     //Just rebuild the component
     if ( this.props.refreshId !== prevProps.refreshId ) {
+      console.log('componentDidUpdate: refreshId', prevProps.refreshId, this.props.refreshId  );
       this.setState({ refreshId: this.props.refreshId });
     }
   }
@@ -174,7 +176,7 @@ public async updateWebInfo ( webUrl: string, listChangeOnly : boolean ) {
       return ( null );
 
     } else {
-
+      console.log('Layout1Page: ReactElement', this.props.refreshId  );
       const layout1 = layout1Pivots.indexOf( this.props.mainPivotKey as any) > 0 ? this.props.mainPivotKey :null;
       const showPage = !layout1 ? null :
       <div> { this.buildLay1Page( layout1 , this.state.bucketClickKey, this.props.buckets, this.props.docs , this.props.sups ) } </div>; 
