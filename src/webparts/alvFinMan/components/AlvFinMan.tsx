@@ -34,8 +34,8 @@ import { encodeDecodeString, } from "@mikezimm/npmfunctions/dist/Services/String
 import { IMyBigDialogProps, buildConfirmDialogBig } from "@mikezimm/npmfunctions/dist/Elements/dialogBox";
 
 //Added for Prop Panel Help
-import stylesP from './PropPanelHelp.module.scss';
-import { WebPartHelpElement } from './PropPaneHelp';
+import stylesP from './PropPaneHelp/PropPanelHelp.module.scss';
+import { WebPartHelpElement } from './PropPaneHelp/PropPaneHelp';
 
 
 import * as strings from 'AlvFinManWebPartStrings';

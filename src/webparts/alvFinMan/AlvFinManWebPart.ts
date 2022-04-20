@@ -54,7 +54,7 @@ import { verifyAudienceVsUser } from '@mikezimm/npmfunctions/dist/Services/Users
 import { bannerThemes, bannerThemeKeys, makeCSSPropPaneString, createBannerStyleStr, createBannerStyleObj } from '@mikezimm/npmfunctions/dist/HelpPanel/onNpm/defaults';
 
 import { IRepoLinks } from '@mikezimm/npmfunctions/dist/Links/CreateLinks';
-import { visitorPanelInfo } from './components/ALVFMVisitorPanel';
+import { visitorPanelInfo } from './components/VisitorPanel/ALVFMVisitorPanel';
 
 import { IWebpartHistory, IWebpartHistoryItem2 } from '@mikezimm/npmfunctions/dist/Services/PropPane/WebPartHistoryInterface';
 import { createWebpartHistory, ITrimThis, updateWebpartHistory, upgradeV1History } from '@mikezimm/npmfunctions/dist/Services/PropPane/WebPartHistoryFunctions';

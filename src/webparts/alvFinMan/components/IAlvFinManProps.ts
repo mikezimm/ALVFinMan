@@ -39,7 +39,7 @@ export interface IAlvFinManProps {
 
 }
 
-import { ILayout1Page } from './ILayout1PageProps';
+import { ILayout1Page } from './Layout1Page/ILayout1PageProps';
 
 export interface IFMBuckets {
   Functions: string[];

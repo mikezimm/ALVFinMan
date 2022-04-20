@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styles from './AlvFinMan.module.scss';
+import styles from '../AlvFinMan.module.scss';
 import { ISearchPageProps, ISearchPageState, } from './ISearchPageProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 
@@ -23,7 +23,7 @@ import * as strings from 'AlvFinManWebPartStrings';
 import ReactJson from "react-json-view";
 
 import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfunctions/dist/Lists/getFunctions';
-import { getAccounts } from './DataFetch';
+import { getAccounts } from '../DataFetch';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
 

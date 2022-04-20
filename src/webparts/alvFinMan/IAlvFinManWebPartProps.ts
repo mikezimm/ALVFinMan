@@ -10,7 +10,7 @@ import { ISupportedHost } from "@mikezimm/npmfunctions/dist/Services/PropPane/FP
 import { IPropertyFieldGroupOrPerson } from "@pnp/spfx-property-controls/lib/PropertyFieldPeoplePicker";
 
 import { IPerformanceOp, ILoadPerformanceALVFM, IHistoryPerformance } from './components/Performance/IPerformance';
-import { ILayoutAll } from "./components/IAlvFinancialManualProps";
+import { ILayoutAll } from "./components/IAlvFinManProps";
 
 export const changeExpando = [ 
   'enableExpandoramic','expandoDefault','expandoStyle', 'expandoPadding', 'expandoAudience',
