@@ -35,6 +35,7 @@ export function aboutTable( repoLinks: IRepoLinks, showRepoLinks: boolean ) {
 
     table.rows.push( createAboutRow('2022-04-19',"1.0.0.01","", showRepoLinks === true ? repoLinks : null ) );
 
+    
     return { table: table };
 
 }
