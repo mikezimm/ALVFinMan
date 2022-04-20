@@ -308,15 +308,16 @@ public async updateWebInfo (   ) {
   //   this._onWebUrlChange( newValue, webURLStatus );
   // }
 
-  private _onSearchChange ( NewSearch: string ){
+  private _onSearchChange ( NewSearch ){
   
-    if ( !NewSearch ) {
+    const SearchValue = NewSearch.target.value;
+    if ( !SearchValue ) {
       this.setState({ filtered: this.props.accounts, searchText: '', searchTime: null });
     } else {
 
       let startTime = new Date();
       let filtered: any[] = [];
-      let NewSearchLC = NewSearch.toLowerCase();
+      let NewSearchLC = SearchValue.toLowerCase();
       this.props.accounts.map( account => {
         if ( account.searchTextLC.indexOf( NewSearchLC ) > -1 ) {
           filtered.push( account );
@@ -328,7 +329,7 @@ public async updateWebInfo (   ) {
 
       let totalTime = endTime.getTime() - startTime.getTime();
 
-      this.setState({ filtered: filtered, searchText: NewSearch, searchTime: totalTime });
+      this.setState({ filtered: filtered, searchText: SearchValue, searchTime: totalTime });
     }
 
   }
