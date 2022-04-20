@@ -1,4 +1,4 @@
-import { IFMBuckets, IFMBucketItems, IAnyContent } from "./IAlvFinancialManualProps";
+import { IFMBuckets, IFMBucketItems, IAnyContent } from "../IAlvFinManProps";
 
 export interface ILayout1PageProps {
   description: string;

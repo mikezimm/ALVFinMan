@@ -1,6 +1,6 @@
-import { IAnyContent, IFMBuckets,IFMBucketItems } from "./IAlvFinancialManualProps";
-import { ILayout1Page,  } from "./ILayout1PageProps";
-import { ILayoutAll,  } from "./IAlvFinancialManualProps";
+import { IAnyContent, IFMBuckets,IFMBucketItems } from "./IAlvFinManProps";
+import { ILayout1Page,  } from "./Layout1Page/ILayout1PageProps";
+import { ILayoutAll,  } from "./IAlvFinManProps";
 
 export interface ISearchPageProps {
   refreshId: string;

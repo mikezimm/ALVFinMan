@@ -1,6 +1,6 @@
 import * as React from 'react';
-import styles from './AlvFinMan.module.scss';
-import { ILayoutMPage, ILayoutSPage, ILayoutAll, ILayoutAPage, IFMBuckets,   } from './IAlvFinancialManualProps';
+import styles from '../AlvFinMan.module.scss';
+import { ILayoutMPage, ILayoutSPage, ILayoutAll, ILayoutAPage, IFMBuckets,   } from '../IAlvFinManProps';
 import { ILayout1PageProps, ILayout1PageState, ILayout1Page, Layout1PageValues, } from './ILayout1PageProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 
@@ -25,7 +25,7 @@ import ReactJson from "react-json-view";
 
 import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfunctions/dist/Lists/getFunctions';
 
-import AlvAccounts from './Accounts';
+import AlvAccounts from '../Accounts/Accounts';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
 

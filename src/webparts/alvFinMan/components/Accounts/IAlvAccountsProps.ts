@@ -1,4 +1,4 @@
-import { IAnyContent } from "./IAlvFinancialManualProps";
+import { IAnyContent } from "../IAlvFinManProps";
 
 export interface IAlvAccountsProps {
   webUrl: string;

@@ -4,7 +4,7 @@ import { Icon, IIconProps } from 'office-ui-fabric-react/lib/Icon';
 import { DisplayMode, Version } from '@microsoft/sp-core-library';
 
 import { IAlvFinManProps, IAlvFinManState, IFMBuckets, ILayoutMPage, ILayoutSPage, ILayoutAll, ILayoutAPage, ILayoutQPage, IAnyContent } from './IAlvFinManProps';
-import { ILayout1Page, ILayout1PageProps, Layout1PageValues } from './ILayout1PageProps';
+import { ILayout1Page, ILayout1PageProps, Layout1PageValues } from './Layout1Page/ILayout1PageProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 
 import { Web, ISite } from '@pnp/sp/presets/all';
@@ -50,9 +50,9 @@ import { createCacheTableSmall, createPerformanceTableSmall,  } from './Performa
 
 import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfunctions/dist/Lists/getFunctions';
 
-import AlvAccounts from './Accounts';
-import Layout1Page from './Layout1Page';
-import SearchPage from './SearchPage';
+import AlvAccounts from './Accounts/Accounts';
+import Layout1Page from './Layout1Page/Layout1Page';
+import SearchPage from './Search/SearchPage';
 import {  getAppLinks, getStandardDocs, accountColumns, getAccounts,  } from './DataFetch';
 import {  createEmptyBuckets,  updateBuckets } from './DataProcess';
 

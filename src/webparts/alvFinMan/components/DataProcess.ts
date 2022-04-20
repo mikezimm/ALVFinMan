@@ -1,6 +1,6 @@
 
-import { IAlvFinancialManualProps, IAlvFinancialManualState, IFMBuckets, ILayoutMPage, ILayoutSPage, ILayoutAll, ILayoutAPage } from './IAlvFinancialManualProps';
-import { ILayout1Page, ILayout1PageProps, Layout1PageValues } from './ILayout1PageProps';
+import { IAlvFinManProps, IAlvFinManState, IFMBuckets, ILayoutMPage, ILayoutSPage, ILayoutAll, ILayoutAPage } from './IAlvFinManProps';
+import { ILayout1Page, ILayout1PageProps, Layout1PageValues } from './Layout1Page/ILayout1PageProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 
 
