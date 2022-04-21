@@ -75,7 +75,7 @@ export const repoLink: IRepoLinks = links.gitRepoALVFinManSmall;
 
 import * as strings from 'AlvFinManWebPartStrings';
 import AlvFinMan from './components/AlvFinMan';
-import { IAlvFinManProps, ILayoutAll } from './components/IAlvFinManProps';
+import { IAlvFinManProps, IFinManSearch, ILayoutAll, ISearchBucket } from './components/IAlvFinManProps';
 import { IAlvFinManWebPartProps, exportIgnoreProps, importBlockProps, } from './IAlvFinManWebPartProps';
 import { baseFetchInfo, IFetchInfo } from './components/IFetchInfo';
 
@@ -319,6 +319,42 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
     this.bannerProps.replacePanelHTML = this.properties.replacePanelHTML;
 
     console.log('mainWebPart: createElement ~ 316',   );
+
+    const search: IFinManSearch = {
+      left: {
+        SearchFixed: this.properties.leftSearchFixed,
+        SearchStr: this.properties.leftSearchStr,
+        Search: this.properties.leftSearch,
+        SearchLC: this.properties.leftSearchLC,
+        SearchCount:  this.properties.leftSearchLC.map( value => { return 0 ; } ),
+
+        items: [],
+        appLinks: [],
+        accounts: [],
+        stds: [],
+        sups: [],
+        docs: [],
+
+      },
+      top: {
+        SearchFixed: this.properties.topSearchFixed,
+        SearchStr: this.properties.topSearchStr,
+        Search: this.properties.topSearch,
+        SearchLC: this.properties.topSearchLC,
+        SearchCount:  this.properties.topSearchLC.map( value => { return 0 ; } ),
+
+        items: [],
+        appLinks: [],
+        accounts: [],
+        stds: [],
+        sups: [],
+        docs: [],
+        
+      },
+      searchPlural: this.properties.searchPlural,
+      searchType: this.properties.searchType,
+    };
+
     const element: React.ReactElement<IAlvFinManProps> = React.createElement(
       AlvFinMan,
       {
@@ -337,22 +373,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
 
         defaultPivotKey: this.properties.defaultPivotKey,
 
-        search: {
-          leftSearchFixed: this.properties.leftSearchFixed,
-          leftSearchStr: this.properties.leftSearchStr,
-          leftSearch: this.properties.leftSearch,
-          leftSearchLC: this.properties.leftSearchLC,
-          leftSearchCount:  this.properties.leftSearchLC.map( value => { return 0 ; } ),
-        
-          topSearchFixed: this.properties.topSearchFixed,
-          topSearchStr: this.properties.topSearchStr,
-          topSearch: this.properties.topSearch,
-          topSearchLC: this.properties.topSearchLC,
-          topSearchCount:  this.properties.topSearchLC.map( value => { return 0 ; } ),
-        
-          searchPlural: this.properties.searchPlural,
-          searchType: this.properties.searchType,
-        },
+        search: search,
         
         //Banner related props
         errMessage: 'any',

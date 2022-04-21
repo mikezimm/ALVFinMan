@@ -316,7 +316,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
   public async updateWebInfo ( mainPivotKey: ILayoutAll, bucketClickKey: string ) {
 
-    let search = JSON.parse(JSON.stringify( this.props.search ));
+    let search = JSON.parse(JSON.stringify( this.state.search ));
     let updateBucketsNow: boolean = false;
     let appLinks: IAnyContent[] = this.state.appLinks;
     let docs: IAnyContent[] = this.state.docs;
@@ -330,7 +330,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
     if ( appLinks.length === 0 ) {
       appLinks = await getAppLinks( FinManSite, AppLinksList, appLinkColumns, AppLinkSearch, this.props.search );
-      search = updateSearchCounts( appLinks, search );
+      search = updateSearchCounts( 'appLinks', appLinks, search );
       updateBucketsNow = true;
     }
 
@@ -338,23 +338,23 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     let Layout1PageValuesAny: any = Layout1PageValues;
     if ( fetchedDocs !== true && Layout1PageValuesAny.indexOf( mainPivotKey ) > -1  ) {
       docs = await getStandardDocs( FinManSite, StandardsLib , [ ...sitePagesColumns, ...LookupColumns, ...[ 'DocumentType/Title' ] ], [ ...sitePagesColumns, ...LookupColumns, ...[ 'DocumentType/Title' ] ], this.props.search );
-      search = updateSearchCounts( docs, search );
+      search = updateSearchCounts( 'docs', docs, search );
 
       sups = await getStandardDocs( FinManSite, SupportingLib , [ ...libraryColumns, ...LookupColumns ], [ ...libraryColumns, ...LookupColumns ], this.props.search );
-      search = updateSearchCounts( sups, search );
+      search = updateSearchCounts( 'sups', sups, search );
 
       fetchedDocs = true;
       updateBucketsNow = true;
 
     } else if ( mainPivotKey === 'Accounts' && this.state.accounts.length === 0 ) {
       accounts = await getAccounts ( FinManSite, AccountsList , [ ...accountColumns ] , [ ...AccountSearch, ], this.props.search );
-      search = updateSearchCounts( accounts, search );
+      search = updateSearchCounts( 'accounts', accounts.accounts, search );
 
     }
 
     let buckets = this.state.buckets;
     if ( updateBucketsNow === true ) {
-      buckets = updateBuckets( this.state.buckets, docs, false );
+      buckets = updateBuckets( buckets, docs, false );
       buckets = updateBuckets( buckets, sups, true );
     }
 

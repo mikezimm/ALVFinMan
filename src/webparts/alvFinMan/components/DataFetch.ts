@@ -1,5 +1,5 @@
 
-import { IAlvFinManProps, IAlvFinManState, IFMBuckets, ILayoutMPage, ILayoutSPage, ILayoutAll, ILayoutAPage, IAnyContent, IFinManSearch } from './IAlvFinManProps';
+import { IAlvFinManProps, IAlvFinManState, IFMBuckets, ILayoutMPage, ILayoutSPage, ILayoutAll, ILayoutAPage, IAnyContent, IFinManSearch, IAppFormat } from './IAlvFinManProps';
 import { ILayout1Page, ILayout1PageProps, Layout1PageValues } from './Layout1Page/ILayout1PageProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 
@@ -117,14 +117,24 @@ export const AccountsList: string = "HFMAccounts";
   
   }
 
-  export function updateSearchCounts( items: IAnyContent[], search: IFinManSearch ) {
+  export function updateSearchCounts( format: IAppFormat, items: IAnyContent[], search: IFinManSearch ) {
     items.map( item => {
-      search.leftSearchLC.map( ( searchLC, idx ) => {
-        if ( item.leftSearchLC.indexOf( searchLC ) > -1 ) { search.leftSearchCount[ idx ] ++ ; }
+      //Update search count and add items to search buckets
+      search.left.SearchLC.map( ( searchLC, idx ) => {
+        if ( item.leftSearchLC.indexOf( searchLC ) > -1 ) { 
+          search.left.SearchCount[ idx ] ++ ; 
+          search.left[format].push( item );
+          search.left.items.push( item );
+        }
       });
 
-      search.topSearchLC.map( ( searchLC, idx ) => {
-        if ( item.topSearchLC.indexOf( searchLC ) > -1 ) { search.topSearchCount[ idx ] ++ ; }
+      //Update search count and add items to search buckets
+      search.top.SearchLC.map( ( searchLC, idx ) => {
+        if ( item.topSearchLC.indexOf( searchLC ) > -1 ) { 
+          search.top.SearchCount[ idx ] ++ ;
+          search.top[format].push( item );
+          search.top.items.push( item );
+         }
       });
 
     });
@@ -159,14 +169,28 @@ export const AccountsList: string = "HFMAccounts";
           }
 
         } else if ( propArray.length === 2 ) {
-          item[ searchProps[ idx ] ] = item[ propArray[0] ][ propArray[1] ]; //Add flattened value - item["Author/Title"]= item.Author.Title
-
-          if ( Array.isArray( item[ propArray[0] ][ propArray[1] ]  )) {
-            return `${searchProps[ idx ]}=${item[ propArray[0] ][ propArray[1] ] .join(';')}`;
-  
-          } else {
-            return `${searchProps[ idx ]}=${item[ propArray[0] ][ propArray[1] ] }`;
+          let hasError: boolean = false;
+          try {
+            item[ searchProps[ idx ] ] = item[ propArray[0] ][ propArray[1] ]; //Add flattened value - item["Author/Title"]= item.Author.Title
+          } catch (e) {
+            // alert('Error doing search props');
+            let lastPart = item[propArray[0] ] ? item[propArray[0] ][ propArray[1] ] : 'UNK';
+            item[ searchProps[ idx ] ] = lastPart;
+            console.log( 'Search Error: ~ `77', item, searchProps, idx, item[propArray[0] ] , lastPart  );
+            hasError = true;
           }
+
+          if ( hasError === true ) {
+            return `${searchProps[ idx ]}=UNK`;
+          } else {
+            if ( Array.isArray( item[ propArray[0] ][ propArray[1] ]  )) {
+              return `${searchProps[ idx ]}=${item[ propArray[0] ][ propArray[1] ] .join(';')}`;
+    
+            } else {
+              return `${searchProps[ idx ]}=${item[ propArray[0] ][ propArray[1] ] }`;
+            }
+          }
+
         }
 
         
@@ -193,8 +217,8 @@ export const AccountsList: string = "HFMAccounts";
       item.topSearchLC = [];
 
       //update item's left search string arrays
-      search.leftSearch.map( ( keyWord, idx ) => {
-        let keyWordLC = search.leftSearchLC[ idx ];
+      search.left.Search.map( ( keyWord, idx ) => {
+        let keyWordLC = search.left.SearchLC[ idx ];
         if ( item.searchTextLC.indexOf( keyWordLC ) > - 1 ) {
           item.leftSearch.push( keyWord );
           item.leftSearchLC.push( keyWordLC );
@@ -202,8 +226,8 @@ export const AccountsList: string = "HFMAccounts";
       });
 
       //update item's top search string arrays
-      search.topSearch.map( ( keyWord, idx ) => {
-        let keyWordLC = search.topSearchLC[ idx ];
+      search.top.Search.map( ( keyWord, idx ) => {
+        let keyWordLC = search.top.SearchLC[ idx ];
         if ( item.searchTextLC.indexOf( keyWordLC ) > - 1 ) {
           item.topSearch.push( keyWord );
           item.topSearchLC.push( keyWordLC );
