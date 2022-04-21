@@ -524,6 +524,18 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
 
       this.updateSearchProps( propertyPath, newValue );
     
+
+    } else if ( propertyPath === 'topSearchFixed' || propertyPath === 'leftSearchFixed' ) {
+      this.properties[ propertyPath ] = newValue;
+      if ( newValue === true ) { //Reset values for that set of filters
+        let newSearchString = propertyPath === 'leftSearchFixed' ? leftSearchDefault : topSearchDefault;
+        this.updateSearchProps( propertyPath.replace('Fixed','Str' ), newSearchString );
+
+      } else {  
+        //Should leave current values, just unlock them
+      }
+      
+    
     } else if ( propertyPath === 'searchDefault' ) {
       //Reset all search props and lock
 
@@ -556,6 +568,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
   protected updateSearchProps( propertyPath: string , newValue ) {
 
     let baseKey = propertyPath.replace('Str','');
+    this.properties[ propertyPath ] = newValue;
     this.properties[ baseKey ] = [];
     this.properties[ baseKey + 'LC' ] = [];
 
@@ -633,8 +646,9 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
 
                 PropertyPaneToggle("searchPlural", {
                   label: "Search plural categories - Just searchs for your word OR keyword with 's' at end like keyword.  NOTE this does not have ability to check the actual plural spelling of a word :(",
-                  onText: "Off",
-                  offText: "On"
+                  onText: "On",
+                  offText: "Off",
+                  disabled: true,
                 }),
 
               ]

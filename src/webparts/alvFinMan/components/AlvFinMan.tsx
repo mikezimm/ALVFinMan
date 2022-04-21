@@ -336,7 +336,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
     //Check if tab requires docs and sup and is not yet loaded
     let Layout1PageValuesAny: any = Layout1PageValues;
-    if ( fetchedDocs !== true && Layout1PageValuesAny.indexOf( mainPivotKey ) > -1  ) {
+    if ( fetchedDocs !== true && ( Layout1PageValuesAny.indexOf( mainPivotKey ) > -1 || mainPivotKey === 'Search' ) ) {
       docs = await getStandardDocs( FinManSite, StandardsLib , [ ...sitePagesColumns, ...LookupColumns, ...[ 'DocumentType/Title' ] ], [ ...sitePagesColumns, ...LookupColumns, ...[ 'DocumentType/Title' ] ], this.props.search );
       search = updateSearchCounts( 'docs', docs, search );
 
@@ -346,7 +346,9 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       fetchedDocs = true;
       updateBucketsNow = true;
 
-    } else if ( mainPivotKey === 'Accounts' && this.state.accounts.length === 0 ) {
+    }
+    
+    if ( ( mainPivotKey === 'Search' || mainPivotKey === 'Accounts' ) && this.state.accounts.length === 0 ) {
       accounts = await getAccounts ( FinManSite, AccountsList , [ ...accountColumns ] , [ ...AccountSearch, ], this.props.search );
       search = updateSearchCounts( 'accounts', accounts.accounts, search );
 
