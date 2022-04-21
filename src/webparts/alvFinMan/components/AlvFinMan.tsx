@@ -53,28 +53,28 @@ import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfu
 import AlvAccounts from './Accounts/Accounts';
 import Layout1Page from './Layout1Page/Layout1Page';
 import SearchPage from './Search/SearchPage';
-import {  getAppLinks, getStandardDocs, accountColumns, getAccounts,  } from './DataFetch';
+import {  getAppLinks, getStandardDocs, accountColumns, getAccounts, AppLinkSearch, FinManSite, AppLinksList, appLinkColumns, StandardsLib, SupportingLib, sitePagesColumns, libraryColumns, LookupColumns, AccountsList, AccountSearch, updateSearchCounts,  } from './DataFetch';
 import {  createEmptyBuckets,  updateBuckets } from './DataProcess';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
 
 const consoleLineItemBuild: boolean = false;
 
-const AccountSearch = [ 'Title', 'Description', 'ALGroup', 'Name1' ];
+// const AccountSearch = [ 'Title', 'Description', 'ALGroup', 'Name1' ];
 
-const thisSelect = ['*','ID','FileRef','FileLeafRef','Author/Title','Editor/Title','Author/Name','Editor/Name','Modified','Created','CheckoutUserId','HasUniqueRoleAssignments','Title','FileSystemObjectType','FileSizeDisplay','FileLeafRef','LinkFilename','OData__UIVersion','OData__UIVersionString','DocIcon'];
+// const thisSelect = ['*','ID','FileRef','FileLeafRef','Author/Title','Editor/Title','Author/Name','Editor/Name','Modified','Created','CheckoutUserId','HasUniqueRoleAssignments','Title','FileSystemObjectType','FileSizeDisplay','FileLeafRef','LinkFilename','OData__UIVersion','OData__UIVersionString','DocIcon'];
 
-const sitePagesColumns: string[] = [ "ID", "Title0", "Author/Title", "File/ServerRelativeUrl", "FileRef", ]; //Do not exist on old SitePages library:   "Descritpion","BannerImageUrl.Url", "ServerRelativeUrl"
-const libraryColumns: string[] = [ 'ID','FileRef','FileLeafRef','Author/Title','Editor/Title','Author/Name','Editor/Name','Modified','Created','CheckoutUserId','HasUniqueRoleAssignments','Title','FileSystemObjectType','FileSizeDisplay','FileLeafRef','LinkFilename','OData__UIVersion','OData__UIVersionString','DocIcon'];
+// const sitePagesColumns: string[] = [ "ID", "Title0", "Author/Title", "File/ServerRelativeUrl", "FileRef", ]; //Do not exist on old SitePages library:   "Descritpion","BannerImageUrl.Url", "ServerRelativeUrl"
+// const libraryColumns: string[] = [ 'ID','FileRef','FileLeafRef','Author/Title','Editor/Title','Author/Name','Editor/Name','Modified','Created','CheckoutUserId','HasUniqueRoleAssignments','Title','FileSystemObjectType','FileSizeDisplay','FileLeafRef','LinkFilename','OData__UIVersion','OData__UIVersionString','DocIcon'];
 
-const appLinkColumns: string[] = [ 'ID','Title','Tab','SortOrder','LinkColumn','RichTextPanel','Author/Title','Editor/Title','Author/Name','Editor/Name','Modified','Created','HasUniqueRoleAssignments','OData__UIVersion','OData__UIVersionString'];
+// const appLinkColumns: string[] = [ 'ID','Title','Tab','SortOrder','LinkColumn','RichTextPanel','Author/Title','Editor/Title','Author/Name','Editor/Name','Modified','Created','HasUniqueRoleAssignments','OData__UIVersion','OData__UIVersionString'];
 
-const FinManSite: string ="/sites/ALVFMTest/";
-const StandardsLib: string = "StandardDocuments";
-const SupportingLib: string = "SupportDocuments";
-const AppLinksList: string = "ALVFMAppLinks";
-const LookupColumns: string[] = ['Functions/Title', 'Topics/Title', 'ALGroup/Title', 'Sections/Title','Processes/Title' ];
-const AccountsList: string = "HFMAccounts";
+// const FinManSite: string ="/sites/ALVFMTest/";
+// const StandardsLib: string = "StandardDocuments";
+// const SupportingLib: string = "SupportDocuments";
+// const AppLinksList: string = "ALVFMAppLinks";
+// const LookupColumns: string[] = ['Functions/Title', 'Topics/Title', 'ALGroup/Title', 'Sections/Title','Processes/Title' ];
+// const AccountsList: string = "HFMAccounts";
 
 const pivotStyles = {
   root: {
@@ -241,117 +241,127 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
   private currentPageUrl = this.props.bannerProps.pageContext.web.absoluteUrl + this.props.bannerProps.pageContext.site.serverRequestPath;
 
-public constructor(props:IAlvFinManProps){
-  super(props);
-  console.log('pivotTitles', pivotTitles );
-  console.log('pivotKeys', pivotKeys );
+  public constructor(props:IAlvFinManProps){
+    super(props);
+    console.log('pivotTitles', pivotTitles );
+    console.log('pivotKeys', pivotKeys );
 
-  let urlVars : any = this.props.urlVars;
-  let debugMode = urlVars.debug === 'true' ? true : false;
-  let isWorkbench = this.currentPageUrl.indexOf('_workbench.aspx') > 0 ? true : false;
+    let urlVars : any = this.props.urlVars;
+    let debugMode = urlVars.debug === 'true' ? true : false;
+    let isWorkbench = this.currentPageUrl.indexOf('_workbench.aspx') > 0 ? true : false;
 
-  let showDevHeader = debugMode === true || isWorkbench === true ? true : false;
+    let showDevHeader = debugMode === true || isWorkbench === true ? true : false;
 
-  this.state = {
-    showPropsHelp: false,
-    showDevHeader: showDevHeader,  
-    lastStateChange: '',
+    this.state = {
+      showPropsHelp: false,
+      showDevHeader: showDevHeader,  
+      lastStateChange: '',
 
-    mainPivotKey: this.props.defaultPivotKey ? this.props.defaultPivotKey : 'Main',
-    fetchedDocs: false,
-    fetchedAccounts: false,
-    appLinks: [],
-    docs: [],
-    stds: [],
-    sups: [],
-    accounts: [],
+      mainPivotKey: this.props.defaultPivotKey ? this.props.defaultPivotKey : 'Main',
+      fetchedDocs: false,
+      fetchedAccounts: false,
 
-    buckets: createEmptyBuckets(),
-    standards: createEmptyBuckets(),
-    supporting: createEmptyBuckets(),
-    bucketClickKey: '',
-    docItemKey: '',
-    supItemKey: '',
-    showItemPanel: false,
-    showPanelItem: null,
-    refreshId: '',
+      search: JSON.parse(JSON.stringify( this.props.search )),
+      appLinks: [],
+      docs: [],
+      stds: [],
+      sups: [],
+      accounts: [],
 
-  };
-}
+      buckets: createEmptyBuckets(),
+      standards: createEmptyBuckets(),
+      supporting: createEmptyBuckets(),
+      bucketClickKey: '',
+      docItemKey: '',
+      supItemKey: '',
+      showItemPanel: false,
+      showPanelItem: null,
+      refreshId: '',
 
-
-public componentDidMount() {
-  this.updateWebInfo( this.state.mainPivotKey, this.state.bucketClickKey );
-}
-
-
-//        
-  /***
- *         d8888b. d888888b d8888b.      db    db d8888b. d8888b.  .d8b.  d888888b d88888b 
- *         88  `8D   `88'   88  `8D      88    88 88  `8D 88  `8D d8' `8b `~~88~~' 88'     
- *         88   88    88    88   88      88    88 88oodD' 88   88 88ooo88    88    88ooooo 
- *         88   88    88    88   88      88    88 88~~~   88   88 88~~~88    88    88~~~~~ 
- *         88  .8D   .88.   88  .8D      88b  d88 88      88  .8D 88   88    88    88.     
- *         Y8888D' Y888888P Y8888D'      ~Y8888P' 88      Y8888D' YP   YP    YP    Y88888P 
- *                                                                                         
- *                                                                                         
- */
-
-public componentDidUpdate(prevProps){
-  let refresh = false;
-
-  if ( this.props.defaultPivotKey !== prevProps.defaultPivotKey ) {
-    refresh = true;
-  } else if ( this.props.description !== prevProps.description ) {
-    refresh = true;
+    };
   }
 
-  if ( refresh === true ) {
+
+  public componentDidMount() {
     this.updateWebInfo( this.state.mainPivotKey, this.state.bucketClickKey );
   }
 
-}
 
-public async updateWebInfo ( mainPivotKey: ILayoutAll, bucketClickKey: string ) {
+  //        
+    /***
+   *         d8888b. d888888b d8888b.      db    db d8888b. d8888b.  .d8b.  d888888b d88888b 
+   *         88  `8D   `88'   88  `8D      88    88 88  `8D 88  `8D d8' `8b `~~88~~' 88'     
+   *         88   88    88    88   88      88    88 88oodD' 88   88 88ooo88    88    88ooooo 
+   *         88   88    88    88   88      88    88 88~~~   88   88 88~~~88    88    88~~~~~ 
+   *         88  .8D   .88.   88  .8D      88b  d88 88      88  .8D 88   88    88    88.     
+   *         Y8888D' Y888888P Y8888D'      ~Y8888P' 88      Y8888D' YP   YP    YP    Y88888P 
+   *                                                                                         
+   *                                                                                         
+   */
 
-  let updateBucketsNow: boolean = false;
-  let appLinks: IAnyContent[] = this.state.appLinks;
-  let docs: IAnyContent[] = this.state.docs;
-  let sups: IAnyContent[] = this.state.sups;
-  // let accounts: IAnyContent[] = this.state.accounts;
-  let accounts: any = {
-    accounts: this.state.accounts
-  };
+  public componentDidUpdate(prevProps){
+    let refresh = false;
 
-  let fetchedDocs = this.state.fetchedDocs === true ? true : false;
+    if ( this.props.defaultPivotKey !== prevProps.defaultPivotKey ) {
+      refresh = true;
+    } else if ( this.props.description !== prevProps.description ) {
+      refresh = true;
+    }
 
-  if ( appLinks.length === 0 ) {
-    appLinks = await getAppLinks( FinManSite, AppLinksList, appLinkColumns, [] );
-    updateBucketsNow = true;
-  }
-
-  //Check if tab requires docs and sup and is not yet loaded
-  let Layout1PageValuesAny: any = Layout1PageValues;
-  if ( fetchedDocs !== true && Layout1PageValuesAny.indexOf( mainPivotKey ) > -1  ) {
-    docs = await getStandardDocs( FinManSite, StandardsLib , [ ...sitePagesColumns, ...LookupColumns, ...[ 'DocumentType/Title' ] ], [ ...sitePagesColumns, ...LookupColumns, ...[ 'DocumentType/Title' ] ] );
-    sups = await getStandardDocs( FinManSite, SupportingLib , [ ...libraryColumns, ...LookupColumns ], [ ...libraryColumns, ...LookupColumns ] );
-    fetchedDocs = true;
-    updateBucketsNow = true;
-
-  } else if ( mainPivotKey === 'Accounts' && this.state.accounts.length === 0 ) {
-    accounts = await getAccounts ( FinManSite, AccountsList , [ ...accountColumns ] , [ ...AccountSearch, ] );
+    if ( refresh === true ) {
+      this.updateWebInfo( this.state.mainPivotKey, this.state.bucketClickKey );
+    }
 
   }
 
-  let buckets = this.state.buckets;
-  if ( updateBucketsNow === true ) {
-    buckets = updateBuckets( this.state.buckets, docs, false );
-    buckets = updateBuckets( buckets, sups, true );
+  public async updateWebInfo ( mainPivotKey: ILayoutAll, bucketClickKey: string ) {
+
+    let search = JSON.parse(JSON.stringify( this.props.search ));
+    let updateBucketsNow: boolean = false;
+    let appLinks: IAnyContent[] = this.state.appLinks;
+    let docs: IAnyContent[] = this.state.docs;
+    let sups: IAnyContent[] = this.state.sups;
+    // let accounts: IAnyContent[] = this.state.accounts;
+    let accounts: any = {
+      accounts: this.state.accounts
+    };
+
+    let fetchedDocs = this.state.fetchedDocs === true ? true : false;
+
+    if ( appLinks.length === 0 ) {
+      appLinks = await getAppLinks( FinManSite, AppLinksList, appLinkColumns, AppLinkSearch, this.props.search );
+      search = updateSearchCounts( appLinks, search );
+      updateBucketsNow = true;
+    }
+
+    //Check if tab requires docs and sup and is not yet loaded
+    let Layout1PageValuesAny: any = Layout1PageValues;
+    if ( fetchedDocs !== true && Layout1PageValuesAny.indexOf( mainPivotKey ) > -1  ) {
+      docs = await getStandardDocs( FinManSite, StandardsLib , [ ...sitePagesColumns, ...LookupColumns, ...[ 'DocumentType/Title' ] ], [ ...sitePagesColumns, ...LookupColumns, ...[ 'DocumentType/Title' ] ], this.props.search );
+      search = updateSearchCounts( docs, search );
+
+      sups = await getStandardDocs( FinManSite, SupportingLib , [ ...libraryColumns, ...LookupColumns ], [ ...libraryColumns, ...LookupColumns ], this.props.search );
+      search = updateSearchCounts( sups, search );
+
+      fetchedDocs = true;
+      updateBucketsNow = true;
+
+    } else if ( mainPivotKey === 'Accounts' && this.state.accounts.length === 0 ) {
+      accounts = await getAccounts ( FinManSite, AccountsList , [ ...accountColumns ] , [ ...AccountSearch, ], this.props.search );
+      search = updateSearchCounts( accounts, search );
+
+    }
+
+    let buckets = this.state.buckets;
+    if ( updateBucketsNow === true ) {
+      buckets = updateBuckets( this.state.buckets, docs, false );
+      buckets = updateBuckets( buckets, sups, true );
+    }
+
+    console.log('state:  search', search );
+    this.setState({ search: search, docs: docs, buckets: buckets, sups: sups, appLinks: appLinks, mainPivotKey: mainPivotKey, bucketClickKey: bucketClickKey, fetchedDocs: fetchedDocs, accounts: accounts.accounts, refreshId: this.newRefreshId() });
+
   }
-
-  this.setState({ docs: docs, buckets: buckets, sups: sups, appLinks: appLinks, mainPivotKey: mainPivotKey, bucketClickKey: bucketClickKey, fetchedDocs: fetchedDocs, accounts: accounts.accounts, refreshId: this.newRefreshId() });
-
-}
 
 
   /***

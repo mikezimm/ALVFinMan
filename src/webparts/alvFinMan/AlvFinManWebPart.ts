@@ -342,11 +342,13 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
           leftSearchStr: this.properties.leftSearchStr,
           leftSearch: this.properties.leftSearch,
           leftSearchLC: this.properties.leftSearchLC,
+          leftSearchCount:  this.properties.leftSearchLC.map( value => { return 0 ; } ),
         
           topSearchFixed: this.properties.topSearchFixed,
           topSearchStr: this.properties.topSearchStr,
           topSearch: this.properties.topSearch,
           topSearchLC: this.properties.topSearchLC,
+          topSearchCount:  this.properties.topSearchLC.map( value => { return 0 ; } ),
         
           searchPlural: this.properties.searchPlural,
           searchType: this.properties.searchType,
@@ -533,17 +535,21 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
   protected updateSearchProps( propertyPath: string , newValue ) {
 
     let baseKey = propertyPath.replace('Str','');
+    this.properties[ baseKey ] = [];
+    this.properties[ baseKey + 'LC' ] = [];
 
     if ( !newValue || newValue.length === 0 ) { 
       console.log( "topSearchKeys IS EMPTY - No Categories will be shown!");
-      this.properties[ baseKey ] = [];
-      this.properties[ baseKey + 'LC' ] = [];
       
     } else { 
       let newSearch = newValue.split(';');
       newSearch = !newSearch ? newSearch : newSearch.map(s => s.trim());
-      this.properties[ baseKey + 'LC' ] = JSON.parse(JSON.stringify( newSearch ).toLowerCase()) ;
-      this.properties[ baseKey ] = newSearch ;
+      let thisPropertiesBaseKeyLC = JSON.parse(JSON.stringify( newSearch ).toLowerCase()) ;
+      let thisPropertiesBaseKey = newSearch ;
+
+      thisPropertiesBaseKeyLC.map( key => { if ( key ) { this.properties[ baseKey + 'LC' ].push( key ) ; } } ) ;
+      thisPropertiesBaseKey.map( key => { if ( key ) { this.properties[ baseKey ].push( key ) ; } } ) ;
+
      }
 
   }

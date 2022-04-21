@@ -43,11 +43,13 @@ export interface IFinManSearch {
   leftSearchStr: string; // Primary/Fixed search for left side of search page
   leftSearch: string[]; //For easy display of casing
   leftSearchLC: string[]; //For easy string compare
+  leftSearchCount: number[];
 
   topSearchFixed: boolean; //Locks the search options
   topSearchStr: string;
   topSearch: string[]; //For easy display of casing
   topSearchLC: string[]; //For easy string compare
+  topSearchCount: number[];
 
   searchPlural: boolean; //Future use, basically search for the keywords specified in props but also look for ones with an s after it.
   searchType:  boolean; //Choose to also filter on type of content:
@@ -117,6 +119,8 @@ export interface IAlvFinManState {
 
   refreshId: string;
 
+  search: IFinManSearch ;
+  
   appLinks: IAnyContent[];
   docs: IAnyContent[];
   stds: IAnyContent[]; //This is currently not used.... Originally considered it as Standards since the library was 'Standard Docs'.  Maybe could be list of relavant standards in the future?
