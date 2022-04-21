@@ -1,5 +1,7 @@
 import * as React from 'react';
 import styles from '../AlvFinMan.module.scss';
+import stylesS from './Search.module.scss';
+
 import { ISearchPageProps, ISearchPageState, } from './ISearchPageProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 
@@ -151,63 +153,30 @@ public async updateWebInfo (   ) {
 
   public render(): React.ReactElement<ISearchPageProps> {
 
-    // let componentPivot = 
-    // <Pivot
-    //     styles={ pivotStyles }
-    //     linkFormat={PivotLinkFormat.links}
-    //     linkSize={PivotLinkSize.normal}
-    //     // onLinkClick={this.pivotMainClick.bind(this)}
-    //     onLinkClick={ this.pivotMainClick.bind(this) }
-    // > 
-    //   { pivotItems }
 
-    //   {/* <PivotItem headerText={ pivotHeading0 } ariaLabel={pivotHeading0} title={pivotHeading0} itemKey={ pivotHeading0 } keytipProps={ { content: 'Hello', keySequences: ['a','b','c'] } }></PivotItem>
 
-    //   <PivotItem headerText={ pivotHeading1 } ariaLabel={pivotHeading1} title={pivotHeading1} itemKey={ pivotHeading1 } keytipProps={ { content: 'Hello', keySequences: ['a','b','c'] } }></PivotItem>
-
-    //   <PivotItem headerText={ pivotHeading2 } ariaLabel={pivotHeading2} title={pivotHeading2} itemKey={ pivotHeading2 } keytipProps={ { content: 'Hello', keySequences: ['a','b','c'] } }></PivotItem>
-
-    //   <PivotItem headerText={ pivotHeading3 } ariaLabel={pivotHeading3} title={pivotHeading3} itemKey={ pivotHeading3 } keytipProps={ { content: 'Hello', keySequences: ['a','b','c'] } }></PivotItem>
-
-    //   <PivotItem headerText={ pivotHeading4 } ariaLabel={pivotHeading4} title={pivotHeading4} itemKey={ pivotHeading4 } keytipProps={ { content: 'Hello', keySequences: ['a','b','c'] } }></PivotItem>
-      
-    //   <PivotItem headerText={ pivotHeading5 } ariaLabel={pivotHeading5} title={pivotHeading5} itemKey={ pivotHeading5 } keytipProps={ { content: 'Hello', keySequences: ['a','b','c'] } }></PivotItem>
-
-    //   <PivotItem headerText={ pivotHeading6 } ariaLabel={pivotHeading6} title={pivotHeading6} itemKey={ pivotHeading6 } keytipProps={ { content: 'Hello', keySequences: ['a','b','c'] } }></PivotItem> */}
-    // </Pivot>;
-
-    // const layout1 = layout1Pivots.indexOf( this.state.mainPivotKey as any) > 0 ? this.state.mainPivotKey :layout1Pivots[0];
-    // const showPage = 
-    // <div> { this.buildLay1Page( layout1 , this.state.bucketClickKey, this.state.buckets, this.state.docs , this.state.sups ) } </div>; 
-
-    // if ( this.state.showPanelItem && this.state.showPanelItem.WikiField ) {
-    //   // const replaceString = '<a onClick=\"console.log(\'Going to\',this.href);window.open(this.href,\'_blank\')\" style="pointer-events:none" href=';
-    //   const replaceString = '<a onClick=\"window.open(this.href,\'_blank\')\" href=';
-    //   this.state.showPanelItem.WikiField = this.state.showPanelItem.WikiField.replace(linkNoLeadingTarget,replaceString);
-    // }
-    
-    // const docsPage = !this.state.showPanelItem || !this.state.showPanelItem.WikiField ? null : <div dangerouslySetInnerHTML={{ __html: this.state.showPanelItem.WikiField }} />;
-    // const panelContent = <div>
-    //   <ReactJson src={ this.state.showPanelItem } name={ 'Summary' } collapsed={ false } displayDataTypes={ true } displayObjectSize={ true } enableClipboard={ true } style={{ padding: '20px 0px' }}/>
-    // </div>;
-
-    // const userPanel = <div><Panel
-    //   isOpen={ this.state.showItemPanel === true ? true : false }
-    //   // this prop makes the panel non-modal
-    //   isBlocking={true}
-    //   onDismiss={ this._onClosePanel.bind(this) }
-    //   closeButtonAriaLabel="Close"
-    //   type = { PanelType.large }
-    //   isLightDismiss = { true }
-    //   >
-    //     { docsPage }
-    //     { panelContent }
-    // </Panel></div>;
 
     if ( this.props.mainPivotKey !== 'Search' ) {
       return null;
+
     } else {
 
+      // debugger;
+
+      const search = this.props.search;
+
+      console.log('Rendering Search Page');
+
+      let content: any[] = [];  //All major future to be grid components
+      let leftSearch: any[] = [];  //All major future to be grid components
+      let topSearch: any[] = [];  //All major future to be grid components
+      let typeSearch: any[] = [];  //All major future to be grid components
+    
+      search.left.Objects.map( searchObject => {
+        leftSearch.push( <div className={ stylesS.button } style={ null } >{ searchObject.Search }</div> );
+      });
+
+      const leftSearchContent = <div className={ null } style={ null } >{ leftSearch }</div>;
 
       let filtered = [];
       this.state.filtered.map( account => {
@@ -217,6 +186,14 @@ public async updateWebInfo (   ) {
           </div>);
         }
       });
+
+
+      search.top.Objects.map( searchObject => {
+        topSearch.push( <div className={ stylesS.button } style={ null } >{ searchObject.Search }</div> );
+      });
+
+      const topSearchContent = <div className={ stylesS } style={ null } >{ topSearch }</div>;
+  
   
       /*https://developer.microsoft.com/en-us/fabric#/controls/web/searchbox*/
       let searchBox =  
@@ -245,6 +222,8 @@ public async updateWebInfo (   ) {
                 {/* { this.props.fetchTime } */}
                 { searchBox }
                 { filtered }
+                { topSearchContent }
+                { leftSearchContent }
                 {/* { componentPivot }
                 { showPage }
                 { userPanel } */}

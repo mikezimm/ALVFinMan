@@ -327,7 +327,8 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
         Search: this.properties.leftSearch,
         SearchLC: this.properties.leftSearchLC,
         SearchCount:  this.properties.leftSearchLC.map( value => { return 0 ; } ),
-
+        Objects: [],
+        
         items: [],
         appLinks: [],
         accounts: [],
@@ -342,6 +343,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
         Search: this.properties.topSearch,
         SearchLC: this.properties.topSearchLC,
         SearchCount:  this.properties.topSearchLC.map( value => { return 0 ; } ),
+        Objects: [],
 
         items: [],
         appLinks: [],

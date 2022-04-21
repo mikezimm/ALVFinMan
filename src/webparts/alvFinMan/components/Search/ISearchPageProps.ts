@@ -1,9 +1,11 @@
-import { IAnyContent, IFMBuckets,IFMBucketItems } from "../IAlvFinManProps";
+import { IAnyContent, IFMBuckets,IFMBucketItems, IFinManSearch } from "../IAlvFinManProps";
 import { ILayout1Page,  } from "../Layout1Page/ILayout1PageProps";
 import { ILayoutAll,  } from "../IAlvFinManProps";
 
 export interface ISearchPageProps {
   refreshId: string;
+
+  search: IFinManSearch ;
 
   appLinks: IAnyContent[];
   mainPivotKey: ILayoutAll;

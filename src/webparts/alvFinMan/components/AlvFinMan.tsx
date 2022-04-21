@@ -463,6 +463,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
     const SearchContent = <SearchPage
       refreshId={ this.state.refreshId }
+      search={ this.state.search }
       appLinks={ this.state.appLinks }
       accounts={ this.state.accounts }
       docs={ this.state.docs }
@@ -585,6 +586,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
             { showPage }
             { userPanel }
             { accounts }
+            { SearchContent }
             {/* </div> */}
           </div>
         </div>

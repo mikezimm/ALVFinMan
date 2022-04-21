@@ -37,12 +37,20 @@ export interface IAlvFinManProps {
 
 }
 
+export interface ISearchObject {
+  Search: string;
+  SearchLC: string;
+  SearchCount: number;
+}
+
 export interface ISearchBucket {
   SearchFixed: boolean;
   SearchStr: string;
   Search: string[];
   SearchLC: string[];
   SearchCount: number[];
+
+  Objects: ISearchObject[];
 
   items: IAnyContent[];
   appLinks: IAnyContent[];

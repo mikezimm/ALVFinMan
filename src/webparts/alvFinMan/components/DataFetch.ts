@@ -52,7 +52,7 @@ export const AccountsList: string = "HFMAccounts";
     let items = await web.lists.getByTitle( listTitle ).items
           .select(selectThese).expand(expandThese).filter(restFilter).getAll();
 
-    debugger;
+    // debugger;
     items = addSearchMeta( items, searchProps, search );
 
     console.log( 'AppLinksList', search, items );
@@ -118,25 +118,45 @@ export const AccountsList: string = "HFMAccounts";
   }
 
   export function updateSearchCounts( format: IAppFormat, items: IAnyContent[], search: IFinManSearch ) {
+
     items.map( item => {
       //Update search count and add items to search buckets
+
       search.left.SearchLC.map( ( searchLC, idx ) => {
         if ( item.leftSearchLC.indexOf( searchLC ) > -1 ) { 
           search.left.SearchCount[ idx ] ++ ; 
           search.left[format].push( item );
           search.left.items.push( item );
+
         }
       });
 
       //Update search count and add items to search buckets
+
       search.top.SearchLC.map( ( searchLC, idx ) => {
         if ( item.topSearchLC.indexOf( searchLC ) > -1 ) { 
           search.top.SearchCount[ idx ] ++ ;
           search.top[format].push( item );
           search.top.items.push( item );
+
          }
       });
 
+    });
+
+    search.left.Objects = search.left.SearchLC.map( ( searchLC, idx ) => {
+      return {
+        Search: search.left.Search[ idx ],
+        SearchLC: searchLC,
+        SearchCount: search.left.SearchCount[ idx ],
+      };
+    });
+    search.top.Objects = search.top.Search.map( ( searchLC, idx ) => {
+      return {
+        Search: search.top.Search[ idx ],
+        SearchLC: searchLC,
+        SearchCount: search.top.SearchCount[ idx ],
+      };
     });
 
     return search;
