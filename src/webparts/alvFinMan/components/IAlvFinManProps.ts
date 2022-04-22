@@ -125,6 +125,10 @@ export interface IAnyContent extends Partial<any> {
   type: string;
   typeIdx: number;
 
+  searchTitle: any;
+  searchDesc: any;
+  searchHref: string;
+
   meta: string[];
 }
 
