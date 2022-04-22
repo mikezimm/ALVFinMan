@@ -28,7 +28,8 @@ export const libraryColumns: string[] = [ 'ID','FileRef','FileLeafRef','Author/T
 export const appLinkColumns: string[] = [ 'ID','Title','Tab', 'SortOrder', 'LinkColumn', 'Active', 'SearchWords','RichTextPanel','Author/Title','Editor/Title','Author/Name','Editor/Name','Modified','Created','HasUniqueRoleAssignments','OData__UIVersion','OData__UIVersionString'];
 export const AppLinkSearch = [ 'Title', 'LinkColumn','RichTextPanel', 'SearchWords' ];
 
-export const FinManSite: string ="/sites/ALVFMTest/";
+export const FinManSitePieces = ['/sites','/au','tol','iv','finan','cialmanual/']; //Just so this is not searchable easily
+export const FinManSite: string =`${FinManSitePieces.join('')}`;
 export const StandardsLib: string = "StandardDocuments";
 export const SupportingLib: string = "SupportDocuments";
 export const AppLinksList: string = "ALVFMAppLinks";
@@ -379,8 +380,8 @@ export function createEmptySearchBucket () {
       let extIdx = item.FileRef ? item.FileRef.lastIndexOf('.') : -1;
       if ( item['File_x0020_Type'] ) {
         item.type = item['File_x0020_Type'] ;
-        searchTitle = item['File_x0020_Type'];
-        searchDesc = 'File Type Search Desc';
+        searchTitle = item['FileLeafRef'] ? item['FileLeafRef'] : 'No Filename to show';
+        searchDesc = '';
 
       } else if ( extIdx > -1 ) {
         item.type = item.FileRef.substring( extIdx + 1 );
@@ -418,7 +419,19 @@ export function createEmptySearchBucket () {
       if ( item.type === 'account' ) {
         searchTitle = '';
         searchDesc = [ item.type, item.ALGroup, item.SubCategory, item.Name1, item.Description ] .join ('<>');
+        if ( item.Description && ( item.Description.indexOf('&quot;') > -1 || item.Description.indexOf('\<\/') > -1 ) ) { item.descIsHTML = true ; }
         searchHref = '';
+      }
+
+      //This if was added for the Standards Wiki Library where the title column is actually Title0
+      if ( !searchTitle && item.Title0 ) { searchTitle = item.Title0 ; } 
+      if ( !searchDesc ) { searchDesc = '' ; } 
+
+      if ( !searchHref ) { 
+        if ( item.ServerRedirectedEmbedUri ) { searchHref = item.ServerRedirectedEmbedUri ;  }
+        else if ( item.FileRef ) { searchHref = item.FileRef ;  }
+        else if ( item[ 'File/ServerRelativeUrl' ] ) { searchHref = item[ 'File/ServerRelativeUrl' ] ;  }
+
       }
 
       let searchTypeIdx = SearchTypes.keys.indexOf( item.type ) ;

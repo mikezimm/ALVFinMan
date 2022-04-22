@@ -15,6 +15,8 @@ import { IHelpTableRow, IHelpTable, IPageContent, ISinglePageProps } from '../ba
 
 export function whyContent( repoLinks: IRepoLinks ) {
 
+    return null;
+    
     let table : IHelpTable  = {
         heading: 'Why use Pivot Tiles',
         headers: ['Web part','Features benefits, comparison'],

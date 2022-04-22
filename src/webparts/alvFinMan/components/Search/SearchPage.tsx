@@ -29,6 +29,7 @@ import ReactJson from "react-json-view";
 import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfunctions/dist/Lists/getFunctions';
 import { getAccounts, IFMSearchType, SearchTypes } from '../DataFetch';
 import { IAnyContent, ISearchObject } from '../IAlvFinManProps';
+import { NoItems } from '@mikezimm/npmfunctions/dist/Icons/iconNames';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
 
@@ -235,9 +236,31 @@ public async updateWebInfo (   ) {
       let filtered = [];
       this.state.filtered.map( ( item: IAnyContent ) => {
         if ( filtered.length < this.state.slideCount ) {
-          filtered.push( <div className={ stylesS.listItem }>
-            <li>{ this.getHighlightedText( `${ item.searchTitle } - ${ item.searchDesc }`, this.state.searchText )  }</li>
-          </div>);
+          if ( item.type === 'account' ) {
+            filtered.push( <div className={ stylesS.listItem }>
+              <div><Icon iconName={ SearchTypes.objs[item.typeIdx].icon }></Icon></div>
+
+              <div className={ stylesS.accountDetails}>
+                <div className={ stylesS.accountRow1 } style={{cursor: item.searchHref ? 'pointer' : null }} onClick = { this._onClickItem.bind( this, item ) }>
+                  <div title="Account Number">{ this.getHighlightedText( `${ item.Title }`, this.state.searchText )  }</div>
+                  <div title="ALGroup">{ this.getHighlightedText( `${ item.ALGroup }`, this.state.searchText )  }</div>
+                  <div title="SubCategory">{ this.getHighlightedText( `${ item.SubCategory }`, this.state.searchText )  }</div>
+                  <div title="Name">{ this.getHighlightedText( `${ item.Name1 }`, this.state.searchText )  }</div>
+                </div>
+                <div className={ stylesS.accountRow2}>
+                  <div>{ this.getHighlightedText( `${ item.Description }`, this.state.searchText )  }</div>
+                  <div>{ this.getHighlightedText( `${ item['RCM'] }`, this.state.searchText )  }</div>
+                </div>
+              </div>
+            </div>);
+          } else {
+            filtered.push( <div className={ stylesS.listItem }>
+              <div><Icon iconName={ SearchTypes.objs[item.typeIdx].icon }></Icon></div>
+              <div style={{cursor: 'pointer'}} onClick = { this._onClickItem.bind( this, item ) }>
+                { this.getHighlightedText( `${ item.searchTitle } - ${ item.searchDesc }`, this.state.searchText )  }</div>
+            </div>);
+          }
+
         }
       });
 
@@ -305,11 +328,13 @@ public async updateWebInfo (   ) {
       }
 
       if ( type.length > 0 && passMe === true ) { 
-        let passThis: boolean = false;
-        item.typeSearch.map( test => {
-          if ( type.indexOf( test ) > -1 ) { passThis = true ; }
-        });
-        if ( passThis === false ) { passMe = false; }
+        if ( type.indexOf( item.type ) < 0 ) { passMe = false; }
+
+      }
+
+      if ( passMe === true && text && text.length > 0 ) { 
+        if ( item.searchTextLC.indexOf( text.toLowerCase() ) < 0 ) { passMe = false; }
+
       }
 
       if ( passMe === true ) { filteredItems.push ( item ) ; }
@@ -344,6 +369,22 @@ private toggleSearchInArray( searchArray: string[], value: string, doThis: 'mult
   return selected;
 
 }
+
+
+
+  //onClick = { this._onClickItem.bind( this, key, title ) }
+  // private clickBucketItem( pivot, leftMenu, ex ) {
+  //   console.log('clickBucketItem:', pivot, leftMenu );
+  //   this.updateWebInfo( this.state.mainPivotKey, leftMenu );
+  //   // this.setState({ bucketClickKey: leftMenu });
+  // }
+  private _onClickItem( item: IAnyContent, event ) {
+    if ( item.searchHref ) {
+      window.open( item.searchHref, '_blank' );
+    } else {
+      console.log('No link to click:', item );
+    }
+  }
 
   private _clickLeft( item: ISearchObject, event ) {
 
@@ -421,28 +462,31 @@ private toggleSearchInArray( searchArray: string[], value: string, doThis: 'mult
   //   this._onWebUrlChange( newValue, webURLStatus );
   // }
 
-  private _onSearchChange ( NewSearch: string ){
+  private _onSearchChange ( NewSearch ){
   
-    if ( !NewSearch ) {
-      this.setState({ filtered: this.props.accounts, searchText: '', searchTime: null });
+    let startingItems: IAnyContent[] = [ ...this.props.appLinks, ...this.props.docs, ...this.props.stds, ...this.props.sups, ...this.props.accounts, ];
+    let filtered: IAnyContent[] = [];
+    let totalTime: number = 0;
+
+    let searchText = NewSearch && NewSearch.target && NewSearch.target.value ? NewSearch.target.value : '';
+    if ( !searchText ) {
+      searchText = '';
+      filtered = this.getFilteredItems( startingItems, '', this.state.topSearch, this.state.leftSearch, this.state.typeSearch );
+
     } else {
 
       let startTime = new Date();
-      let filtered: any[] = [];
-      let NewSearchLC = NewSearch.toLowerCase();
-      this.props.accounts.map( account => {
-        if ( account.searchTextLC.indexOf( NewSearchLC ) > -1 ) {
-          filtered.push( account );
-        }
-      });
-  
-      
+      let NewSearchLC = searchText.toLowerCase();
+      filtered = this.getFilteredItems( startingItems, NewSearchLC, this.state.topSearch, this.state.leftSearch, this.state.typeSearch );
+
       let endTime = new Date();
 
-      let totalTime = endTime.getTime() - startTime.getTime();
+      totalTime = endTime.getTime() - startTime.getTime();
+      console.log('Search Time:', totalTime );
 
-      this.setState({ filtered: filtered, searchText: NewSearch, searchTime: totalTime });
     }
+
+    this.setState({ searchText: searchText , filtered: filtered, searchTime: totalTime });
 
   }
 
