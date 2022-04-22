@@ -28,7 +28,7 @@ import ReactJson from "react-json-view";
 
 import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfunctions/dist/Lists/getFunctions';
 import { getAccounts, IFMSearchType, SearchTypes } from '../DataFetch';
-import { ISearchObject } from '../IAlvFinManProps';
+import { IAnyContent, ISearchObject } from '../IAlvFinManProps';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
 
@@ -113,9 +113,11 @@ public constructor(props:ISearchPageProps){
   // console.log('pivotTitles', pivotTitles );
   // console.log('pivotKeys', pivotKeys );
 
+  let filtered = [ ...this.props.appLinks, ...this.props.docs, ...this.props.stds, ...this.props.sups, ...this.props.accounts, ];
+
   this.state = {
     refreshId: this.props.refreshId,
-    filtered: this.props.accounts,
+    filtered: filtered,
     slideCount: 20,
     sortNum: 'asc',
     sortName: '-',
@@ -138,7 +140,8 @@ public componentDidMount() {
 public componentDidUpdate(prevProps){
     //Just rebuild the component
     if ( this.props.refreshId !== prevProps.refreshId ) {
-      this.setState({ refreshId: this.props.refreshId });
+      let filtered = [ ...this.props.appLinks, ...this.props.docs, ...this.props.stds, ...this.props.sups, ...this.props.accounts, ];
+      this.setState({ refreshId: this.props.refreshId, filtered: filtered });
     }
 }
 
@@ -213,16 +216,6 @@ public async updateWebInfo (   ) {
 
       const typeSearchContent = <div className={ stylesS.typeSearch } style={ null } >{ typeSearch }</div>;
 
-
-      let filtered = [];
-      this.state.filtered.map( account => {
-        if ( filtered.length < this.state.slideCount ) {
-          filtered.push( <div>
-            <li>{ this.getHighlightedText( `${ account.Title } - ${ account.Name1 } - ${ account.Description }`, this.state.searchText )  }</li>
-          </div>);
-        }
-      });
-  
       /*https://developer.microsoft.com/en-us/fabric#/controls/web/searchbox*/
       let searchBox =  
       <div className={[styles.searchContainer, styles.padLeft20 ].join(' ')} >
@@ -241,6 +234,19 @@ public async updateWebInfo (   ) {
           { /* 'Searching ' + (this.state.searchType !== 'all' ? this.state.filteredTiles.length : ' all' ) + ' items' */ }
         </div>
       </div>;
+
+      let filtered = [];
+      this.state.filtered.map( ( item: IAnyContent ) => {
+        if ( filtered.length < this.state.slideCount ) {
+          filtered.push( <div className={ stylesS.listItem }>
+            <li>{ this.getHighlightedText( `${ item.searchTitle } - ${ item.searchDesc }`, this.state.searchText )  }</li>
+          </div>);
+        }
+      });
+
+      let filteredContent = <div className={ stylesS.listItems }>
+          { filtered }
+        </div>
   
       return (
         <div className={ stylesS.searchPage }>
@@ -253,7 +259,7 @@ public async updateWebInfo (   ) {
                 { topSearchContent }
                 <div className={ stylesS.itemsRow }>
                   { leftSearchContent }
-                  { filtered }
+                  { filteredContent }
                   { typeSearchContent }
 
                 </div>
@@ -288,9 +294,14 @@ private toggleSearchInArray( searchArray: string[], value: string, doThis: 'mult
   const idx = selected.indexOf( value );
   if ( doThis === 'multi' ) {
     if ( idx < 0 ) { selected.push( value ) ; } else { delete selected[ idx ] ; }
-  } else if ( doThis === 'single' && idx < 0 ) { selected = [ value ] ; } 
-  else if ( doThis === 'single' && idx > -1 ) { selected = [ ] ; } 
-  
+  } else if ( doThis === 'single' ) {
+    if ( selected.length > 1 ) {
+      selected = [ value ] ;  }
+    else if ( idx < 0 ) { selected = [ value ] ; }
+    else if ( idx > -1 ) { selected = [ ] ; }
+    else { alert( 'toggleSearchInArrayError'); console.log('toggleSearchInArray Not triggered:', value, doThis, searchArray, ) ; }
+  }
+
   return selected;
 
 }
@@ -299,54 +310,23 @@ private toggleSearchInArray( searchArray: string[], value: string, doThis: 'mult
 
     let selected: string[] = this.toggleSearchInArray( this.state.leftSearch, item.Search , event.ctrlKey === true ? 'multi' : 'single' );
     console.log('_clickLeft: selected', selected );
-    // if ( event.ctrlKey === true ) {
-    //   console.log('CTRL was pressed');
-    //   //Consider this an 'and' on this menu
-    //   selected =  this.toggleSearchInArray( this.state.leftSearch, item.Search , 'multi' );
 
-    // } else {
-    //   //Consider this a specific search
-    //   selected =  this.toggleSearchInArray( this.state.leftSearch, item.Search , 'single' );
-
-    // }
     this.setState({ leftSearch: selected });
   }
 
-  
   private _clickTop( item: ISearchObject, event ) {
-    // console.log('clickBucketItem:', item, event );
+
     console.log('clickBucketItem:', item );
     let selected: string[] = this.toggleSearchInArray( this.state.topSearch, item.Search , event.ctrlKey === true ? 'multi' : 'single' );
 
-    // if ( event.ctrlKey === true ) {
-    //   console.log('CTRL was pressed');
-    //   //Consider this an 'and' on this menu
-    //   selected =  this.toggleSearchInArray( this.state.topSearch, item.Search , 'multi' );
-
-    // } else {
-    //   //Consider this a specific search
-    //   selected =  this.toggleSearchInArray( this.state.topSearch, item.Search , 'single' );
-
-    // }
     this.setState({ topSearch: selected });
   }
 
-  
   private _clickType( item: IFMSearchType, event ) {
-    // console.log('clickBucketItem:', item, event );
+
     console.log('clickBucketItem:', item );
     let selected: string[] = this.toggleSearchInArray( this.state.typeSearch, item.key , event.ctrlKey === true ? 'multi' : 'single' );
 
-    // if ( event.ctrlKey === true ) {
-    //   console.log('CTRL was pressed');
-    //   //Consider this an 'and' on this menu
-    //   selected =  this.toggleSearchInArray( this.state.typeSearch, item.key , 'multi' );
-
-    // } else {
-    //   //Consider this a specific search
-    //   selected =  this.toggleSearchInArray( this.state.typeSearch, item.key , 'single' );
-
-    // }
     this.setState({ typeSearch: selected });
   }
 

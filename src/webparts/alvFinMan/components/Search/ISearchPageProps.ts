@@ -22,6 +22,7 @@ export interface ISearchPageProps {
   supporting: IFMBucketItems;
 
   cmdButtonCSS: React.CSSProperties;
+
 }
 
 export type ISort = 'asc' | 'dec' | '-';
@@ -42,6 +43,5 @@ export interface ISearchPageState {
   searchText: string;
   searchTime: number;
   refreshId: string;
-
 
 }

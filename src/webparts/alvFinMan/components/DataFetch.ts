@@ -17,7 +17,7 @@ import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfu
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
 
 
-export const AccountSearch = [ 'Title', 'Description', 'ALGroup', 'Name1' ];
+export const AccountSearch = [ 'Title', 'Description', 'ALGroup', 'Name1','RCM','SubCategory' ];
 export const accountColumns: string[] = [ 'ID','ALGroup','Description','Name1','RCM','SubCategory'];
 
 export const thisSelect = ['*','ID','FileRef','FileLeafRef','Author/Title','Editor/Title','Author/Name','Editor/Name','Modified','Created','CheckoutUserId','HasUniqueRoleAssignments','Title','FileSystemObjectType','FileSizeDisplay','FileLeafRef','LinkFilename','OData__UIVersion','OData__UIVersionString','DocIcon'];
@@ -292,6 +292,9 @@ export function createEmptySearchBucket () {
     });
 
     items.map ( item => {
+      let searchTitle = '';
+      let searchDesc = '';
+      let searchHref = '';
       let meta: string[] = [];
       //This is for display purposes so user can see what property the search criteria is found in
       let searchText : string = searchNest.map( ( propArray, idx)  => {
@@ -376,20 +379,58 @@ export function createEmptySearchBucket () {
       let extIdx = item.FileRef ? item.FileRef.lastIndexOf('.') : -1;
       if ( item['File_x0020_Type'] ) {
         item.type = item['File_x0020_Type'] ;
+        searchTitle = item['File_x0020_Type'];
+        searchDesc = 'File Type Search Desc';
 
       } else if ( extIdx > -1 ) {
         item.type = item.FileRef.substring( extIdx + 1 );
-        if ( item.type === 'aspx' ) { item.type = 'page'; }
+        if ( item.type === 'aspx' ) { 
+          item.type = 'page';
+          searchTitle = item.Title;
+          searchDesc = item.Description;
+        }
+
+      } else if ( extIdx > -1 ) {
+        item.type = item.FileRef.substring( extIdx + 1 );
+        if ( item.type === 'aspx' ) { 
+          item.type = 'page';
+          searchTitle = item.Title;
+          searchDesc = item.Description;
+        }
 
       } else {
         item.type = defType;
+        searchTitle = item.Title;
+        searchDesc = 'Other Type Search Desc';
 
       }
+
+      if ( item.Tab && item.LinkColumn ) {
+
+      }
+
+      if ( !searchDesc && item.SearchWords ) { searchDesc = item.SearchWords; }
+      if ( !searchHref && item.LinkColumn ) { 
+        searchHref = item.LinkColumn.Url;
+        if ( !searchDesc && item.SearchWords ) { searchDesc = item.LinkColumn.Description; }
+      }
+
+      if ( item.type === 'account' ) {
+        searchTitle = '';
+        searchDesc = [ item.type, item.ALGroup, item.SubCategory, item.Name1, item.Description ] .join ('<>');
+        searchHref = '';
+      }
+
       let searchTypeIdx = SearchTypes.keys.indexOf( item.type ) ;
       let adjustIdx = SearchTypes.objs[ searchTypeIdx ].adjust ? SearchTypes.objs[ searchTypeIdx ].adjust : 0;
       searchTypeIdx = searchTypeIdx + adjustIdx;
 
       item.typeIdx = searchTypeIdx > -1 ? searchTypeIdx : SearchTypes.keys.length -1 ;
+
+      item.searchTitle = `${searchTitle}`;
+      item.searchDesc = `${searchDesc}`;
+      item.searchHref = `${searchHref}`;
+
   
     });
 

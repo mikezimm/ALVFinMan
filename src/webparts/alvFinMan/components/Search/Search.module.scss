@@ -191,7 +191,13 @@
   }
 
   .listItems {
-
+    max-width: calc( 100% - 200px );
+    .listItem {
+      white-space: nowrap;
+      overflow: 'hidden';
+      text-overflow: 'ellipsis';
+      max-width: 99%;
+    }
   }
 
   .container {
