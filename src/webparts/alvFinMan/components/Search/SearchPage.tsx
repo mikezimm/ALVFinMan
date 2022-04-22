@@ -164,15 +164,12 @@ public async updateWebInfo (   ) {
 
   public render(): React.ReactElement<ISearchPageProps> {
 
-
-
-
     if ( this.props.mainPivotKey !== 'Search' ) {
       return null;
 
     } else {
 
-      debugger;
+      // debugger;
 
       const search = this.props.search;
 
@@ -246,7 +243,7 @@ public async updateWebInfo (   ) {
 
       let filteredContent = <div className={ stylesS.listItems }>
           { filtered }
-        </div>
+        </div>;
   
       return (
         <div className={ stylesS.searchPage }>
@@ -279,6 +276,48 @@ public async updateWebInfo (   ) {
 
   }
 
+  private getFilteredItems( startingItems: IAnyContent[], text: string, top: string[], left: string[], type: string[],  ) {
+
+    let filteredItems : IAnyContent[] = [];
+
+    startingItems.map( item => {
+
+      let passMe = true;
+      let passLeft: boolean = true;
+      let passTop: boolean = true;
+      let passType: boolean = true;
+      let passText: boolean = true;
+
+      if ( left.length > 0 ) { 
+        let passThis: boolean = false;
+        item.leftSearch.map( test => {
+          if ( left.indexOf( test ) > -1 ) { passThis = true ; }
+        });
+        if ( passThis === false ) { passMe = false; }
+      }
+
+      if ( top.length > 0 && passMe === true ) { 
+        let passThis: boolean = false;
+        item.topSearch.map( test => {
+          if ( top.indexOf( test ) > -1 ) { passThis = true ; }
+        });
+        if ( passThis === false ) { passMe = false; }
+      }
+
+      if ( type.length > 0 && passMe === true ) { 
+        let passThis: boolean = false;
+        item.typeSearch.map( test => {
+          if ( type.indexOf( test ) > -1 ) { passThis = true ; }
+        });
+        if ( passThis === false ) { passMe = false; }
+      }
+
+      if ( passMe === true ) { filteredItems.push ( item ) ; }
+    });
+
+    console.log(' filteredItems: ', filteredItems );
+    return filteredItems;
+  }
   // private pivotMainClick( temp ) {
   //   console.log('pivotMainClick:', temp.props.itemKey );
 
@@ -311,7 +350,9 @@ private toggleSearchInArray( searchArray: string[], value: string, doThis: 'mult
     let selected: string[] = this.toggleSearchInArray( this.state.leftSearch, item.Search , event.ctrlKey === true ? 'multi' : 'single' );
     console.log('_clickLeft: selected', selected );
 
-    this.setState({ leftSearch: selected });
+    let startingItems: IAnyContent[] = [ ...this.props.appLinks, ...this.props.docs, ...this.props.stds, ...this.props.sups, ...this.props.accounts, ];
+    let filtered: IAnyContent[] = this.getFilteredItems( startingItems, this.state.searchText, this.state.topSearch, selected, this.state.typeSearch );
+    this.setState({ leftSearch: selected , filtered: filtered });
   }
 
   private _clickTop( item: ISearchObject, event ) {
@@ -319,7 +360,10 @@ private toggleSearchInArray( searchArray: string[], value: string, doThis: 'mult
     console.log('clickBucketItem:', item );
     let selected: string[] = this.toggleSearchInArray( this.state.topSearch, item.Search , event.ctrlKey === true ? 'multi' : 'single' );
 
-    this.setState({ topSearch: selected });
+    let startingItems: IAnyContent[] = [ ...this.props.appLinks, ...this.props.docs, ...this.props.stds, ...this.props.sups, ...this.props.accounts, ];
+    let filtered: IAnyContent[] = this.getFilteredItems( startingItems, this.state.searchText, selected, this.state.leftSearch, this.state.typeSearch );
+
+    this.setState({ topSearch: selected , filtered: filtered });
   }
 
   private _clickType( item: IFMSearchType, event ) {
@@ -327,7 +371,10 @@ private toggleSearchInArray( searchArray: string[], value: string, doThis: 'mult
     console.log('clickBucketItem:', item );
     let selected: string[] = this.toggleSearchInArray( this.state.typeSearch, item.key , event.ctrlKey === true ? 'multi' : 'single' );
 
-    this.setState({ typeSearch: selected });
+    let startingItems: IAnyContent[] = [ ...this.props.appLinks, ...this.props.docs, ...this.props.stds, ...this.props.sups, ...this.props.accounts, ];
+    let filtered: IAnyContent[] = this.getFilteredItems( startingItems, this.state.searchText, this.state.topSearch, this.state.leftSearch, selected );
+
+    this.setState({ typeSearch: selected , filtered: filtered });
   }
 
   // private clickDocumentItem( pivot, leftMenu, item, title ) {
