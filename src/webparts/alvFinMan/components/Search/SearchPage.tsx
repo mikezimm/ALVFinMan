@@ -7,12 +7,14 @@ import { escape } from '@microsoft/sp-lodash-subset';
 
 import { Web, ISite } from '@pnp/sp/presets/all';
 
+
 import "@pnp/sp/webs";
 import "@pnp/sp/lists";
 import "@pnp/sp/items";
 
 import { DefaultButton, PrimaryButton, CompoundButton, Stack, IStackTokens, elementContains, divProperties } from 'office-ui-fabric-react';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
+import { Icon, IIconProps } from 'office-ui-fabric-react/lib/Icon';
 
 import { Panel, IPanelProps, IPanelStyleProps, IPanelStyles, PanelType } from 'office-ui-fabric-react/lib/Panel';
 
@@ -25,7 +27,8 @@ import * as strings from 'AlvFinManWebPartStrings';
 import ReactJson from "react-json-view";
 
 import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfunctions/dist/Lists/getFunctions';
-import { getAccounts } from '../DataFetch';
+import { getAccounts, IFMSearchType, SearchTypes } from '../DataFetch';
+import { ISearchObject } from '../IAlvFinManProps';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
 
@@ -119,6 +122,11 @@ public constructor(props:ISearchPageProps){
     sortGroup: '-',
     searchTime: null,
     searchText: '',
+
+    topSearch: [],
+    leftSearch: [],
+    typeSearch: [],
+
   };
 }
 
@@ -161,7 +169,7 @@ public async updateWebInfo (   ) {
 
     } else {
 
-      // debugger;
+      debugger;
 
       const search = this.props.search;
 
@@ -173,10 +181,38 @@ public async updateWebInfo (   ) {
       let typeSearch: any[] = [];  //All major future to be grid components
     
       search.left.Objects.map( searchObject => {
-        leftSearch.push( <div className={ stylesS.button } style={ null } >{ searchObject.Search }</div> );
+        let classNames = [ stylesS.button ];
+        if ( this.state.leftSearch.indexOf( searchObject.Search ) > -1 ) { classNames.push( stylesS.isSelected ) ; }
+        leftSearch.push( <div className={ classNames.join(' ') } style={ null } onClick={ this._clickLeft.bind( this, searchObject )}>{ searchObject.Search }</div> );
       });
 
-      const leftSearchContent = <div className={ null } style={ null } >{ leftSearch }</div>;
+      const leftSearchContent = <div className={ stylesS.leftSearch } style={ null } >{ leftSearch }</div>;
+
+      search.top.Objects.map( searchObject => {
+        let classNames = [ stylesS.button ];
+        if ( this.state.topSearch.indexOf( searchObject.Search ) > -1 ) { classNames.push( stylesS.isSelected ) ; }
+        topSearch.push( <div className={ classNames.join(' ') } style={ null }  onClick={ this._clickTop.bind( this, searchObject )}>{ searchObject.Search }</div> );
+      });
+
+      const topSearchContent = <div className={ stylesS.topSearch } style={ null } >{ topSearch }</div>;
+
+      let cmdButtonCSS = JSON.parse(JSON.stringify( this.props.cmdButtonCSS ));
+
+      search.type.SearchCount.map( ( count, idx ) => {
+        if ( count > 0 ) {
+          let typeObj = SearchTypes.objs[idx];
+          let classNames = [ stylesS.cmdButton ];
+          if ( this.state.typeSearch.indexOf( typeObj.key ) > -1 ) { classNames.push( stylesS.isSelected ) ; }
+
+          typeSearch.push( <div className={ classNames.join(' ') } style={ null }  onClick={ this._clickType.bind( this, typeObj )} title={ typeObj.title }>
+            <Icon iconName={ typeObj.icon }></Icon>
+            </div> );
+        }
+
+      });
+
+      const typeSearchContent = <div className={ stylesS.typeSearch } style={ null } >{ typeSearch }</div>;
+
 
       let filtered = [];
       this.state.filtered.map( account => {
@@ -186,14 +222,6 @@ public async updateWebInfo (   ) {
           </div>);
         }
       });
-
-
-      search.top.Objects.map( searchObject => {
-        topSearch.push( <div className={ stylesS.button } style={ null } >{ searchObject.Search }</div> );
-      });
-
-      const topSearchContent = <div className={ stylesS } style={ null } >{ topSearch }</div>;
-  
   
       /*https://developer.microsoft.com/en-us/fabric#/controls/web/searchbox*/
       let searchBox =  
@@ -215,21 +243,29 @@ public async updateWebInfo (   ) {
       </div>;
   
       return (
-        <div className={ styles.alvFinMan }>
-          <div className={ styles.container }>
+        <div className={ stylesS.searchPage }>
+          {/* <div className={ styles.container }>
             <div className={ styles.row }>
-              <div className={ styles.column }>
+              <div className={ styles.column }> */}
                 {/* { this.props.fetchTime } */}
                 { searchBox }
-                { filtered }
+
                 { topSearchContent }
-                { leftSearchContent }
+                <div className={ stylesS.itemsRow }>
+                  { leftSearchContent }
+                  { filtered }
+                  { typeSearchContent }
+
+                </div>
+
+
+
                 {/* { componentPivot }
                 { showPage }
                 { userPanel } */}
-              </div>
+              {/* </div>
             </div>
-          </div>
+          </div> */}
         </div>
       );
 
@@ -246,10 +282,73 @@ public async updateWebInfo (   ) {
   //   });
   // }
 
-  // private clickBucketItem( pivot, leftMenu, ex ) {
-  //   console.log('clickBucketItem:', pivot, leftMenu );
-  //   this.setState({ bucketClickKey: leftMenu });
-  // }
+private toggleSearchInArray( searchArray: string[], value: string, doThis: 'multi' | 'single' ) {
+
+  let selected: string[] = JSON.parse(JSON.stringify( searchArray ));
+  const idx = selected.indexOf( value );
+  if ( doThis === 'multi' ) {
+    if ( idx < 0 ) { selected.push( value ) ; } else { delete selected[ idx ] ; }
+  } else if ( doThis === 'single' && idx < 0 ) { selected = [ value ] ; } 
+  else if ( doThis === 'single' && idx > -1 ) { selected = [ ] ; } 
+  
+  return selected;
+
+}
+
+  private _clickLeft( item: ISearchObject, event ) {
+
+    let selected: string[] = this.toggleSearchInArray( this.state.leftSearch, item.Search , event.ctrlKey === true ? 'multi' : 'single' );
+    console.log('_clickLeft: selected', selected );
+    // if ( event.ctrlKey === true ) {
+    //   console.log('CTRL was pressed');
+    //   //Consider this an 'and' on this menu
+    //   selected =  this.toggleSearchInArray( this.state.leftSearch, item.Search , 'multi' );
+
+    // } else {
+    //   //Consider this a specific search
+    //   selected =  this.toggleSearchInArray( this.state.leftSearch, item.Search , 'single' );
+
+    // }
+    this.setState({ leftSearch: selected });
+  }
+
+  
+  private _clickTop( item: ISearchObject, event ) {
+    // console.log('clickBucketItem:', item, event );
+    console.log('clickBucketItem:', item );
+    let selected: string[] = this.toggleSearchInArray( this.state.topSearch, item.Search , event.ctrlKey === true ? 'multi' : 'single' );
+
+    // if ( event.ctrlKey === true ) {
+    //   console.log('CTRL was pressed');
+    //   //Consider this an 'and' on this menu
+    //   selected =  this.toggleSearchInArray( this.state.topSearch, item.Search , 'multi' );
+
+    // } else {
+    //   //Consider this a specific search
+    //   selected =  this.toggleSearchInArray( this.state.topSearch, item.Search , 'single' );
+
+    // }
+    this.setState({ topSearch: selected });
+  }
+
+  
+  private _clickType( item: IFMSearchType, event ) {
+    // console.log('clickBucketItem:', item, event );
+    console.log('clickBucketItem:', item );
+    let selected: string[] = this.toggleSearchInArray( this.state.typeSearch, item.key , event.ctrlKey === true ? 'multi' : 'single' );
+
+    // if ( event.ctrlKey === true ) {
+    //   console.log('CTRL was pressed');
+    //   //Consider this an 'and' on this menu
+    //   selected =  this.toggleSearchInArray( this.state.typeSearch, item.key , 'multi' );
+
+    // } else {
+    //   //Consider this a specific search
+    //   selected =  this.toggleSearchInArray( this.state.typeSearch, item.key , 'single' );
+
+    // }
+    this.setState({ typeSearch: selected });
+  }
 
   // private clickDocumentItem( pivot, leftMenu, item, title ) {
   //   console.log('clickDocumentItem:', pivot, leftMenu, item );

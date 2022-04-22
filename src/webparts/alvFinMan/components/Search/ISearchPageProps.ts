@@ -1,6 +1,7 @@
 import { IAnyContent, IFMBuckets,IFMBucketItems, IFinManSearch } from "../IAlvFinManProps";
 import { ILayout1Page,  } from "../Layout1Page/ILayout1PageProps";
 import { ILayoutAll,  } from "../IAlvFinManProps";
+import * as React from "react";
 
 export interface ISearchPageProps {
   refreshId: string;
@@ -19,12 +20,18 @@ export interface ISearchPageProps {
   buckets: IFMBuckets;
   standards: IFMBucketItems;
   supporting: IFMBucketItems;
+
+  cmdButtonCSS: React.CSSProperties;
 }
 
 export type ISort = 'asc' | 'dec' | '-';
 
 export interface ISearchPageState {
   // description: string;
+
+  topSearch: string[];
+  leftSearch: string[];
+  typeSearch: string[];
 
   filtered: any[];
   slideCount: number;

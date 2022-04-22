@@ -65,6 +65,7 @@ export interface IFinManSearch {
   
   left: ISearchBucket;
   top: ISearchBucket;
+  type: ISearchBucket;
 
   searchPlural: boolean; //Future use, basically search for the keywords specified in props but also look for ones with an s after it.
   searchType:  boolean; //Choose to also filter on type of content:
@@ -121,6 +122,8 @@ export interface IAnyContent extends Partial<any> {
   leftSearchLC: string[]; //For easy string compare
   topSearch: string[]; //For easy display of casing
   topSearchLC: string[]; //For easy string compare
+  type: string;
+  typeIdx: number;
 
   meta: string[];
 }

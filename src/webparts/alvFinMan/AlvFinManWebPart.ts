@@ -78,6 +78,7 @@ import AlvFinMan from './components/AlvFinMan';
 import { IAlvFinManProps, IFinManSearch, ILayoutAll, ISearchBucket } from './components/IAlvFinManProps';
 import { IAlvFinManWebPartProps, exportIgnoreProps, importBlockProps, } from './IAlvFinManWebPartProps';
 import { baseFetchInfo, IFetchInfo } from './components/IFetchInfo';
+import { createEmptySearchBucket, SearchTypes } from './components/DataFetch';
 
 const leftSearchDefault = 'Assets;Inventory;Payable;Payroll;Receivable;Tax;Treasury;';
 const topSearchDefault = 'Capex;Inventory;Template;Policy;Weekly;Monthly;Quarterly;';
@@ -353,6 +354,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
         docs: [],
         
       },
+      type: createEmptySearchBucket(),
       searchPlural: this.properties.searchPlural,
       searchType: this.properties.searchType,
     };

@@ -53,7 +53,7 @@ import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfu
 import AlvAccounts from './Accounts/Accounts';
 import Layout1Page from './Layout1Page/Layout1Page';
 import SearchPage from './Search/SearchPage';
-import {  getAppLinks, getStandardDocs, accountColumns, getAccounts, AppLinkSearch, FinManSite, AppLinksList, appLinkColumns, StandardsLib, SupportingLib, sitePagesColumns, libraryColumns, LookupColumns, AccountsList, AccountSearch, updateSearchCounts,  } from './DataFetch';
+import {  getAppLinks, getStandardDocs, accountColumns, getAccounts, AppLinkSearch, FinManSite, AppLinksList, appLinkColumns, StandardsLib, SupportingLib, sitePagesColumns, libraryColumns, LookupColumns, AccountsList, AccountSearch, updateSearchCounts, updateSearchTypes,  } from './DataFetch';
 import {  createEmptyBuckets,  updateBuckets } from './DataProcess';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
@@ -359,6 +359,8 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       buckets = updateBuckets( buckets, docs, false );
       buckets = updateBuckets( buckets, sups, true );
     }
+    // debugger;
+    search = updateSearchTypes( [ ...appLinks, ...docs, ...sups, ...accounts.accounts, ], search );
 
     console.log('state:  search', search );
     this.setState({ search: search, docs: docs, buckets: buckets, sups: sups, appLinks: appLinks, mainPivotKey: mainPivotKey, bucketClickKey: bucketClickKey, fetchedDocs: fetchedDocs, accounts: accounts.accounts, refreshId: this.newRefreshId() });
@@ -473,6 +475,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       standards={ this.state.standards }
       supporting={ this.state.supporting }
       mainPivotKey={ this.state.mainPivotKey }
+      cmdButtonCSS={bannerProps.bannerCmdReactCSS }
     ></SearchPage>;
 
     if ( this.state.showPanelItem && this.state.showPanelItem.WikiField ) {

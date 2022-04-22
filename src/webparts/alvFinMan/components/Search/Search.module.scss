@@ -1,12 +1,56 @@
 @import '~office-ui-fabric-react/dist/sass/References.scss';
 
-.search {
+.searchPage {
   overflow: hidden;
   padding: 1em;
   color: "[theme:bodyText, default: #323130]";
   color: var(--bodyText);
   &.teams {
     font-family: $ms-font-family-fallbacks;
+  }
+
+  
+  .button {
+    // Our button
+    padding: 10px; //Added this to give padding around buttons
+
+    text-decoration: none;
+    height: 22px;
+  
+    // Primary Button
+    min-width: 80px;
+    background-color: $ms-color-white;
+    border-color: $ms-color-white;
+    color: $ms-color-themePrimary;
+  
+    // Basic Button
+    outline: transparent;
+    position: relative;
+    font-family: "Segoe UI WestEuropean","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-size: $ms-font-size-m;
+    font-weight: $ms-font-weight-regular;
+    border-width: 0;
+    text-align: center;
+    cursor: pointer;
+    display: inline-block;
+    margin: 10px 16px;
+  
+    .label {
+      font-weight: $ms-font-weight-semibold;
+      font-size: $ms-font-size-m;
+      height: 32px;
+      line-height: 32px;
+      margin: 0 4px;
+      vertical-align: top;
+      display: inline-block;
+    }
+  }
+  
+  .button.isSelected {
+    background-color: $ms-color-themePrimary;
+    border-color: $ms-color-themePrimary;
+    color: $ms-color-white;
   }
 
   // .layout1 {
@@ -55,6 +99,100 @@
 
   //   }
 
+  .topSearch {
+    background: pink;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    // padding: 10px;
+    .button {
+      padding: 7px;
+      height: 16px;
+      white-space: nowrap;
+      overflow: 'hidden';
+      text-overflow: 'ellipsis';
+      max-width: 50px;
+    }
+  }
+
+  .leftSearch {
+    background: aquamarine;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex-wrap: nowrap;
+    max-width: 130px;
+    // padding: 10px;
+
+    .button {
+      text-align: left;
+      padding: 7px;
+      height: 16px;
+      white-space: nowrap;
+      overflow: 'hidden';
+      text-overflow: 'ellipsis';
+      max-width: 50px;
+
+    }
+  }
+  
+  .typeSearch {
+    background: yellowgreen;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex-wrap: nowrap;
+    max-width: 130px;
+    margin-right: 10px; //Added to keep right side of buttons aligned with topSearch last button
+    .button {
+      text-align: left;
+      padding: 7px;
+      height: 16px;
+      white-space: nowrap;
+      overflow: 'hidden';
+      text-overflow: 'ellipsis';
+      max-width: 30px;
+    }
+    .cmdButton i {
+      /* font-size: 20px; */
+      font-weight: normal;
+      font-style: normal;
+      padding: 7px;
+      margin-right: 9px;
+      border-radius: 5px;
+
+      // background-color: $ms-color-themePrimary;
+      // border-color: $ms-color-themePrimary;
+      // color: $ms-color-white;
+
+      background-color: $ms-color-white;
+      border-color: $ms-color-white;
+      color: $ms-color-themePrimary;
+
+      font-size: large;
+      margin: 5px;
+
+      cursor: pointer;
+    }
+      
+    .cmdButton.isSelected i{
+      background-color: $ms-color-themePrimary;
+      border-color: $ms-color-themePrimary;
+      color: $ms-color-white;
+    }
+  }
+
+  .itemsRow {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .listItems {
+
+  }
 
   .container {
     max-width: 1500px;
@@ -157,7 +295,7 @@
     //These did nothing to prevent the left icons from shifting on hover.
     //border: 0px;
     //margin: 0px;
-    //padding: 0px;
+    padding: 10px;
   }
 
   .searchBox {
@@ -175,46 +313,6 @@
     //text-align: right;
   }
 
-  .button {
-    // Our button
-    text-decoration: none;
-    height: 32px;
-  
-    // Primary Button
-    min-width: 80px;
-    background-color: $ms-color-white;
-    border-color: $ms-color-white;
-    color: $ms-color-themePrimary;
-  
-    // Basic Button
-    outline: transparent;
-    position: relative;
-    font-family: "Segoe UI WestEuropean","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;
-    -webkit-font-smoothing: antialiased;
-    font-size: $ms-font-size-m;
-    font-weight: $ms-font-weight-regular;
-    border-width: 0;
-    text-align: center;
-    cursor: pointer;
-    display: inline-block;
-    padding: 0 16px;
-  
-    .label {
-      font-weight: $ms-font-weight-semibold;
-      font-size: $ms-font-size-m;
-      height: 32px;
-      line-height: 32px;
-      margin: 0 4px;
-      vertical-align: top;
-      display: inline-block;
-    }
-  }
-  
-  .button.isSelected {
-    background-color: $ms-color-themePrimary;
-    border-color: $ms-color-themePrimary;
-    color: $ms-color-white;
-  }
   
   
   .links {
@@ -231,13 +329,5 @@
     }
   }
 
-  .xyz {
-    width: 100px;
-  }
-
-}
-
-.testing {
-  width: 100px;
 }
 
