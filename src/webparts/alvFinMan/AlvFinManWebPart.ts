@@ -78,6 +78,7 @@ import AlvFinMan from './components/AlvFinMan';
 import { IAlvFinManProps, IFinManSearch, ILayoutAll, ISearchBucket } from './components/IAlvFinManProps';
 import { IAlvFinManWebPartProps, exportIgnoreProps, importBlockProps, } from './IAlvFinManWebPartProps';
 import { baseFetchInfo, IFetchInfo } from './components/IFetchInfo';
+import { createEmptySearchBucket, SearchTypes } from './components/DataFetch';
 
 const leftSearchDefault = 'Assets;Inventory;Payable;Payroll;Receivable;Tax;Treasury;';
 const topSearchDefault = 'Capex;Inventory;Template;Policy;Weekly;Monthly;Quarterly;';
@@ -327,7 +328,8 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
         Search: this.properties.leftSearch,
         SearchLC: this.properties.leftSearchLC,
         SearchCount:  this.properties.leftSearchLC.map( value => { return 0 ; } ),
-
+        Objects: [],
+        
         items: [],
         appLinks: [],
         accounts: [],
@@ -342,6 +344,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
         Search: this.properties.topSearch,
         SearchLC: this.properties.topSearchLC,
         SearchCount:  this.properties.topSearchLC.map( value => { return 0 ; } ),
+        Objects: [],
 
         items: [],
         appLinks: [],
@@ -351,6 +354,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
         docs: [],
         
       },
+      type: createEmptySearchBucket(),
       searchPlural: this.properties.searchPlural,
       searchType: this.properties.searchType,
     };
@@ -524,6 +528,18 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
 
       this.updateSearchProps( propertyPath, newValue );
     
+
+    } else if ( propertyPath === 'topSearchFixed' || propertyPath === 'leftSearchFixed' ) {
+      this.properties[ propertyPath ] = newValue;
+      if ( newValue === true ) { //Reset values for that set of filters
+        let newSearchString = propertyPath === 'leftSearchFixed' ? leftSearchDefault : topSearchDefault;
+        this.updateSearchProps( propertyPath.replace('Fixed','Str' ), newSearchString );
+
+      } else {  
+        //Should leave current values, just unlock them
+      }
+      
+    
     } else if ( propertyPath === 'searchDefault' ) {
       //Reset all search props and lock
 
@@ -556,6 +572,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
   protected updateSearchProps( propertyPath: string , newValue ) {
 
     let baseKey = propertyPath.replace('Str','');
+    this.properties[ propertyPath ] = newValue;
     this.properties[ baseKey ] = [];
     this.properties[ baseKey + 'LC' ] = [];
 
@@ -633,8 +650,9 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
 
                 PropertyPaneToggle("searchPlural", {
                   label: "Search plural categories - Just searchs for your word OR keyword with 's' at end like keyword.  NOTE this does not have ability to check the actual plural spelling of a word :(",
-                  onText: "Off",
-                  offText: "On"
+                  onText: "On",
+                  offText: "Off",
+                  disabled: true,
                 }),
 
               ]

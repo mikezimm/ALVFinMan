@@ -1,9 +1,12 @@
 import * as React from 'react';
 import styles from '../AlvFinMan.module.scss';
+import stylesS from './Search.module.scss';
+
 import { ISearchPageProps, ISearchPageState, } from './ISearchPageProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 
 import { Web, ISite } from '@pnp/sp/presets/all';
+
 
 import "@pnp/sp/webs";
 import "@pnp/sp/lists";
@@ -11,6 +14,7 @@ import "@pnp/sp/items";
 
 import { DefaultButton, PrimaryButton, CompoundButton, Stack, IStackTokens, elementContains, divProperties } from 'office-ui-fabric-react';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
+import { Icon, IIconProps } from 'office-ui-fabric-react/lib/Icon';
 
 import { Panel, IPanelProps, IPanelStyleProps, IPanelStyles, PanelType } from 'office-ui-fabric-react/lib/Panel';
 
@@ -23,7 +27,9 @@ import * as strings from 'AlvFinManWebPartStrings';
 import ReactJson from "react-json-view";
 
 import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfunctions/dist/Lists/getFunctions';
-import { getAccounts } from '../DataFetch';
+import { getAccounts, IFMSearchType, SearchTypes } from '../DataFetch';
+import { IAnyContent, ISearchObject } from '../IAlvFinManProps';
+import { NoItems } from '@mikezimm/npmfunctions/dist/Icons/iconNames';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
 
@@ -108,15 +114,22 @@ public constructor(props:ISearchPageProps){
   // console.log('pivotTitles', pivotTitles );
   // console.log('pivotKeys', pivotKeys );
 
+  let filtered = [ ...this.props.appLinks, ...this.props.docs, ...this.props.stds, ...this.props.sups, ...this.props.accounts, ];
+
   this.state = {
     refreshId: this.props.refreshId,
-    filtered: this.props.accounts,
+    filtered: filtered,
     slideCount: 20,
     sortNum: 'asc',
     sortName: '-',
     sortGroup: '-',
     searchTime: null,
     searchText: '',
+
+    topSearch: [],
+    leftSearch: [],
+    typeSearch: [],
+
   };
 }
 
@@ -128,7 +141,8 @@ public componentDidMount() {
 public componentDidUpdate(prevProps){
     //Just rebuild the component
     if ( this.props.refreshId !== prevProps.refreshId ) {
-      this.setState({ refreshId: this.props.refreshId });
+      let filtered = [ ...this.props.appLinks, ...this.props.docs, ...this.props.stds, ...this.props.sups, ...this.props.accounts, ];
+      this.setState({ refreshId: this.props.refreshId, filtered: filtered });
     }
 }
 
@@ -151,73 +165,55 @@ public async updateWebInfo (   ) {
 
   public render(): React.ReactElement<ISearchPageProps> {
 
-    // let componentPivot = 
-    // <Pivot
-    //     styles={ pivotStyles }
-    //     linkFormat={PivotLinkFormat.links}
-    //     linkSize={PivotLinkSize.normal}
-    //     // onLinkClick={this.pivotMainClick.bind(this)}
-    //     onLinkClick={ this.pivotMainClick.bind(this) }
-    // > 
-    //   { pivotItems }
-
-    //   {/* <PivotItem headerText={ pivotHeading0 } ariaLabel={pivotHeading0} title={pivotHeading0} itemKey={ pivotHeading0 } keytipProps={ { content: 'Hello', keySequences: ['a','b','c'] } }></PivotItem>
-
-    //   <PivotItem headerText={ pivotHeading1 } ariaLabel={pivotHeading1} title={pivotHeading1} itemKey={ pivotHeading1 } keytipProps={ { content: 'Hello', keySequences: ['a','b','c'] } }></PivotItem>
-
-    //   <PivotItem headerText={ pivotHeading2 } ariaLabel={pivotHeading2} title={pivotHeading2} itemKey={ pivotHeading2 } keytipProps={ { content: 'Hello', keySequences: ['a','b','c'] } }></PivotItem>
-
-    //   <PivotItem headerText={ pivotHeading3 } ariaLabel={pivotHeading3} title={pivotHeading3} itemKey={ pivotHeading3 } keytipProps={ { content: 'Hello', keySequences: ['a','b','c'] } }></PivotItem>
-
-    //   <PivotItem headerText={ pivotHeading4 } ariaLabel={pivotHeading4} title={pivotHeading4} itemKey={ pivotHeading4 } keytipProps={ { content: 'Hello', keySequences: ['a','b','c'] } }></PivotItem>
-      
-    //   <PivotItem headerText={ pivotHeading5 } ariaLabel={pivotHeading5} title={pivotHeading5} itemKey={ pivotHeading5 } keytipProps={ { content: 'Hello', keySequences: ['a','b','c'] } }></PivotItem>
-
-    //   <PivotItem headerText={ pivotHeading6 } ariaLabel={pivotHeading6} title={pivotHeading6} itemKey={ pivotHeading6 } keytipProps={ { content: 'Hello', keySequences: ['a','b','c'] } }></PivotItem> */}
-    // </Pivot>;
-
-    // const layout1 = layout1Pivots.indexOf( this.state.mainPivotKey as any) > 0 ? this.state.mainPivotKey :layout1Pivots[0];
-    // const showPage = 
-    // <div> { this.buildLay1Page( layout1 , this.state.bucketClickKey, this.state.buckets, this.state.docs , this.state.sups ) } </div>; 
-
-    // if ( this.state.showPanelItem && this.state.showPanelItem.WikiField ) {
-    //   // const replaceString = '<a onClick=\"console.log(\'Going to\',this.href);window.open(this.href,\'_blank\')\" style="pointer-events:none" href=';
-    //   const replaceString = '<a onClick=\"window.open(this.href,\'_blank\')\" href=';
-    //   this.state.showPanelItem.WikiField = this.state.showPanelItem.WikiField.replace(linkNoLeadingTarget,replaceString);
-    // }
-    
-    // const docsPage = !this.state.showPanelItem || !this.state.showPanelItem.WikiField ? null : <div dangerouslySetInnerHTML={{ __html: this.state.showPanelItem.WikiField }} />;
-    // const panelContent = <div>
-    //   <ReactJson src={ this.state.showPanelItem } name={ 'Summary' } collapsed={ false } displayDataTypes={ true } displayObjectSize={ true } enableClipboard={ true } style={{ padding: '20px 0px' }}/>
-    // </div>;
-
-    // const userPanel = <div><Panel
-    //   isOpen={ this.state.showItemPanel === true ? true : false }
-    //   // this prop makes the panel non-modal
-    //   isBlocking={true}
-    //   onDismiss={ this._onClosePanel.bind(this) }
-    //   closeButtonAriaLabel="Close"
-    //   type = { PanelType.large }
-    //   isLightDismiss = { true }
-    //   >
-    //     { docsPage }
-    //     { panelContent }
-    // </Panel></div>;
-
     if ( this.props.mainPivotKey !== 'Search' ) {
       return null;
+
     } else {
 
+      // debugger;
 
-      let filtered = [];
-      this.state.filtered.map( account => {
-        if ( filtered.length < this.state.slideCount ) {
-          filtered.push( <div>
-            <li>{ this.getHighlightedText( `${ account.Title } - ${ account.Name1 } - ${ account.Description }`, this.state.searchText )  }</li>
-          </div>);
-        }
+      const search = this.props.search;
+
+      console.log('Rendering Search Page');
+
+      let content: any[] = [];  //All major future to be grid components
+      let leftSearch: any[] = [];  //All major future to be grid components
+      let topSearch: any[] = [];  //All major future to be grid components
+      let typeSearch: any[] = [];  //All major future to be grid components
+    
+      search.left.Objects.map( searchObject => {
+        let classNames = [ stylesS.button ];
+        if ( this.state.leftSearch.indexOf( searchObject.Search ) > -1 ) { classNames.push( stylesS.isSelected ) ; }
+        leftSearch.push( <div className={ classNames.join(' ') } style={ null } onClick={ this._clickLeft.bind( this, searchObject )}>{ searchObject.Search }</div> );
       });
-  
+
+      const leftSearchContent = <div className={ stylesS.leftSearch } style={ null } >{ leftSearch }</div>;
+
+      search.top.Objects.map( searchObject => {
+        let classNames = [ stylesS.button ];
+        if ( this.state.topSearch.indexOf( searchObject.Search ) > -1 ) { classNames.push( stylesS.isSelected ) ; }
+        topSearch.push( <div className={ classNames.join(' ') } style={ null }  onClick={ this._clickTop.bind( this, searchObject )}>{ searchObject.Search }</div> );
+      });
+
+      const topSearchContent = <div className={ stylesS.topSearch } style={ null } >{ topSearch }</div>;
+
+      let cmdButtonCSS = JSON.parse(JSON.stringify( this.props.cmdButtonCSS ));
+
+      search.type.SearchCount.map( ( count, idx ) => {
+        if ( count > 0 ) {
+          let typeObj = SearchTypes.objs[idx];
+          let classNames = [ stylesS.cmdButton ];
+          if ( this.state.typeSearch.indexOf( typeObj.key ) > -1 ) { classNames.push( stylesS.isSelected ) ; }
+
+          typeSearch.push( <div className={ classNames.join(' ') } style={ null }  onClick={ this._clickType.bind( this, typeObj )} title={ typeObj.title }>
+            <Icon iconName={ typeObj.icon }></Icon>
+            </div> );
+        }
+
+      });
+
+      const typeSearchContent = <div className={ stylesS.typeSearch } style={ null } >{ typeSearch }</div>;
+
       /*https://developer.microsoft.com/en-us/fabric#/controls/web/searchbox*/
       let searchBox =  
       <div className={[styles.searchContainer, styles.padLeft20 ].join(' ')} >
@@ -236,21 +232,66 @@ public async updateWebInfo (   ) {
           { /* 'Searching ' + (this.state.searchType !== 'all' ? this.state.filteredTiles.length : ' all' ) + ' items' */ }
         </div>
       </div>;
+
+      let filtered = [];
+      this.state.filtered.map( ( item: IAnyContent ) => {
+        if ( filtered.length < this.state.slideCount ) {
+          if ( item.type === 'account' ) {
+            filtered.push( <div className={ stylesS.listItem }>
+              <div><Icon iconName={ SearchTypes.objs[item.typeIdx].icon }></Icon></div>
+
+              <div className={ stylesS.accountDetails}>
+                <div className={ stylesS.accountRow1 } style={{cursor: item.searchHref ? 'pointer' : null }} onClick = { this._onClickItem.bind( this, item ) }>
+                  <div title="Account Number">{ this.getHighlightedText( `${ item.Title }`, this.state.searchText )  }</div>
+                  <div title="ALGroup">{ this.getHighlightedText( `${ item.ALGroup }`, this.state.searchText )  }</div>
+                  <div title="SubCategory">{ this.getHighlightedText( `${ item.SubCategory }`, this.state.searchText )  }</div>
+                  <div title="Name">{ this.getHighlightedText( `${ item.Name1 }`, this.state.searchText )  }</div>
+                </div>
+                <div className={ stylesS.accountRow2}>
+                  <div>{ this.getHighlightedText( `${ item.Description }`, this.state.searchText )  }</div>
+                  <div>{ this.getHighlightedText( `${ item['RCM'] }`, this.state.searchText )  }</div>
+                </div>
+              </div>
+            </div>);
+          } else {
+            filtered.push( <div className={ stylesS.listItem }>
+              <div><Icon iconName={ SearchTypes.objs[item.typeIdx].icon }></Icon></div>
+              <div style={{cursor: 'pointer'}} onClick = { this._onClickItem.bind( this, item ) }>
+                { this.getHighlightedText( `${ item.searchTitle } - ${ item.searchDesc }`, this.state.searchText )  }</div>
+            </div>);
+          }
+
+        }
+      });
+
+      let filteredContent = <div className={ stylesS.listItems }>
+          { filtered }
+        </div>;
   
       return (
-        <div className={ styles.alvFinMan }>
-          <div className={ styles.container }>
+        <div className={ stylesS.searchPage }>
+          {/* <div className={ styles.container }>
             <div className={ styles.row }>
-              <div className={ styles.column }>
+              <div className={ styles.column }> */}
                 {/* { this.props.fetchTime } */}
                 { searchBox }
-                { filtered }
+
+                { topSearchContent }
+                <div className={ stylesS.itemsRow }>
+                  { leftSearchContent }
+                  { filteredContent }
+                  { typeSearchContent }
+
+                </div>
+
+
+
                 {/* { componentPivot }
                 { showPage }
                 { userPanel } */}
-              </div>
+              {/* </div>
             </div>
-          </div>
+          </div> */}
         </div>
       );
 
@@ -258,6 +299,50 @@ public async updateWebInfo (   ) {
 
   }
 
+  private getFilteredItems( startingItems: IAnyContent[], text: string, top: string[], left: string[], type: string[],  ) {
+
+    let filteredItems : IAnyContent[] = [];
+
+    startingItems.map( item => {
+
+      let passMe = true;
+      let passLeft: boolean = true;
+      let passTop: boolean = true;
+      let passType: boolean = true;
+      let passText: boolean = true;
+
+      if ( left.length > 0 ) { 
+        let passThis: boolean = false;
+        item.leftSearch.map( test => {
+          if ( left.indexOf( test ) > -1 ) { passThis = true ; }
+        });
+        if ( passThis === false ) { passMe = false; }
+      }
+
+      if ( top.length > 0 && passMe === true ) { 
+        let passThis: boolean = false;
+        item.topSearch.map( test => {
+          if ( top.indexOf( test ) > -1 ) { passThis = true ; }
+        });
+        if ( passThis === false ) { passMe = false; }
+      }
+
+      if ( type.length > 0 && passMe === true ) { 
+        if ( type.indexOf( item.type ) < 0 ) { passMe = false; }
+
+      }
+
+      if ( passMe === true && text && text.length > 0 ) { 
+        if ( item.searchTextLC.indexOf( text.toLowerCase() ) < 0 ) { passMe = false; }
+
+      }
+
+      if ( passMe === true ) { filteredItems.push ( item ) ; }
+    });
+
+    console.log(' filteredItems: ', filteredItems );
+    return filteredItems;
+  }
   // private pivotMainClick( temp ) {
   //   console.log('pivotMainClick:', temp.props.itemKey );
 
@@ -267,10 +352,71 @@ public async updateWebInfo (   ) {
   //   });
   // }
 
+private toggleSearchInArray( searchArray: string[], value: string, doThis: 'multi' | 'single' ) {
+
+  let selected: string[] = JSON.parse(JSON.stringify( searchArray ));
+  const idx = selected.indexOf( value );
+  if ( doThis === 'multi' ) {
+    if ( idx < 0 ) { selected.push( value ) ; } else { delete selected[ idx ] ; }
+  } else if ( doThis === 'single' ) {
+    if ( selected.length > 1 ) {
+      selected = [ value ] ;  }
+    else if ( idx < 0 ) { selected = [ value ] ; }
+    else if ( idx > -1 ) { selected = [ ] ; }
+    else { alert( 'toggleSearchInArrayError'); console.log('toggleSearchInArray Not triggered:', value, doThis, searchArray, ) ; }
+  }
+
+  return selected;
+
+}
+
+
+
+  //onClick = { this._onClickItem.bind( this, key, title ) }
   // private clickBucketItem( pivot, leftMenu, ex ) {
   //   console.log('clickBucketItem:', pivot, leftMenu );
-  //   this.setState({ bucketClickKey: leftMenu });
+  //   this.updateWebInfo( this.state.mainPivotKey, leftMenu );
+  //   // this.setState({ bucketClickKey: leftMenu });
   // }
+  private _onClickItem( item: IAnyContent, event ) {
+    if ( item.searchHref ) {
+      window.open( item.searchHref, '_blank' );
+    } else {
+      console.log('No link to click:', item );
+    }
+  }
+
+  private _clickLeft( item: ISearchObject, event ) {
+
+    let selected: string[] = this.toggleSearchInArray( this.state.leftSearch, item.Search , event.ctrlKey === true ? 'multi' : 'single' );
+    console.log('_clickLeft: selected', selected );
+
+    let startingItems: IAnyContent[] = [ ...this.props.appLinks, ...this.props.docs, ...this.props.stds, ...this.props.sups, ...this.props.accounts, ];
+    let filtered: IAnyContent[] = this.getFilteredItems( startingItems, this.state.searchText, this.state.topSearch, selected, this.state.typeSearch );
+    this.setState({ leftSearch: selected , filtered: filtered });
+  }
+
+  private _clickTop( item: ISearchObject, event ) {
+
+    console.log('clickBucketItem:', item );
+    let selected: string[] = this.toggleSearchInArray( this.state.topSearch, item.Search , event.ctrlKey === true ? 'multi' : 'single' );
+
+    let startingItems: IAnyContent[] = [ ...this.props.appLinks, ...this.props.docs, ...this.props.stds, ...this.props.sups, ...this.props.accounts, ];
+    let filtered: IAnyContent[] = this.getFilteredItems( startingItems, this.state.searchText, selected, this.state.leftSearch, this.state.typeSearch );
+
+    this.setState({ topSearch: selected , filtered: filtered });
+  }
+
+  private _clickType( item: IFMSearchType, event ) {
+
+    console.log('clickBucketItem:', item );
+    let selected: string[] = this.toggleSearchInArray( this.state.typeSearch, item.key , event.ctrlKey === true ? 'multi' : 'single' );
+
+    let startingItems: IAnyContent[] = [ ...this.props.appLinks, ...this.props.docs, ...this.props.stds, ...this.props.sups, ...this.props.accounts, ];
+    let filtered: IAnyContent[] = this.getFilteredItems( startingItems, this.state.searchText, this.state.topSearch, this.state.leftSearch, selected );
+
+    this.setState({ typeSearch: selected , filtered: filtered });
+  }
 
   // private clickDocumentItem( pivot, leftMenu, item, title ) {
   //   console.log('clickDocumentItem:', pivot, leftMenu, item );
@@ -316,28 +462,31 @@ public async updateWebInfo (   ) {
   //   this._onWebUrlChange( newValue, webURLStatus );
   // }
 
-  private _onSearchChange ( NewSearch: string ){
+  private _onSearchChange ( NewSearch ){
   
-    if ( !NewSearch ) {
-      this.setState({ filtered: this.props.accounts, searchText: '', searchTime: null });
+    let startingItems: IAnyContent[] = [ ...this.props.appLinks, ...this.props.docs, ...this.props.stds, ...this.props.sups, ...this.props.accounts, ];
+    let filtered: IAnyContent[] = [];
+    let totalTime: number = 0;
+
+    let searchText = NewSearch && NewSearch.target && NewSearch.target.value ? NewSearch.target.value : '';
+    if ( !searchText ) {
+      searchText = '';
+      filtered = this.getFilteredItems( startingItems, '', this.state.topSearch, this.state.leftSearch, this.state.typeSearch );
+
     } else {
 
       let startTime = new Date();
-      let filtered: any[] = [];
-      let NewSearchLC = NewSearch.toLowerCase();
-      this.props.accounts.map( account => {
-        if ( account.searchTextLC.indexOf( NewSearchLC ) > -1 ) {
-          filtered.push( account );
-        }
-      });
-  
-      
+      let NewSearchLC = searchText.toLowerCase();
+      filtered = this.getFilteredItems( startingItems, NewSearchLC, this.state.topSearch, this.state.leftSearch, this.state.typeSearch );
+
       let endTime = new Date();
 
-      let totalTime = endTime.getTime() - startTime.getTime();
+      totalTime = endTime.getTime() - startTime.getTime();
+      console.log('Search Time:', totalTime );
 
-      this.setState({ filtered: filtered, searchText: NewSearch, searchTime: totalTime });
     }
+
+    this.setState({ searchText: searchText , filtered: filtered, searchTime: totalTime });
 
   }
 

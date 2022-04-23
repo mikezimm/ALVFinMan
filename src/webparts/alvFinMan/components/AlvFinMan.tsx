@@ -53,7 +53,7 @@ import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfu
 import AlvAccounts from './Accounts/Accounts';
 import Layout1Page from './Layout1Page/Layout1Page';
 import SearchPage from './Search/SearchPage';
-import {  getAppLinks, getStandardDocs, accountColumns, getAccounts, AppLinkSearch, FinManSite, AppLinksList, appLinkColumns, StandardsLib, SupportingLib, sitePagesColumns, libraryColumns, LookupColumns, AccountsList, AccountSearch, updateSearchCounts,  } from './DataFetch';
+import {  getAppLinks, getStandardDocs, accountColumns, getAccounts, AppLinkSearch, FinManSite, AppLinksList, appLinkColumns, StandardsLib, SupportingLib, sitePagesColumns, libraryColumns, LookupColumns, AccountsList, AccountSearch, updateSearchCounts, updateSearchTypes,  } from './DataFetch';
 import {  createEmptyBuckets,  updateBuckets } from './DataProcess';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
@@ -336,7 +336,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
     //Check if tab requires docs and sup and is not yet loaded
     let Layout1PageValuesAny: any = Layout1PageValues;
-    if ( fetchedDocs !== true && Layout1PageValuesAny.indexOf( mainPivotKey ) > -1  ) {
+    if ( fetchedDocs !== true && ( Layout1PageValuesAny.indexOf( mainPivotKey ) > -1 || mainPivotKey === 'Search' ) ) {
       docs = await getStandardDocs( FinManSite, StandardsLib , [ ...sitePagesColumns, ...LookupColumns, ...[ 'DocumentType/Title' ] ], [ ...sitePagesColumns, ...LookupColumns, ...[ 'DocumentType/Title' ] ], this.props.search );
       search = updateSearchCounts( 'docs', docs, search );
 
@@ -346,7 +346,9 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       fetchedDocs = true;
       updateBucketsNow = true;
 
-    } else if ( mainPivotKey === 'Accounts' && this.state.accounts.length === 0 ) {
+    }
+    
+    if ( ( mainPivotKey === 'Search' || mainPivotKey === 'Accounts' ) && this.state.accounts.length === 0 ) {
       accounts = await getAccounts ( FinManSite, AccountsList , [ ...accountColumns ] , [ ...AccountSearch, ], this.props.search );
       search = updateSearchCounts( 'accounts', accounts.accounts, search );
 
@@ -357,6 +359,8 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       buckets = updateBuckets( buckets, docs, false );
       buckets = updateBuckets( buckets, sups, true );
     }
+    // debugger;
+    search = updateSearchTypes( [ ...appLinks, ...docs, ...sups, ...accounts.accounts, ], search );
 
     console.log('state:  search', search );
     this.setState({ search: search, docs: docs, buckets: buckets, sups: sups, appLinks: appLinks, mainPivotKey: mainPivotKey, bucketClickKey: bucketClickKey, fetchedDocs: fetchedDocs, accounts: accounts.accounts, refreshId: this.newRefreshId() });
@@ -461,6 +465,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
     const SearchContent = <SearchPage
       refreshId={ this.state.refreshId }
+      search={ this.state.search }
       appLinks={ this.state.appLinks }
       accounts={ this.state.accounts }
       docs={ this.state.docs }
@@ -470,6 +475,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       standards={ this.state.standards }
       supporting={ this.state.supporting }
       mainPivotKey={ this.state.mainPivotKey }
+      cmdButtonCSS={bannerProps.bannerCmdReactCSS }
     ></SearchPage>;
 
     if ( this.state.showPanelItem && this.state.showPanelItem.WikiField ) {
@@ -583,6 +589,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
             { showPage }
             { userPanel }
             { accounts }
+            { SearchContent }
             {/* </div> */}
           </div>
         </div>
@@ -600,6 +607,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     // });
   }
 
+  //onClick = { this.clickBucketItem.bind( this, key, title ) }
   // private clickBucketItem( pivot, leftMenu, ex ) {
   //   console.log('clickBucketItem:', pivot, leftMenu );
   //   this.updateWebInfo( this.state.mainPivotKey, leftMenu );
