@@ -607,6 +607,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     // });
   }
 
+  //onClick = { this.clickBucketItem.bind( this, key, title ) }
   // private clickBucketItem( pivot, leftMenu, ex ) {
   //   console.log('clickBucketItem:', pivot, leftMenu );
   //   this.updateWebInfo( this.state.mainPivotKey, leftMenu );
