@@ -87,7 +87,8 @@ const pivotStyles = {
 const pivotHeading0 : ILayoutMPage = 'Main';
 
 const pivotHeading1 : ILayoutSPage = 'Statements';
-const pivotHeading2 : ILayout1Page = 'Reporting|Sections';
+// const pivotHeading2 : ILayout1Page = 'Reporting|Sections';
+const pivotHeading2 : ILayout1Page = 'Reporting';
 const pivotHeading3 : ILayout1Page = 'Processes';
 const pivotHeading4 : ILayout1Page = 'Functions';
 const pivotHeading5 : ILayout1Page = 'Topics';
@@ -99,6 +100,7 @@ const allPivots: ILayoutAll[] = [ pivotHeading0, pivotHeading1, pivotHeading2, p
 const layout1Pivots : ILayout1Page[] = [ pivotHeading2, pivotHeading3, pivotHeading4, pivotHeading5,  ];
 
 const pivotTitles = allPivots.map( pivot => { return pivot.split('|')[0] ; } );
+// const pivotKeys = allPivots.map( pivot => { return pivot.split('|')[1] ? pivot.split('|')[1] : pivot.split('|')[0] ; } );
 const pivotKeys = allPivots.map( pivot => { return pivot.split('|')[1] ? pivot.split('|')[1] : pivot.split('|')[0] ; } );
 const pivotItems = pivotKeys.map( ( key, idx ) => {
   return <PivotItem headerText={ pivotTitles[idx] } ariaLabel={pivotTitles[idx]} title={pivotTitles[idx]} itemKey={ key } ></PivotItem>;

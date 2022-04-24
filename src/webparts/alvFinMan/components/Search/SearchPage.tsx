@@ -33,13 +33,6 @@ import { NoItems } from '@mikezimm/npmfunctions/dist/Icons/iconNames';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
 
-const consoleLineItemBuild: boolean = false;
-
-const thisSelect = ['*','ID','FileRef','FileLeafRef','Author/Title','Editor/Title','Author/Name','Editor/Name','Modified','Created','CheckoutUserId','HasUniqueRoleAssignments','Title','FileSystemObjectType','FileSizeDisplay','FileLeafRef','LinkFilename','OData__UIVersion','OData__UIVersionString','DocIcon'];
-
-
-
-const LookupColumns: string[] = ['Functions/Title', 'Topics/Title', 'ALGroup/Title', 'Sections/Title','Processes/Title' ];
 
 const pivotStyles = {
   root: {

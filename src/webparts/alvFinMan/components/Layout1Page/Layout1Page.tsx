@@ -45,30 +45,30 @@ const consoleLineItemBuild: boolean = false;
 // const LookupColumns: string[] = ['Functions/Title', 'Topics/Title', 'ALGroup/Title', 'Sections/Title','Processes/Title' ];
 // const AccountsList: string = "HFMAccounts";
 
-const pivotStyles = {
-  root: {
-    whiteSpace: "normal",
-    marginTop: '30px',
-    color: 'white',
-  //   textAlign: "center"
-  }};
+// const pivotStyles = {
+//   root: {
+//     whiteSpace: "normal",
+//     marginTop: '30px',
+//     color: 'white',
+//   //   textAlign: "center"
+//   }};
 
-const pivotHeading0 : ILayoutMPage = 'Main';
-const pivotHeading1 : ILayoutSPage = 'Statements';
-const pivotHeading2 : ILayout1Page = 'Reporting|Sections';
-const pivotHeading3 : ILayout1Page = 'Processes';
-const pivotHeading4 : ILayout1Page = 'Functions';
-const pivotHeading5 : ILayout1Page = 'Topics';
-const pivotHeading6 : ILayoutAPage = 'Accounts';
+// const pivotHeading0 : ILayoutMPage = 'Main';
+// const pivotHeading1 : ILayoutSPage = 'Statements';
+// const pivotHeading2 : ILayout1Page = 'Reporting';
+// const pivotHeading3 : ILayout1Page = 'Processes';
+// const pivotHeading4 : ILayout1Page = 'Functions';
+// const pivotHeading5 : ILayout1Page = 'Topics';
+// const pivotHeading6 : ILayoutAPage = 'Accounts';
 
-const allPivots: ILayoutAll[] = [ pivotHeading0, pivotHeading1, pivotHeading2, pivotHeading3, pivotHeading4, pivotHeading5, pivotHeading6 ];
-const layout1Pivots : ILayout1Page[] = [ pivotHeading2, pivotHeading3, pivotHeading4, pivotHeading5,  ];
+// const allPivots: ILayoutAll[] = [ pivotHeading0, pivotHeading1, pivotHeading2, pivotHeading3, pivotHeading4, pivotHeading5, pivotHeading6 ];
+// const layout1Pivots : ILayout1Page[] = [ pivotHeading2, pivotHeading3, pivotHeading4, pivotHeading5,  ];
 
-const pivotTitles = allPivots.map( pivot => { return pivot.split('|')[0] ; } );
-const pivotKeys = allPivots.map( pivot => { return pivot.split('|')[1] ? pivot.split('|')[1] : pivot.split('|')[0] ; } );
-const pivotItems = pivotKeys.map( ( key, idx ) => {
-  return <PivotItem headerText={ pivotTitles[idx] } ariaLabel={pivotTitles[idx]} title={pivotTitles[idx]} itemKey={ key } ></PivotItem>;
-});
+// const pivotTitles = allPivots.map( pivot => { return pivot.split('|')[0] ; } );
+// const pivotKeys = allPivots.map( pivot => { return pivot.split('|')[1] ? pivot.split('|')[1] : pivot.split('|')[0] ; } );
+// const pivotItems = pivotKeys.map( ( key, idx ) => {
+//   return <PivotItem headerText={ pivotTitles[idx] } ariaLabel={pivotTitles[idx]} title={pivotTitles[idx]} itemKey={ key } ></PivotItem>;
+// });
 
 // const pivotHeading6 = 'Function';
 
@@ -178,7 +178,7 @@ public async updateWebInfo ( webUrl: string, listChangeOnly : boolean ) {
 
     } else {
       console.log('Layout1Page: ReactElement', this.props.refreshId  );
-      const layout1 = layout1Pivots.indexOf( this.props.mainPivotKey as any) > 0 ? this.props.mainPivotKey :null;
+      const layout1 = Layout1PageValues.indexOf( this.props.mainPivotKey as any) > -1 ? this.props.mainPivotKey :null;
       const showPage = !layout1 ? null :
       <div> { this.buildLay1Page( layout1 , this.state.bucketClickKey, this.props.buckets, this.props.docs , this.props.sups ) } </div>; 
   

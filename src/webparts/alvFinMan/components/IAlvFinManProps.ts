@@ -79,7 +79,8 @@ export interface IFMBuckets {
   Functions: string[];
   Topics: string[];
   ALGroup: string[];
-  Sections: string[];
+  // Sections: string[];
+  Reporting: string[];
   Processes: string[];
   DocumentType: string[];
 }
@@ -88,7 +89,8 @@ export interface IFMBucketItems {
   Functions: IAnyContent[];
   Topics: IAnyContent[];
   ALGroup: IAnyContent[];
-  Sections: IAnyContent[];
+  // Sections: IAnyContent[];
+  Reporting: IAnyContent[];
   Processes: IAnyContent[];
   DocumentType: IAnyContent[];
 }

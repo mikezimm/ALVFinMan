@@ -9,7 +9,8 @@ export function createEmptyBuckets() {
     Functions: [],
     Topics: [],
     ALGroup: [],
-    Sections: [],
+    // Sections: [],
+    Reporting: [],
     Processes: [],
     DocumentType: [],
   };

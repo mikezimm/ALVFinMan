@@ -18,8 +18,8 @@ export interface ILayout1PageProps {
 
 }
 
-export type ILayout1Page = 'Reporting|Sections' | 'Processes' | 'Functions' | 'Topics' | '';
-export const Layout1PageValues: ILayout1Page[] = [ 'Reporting|Sections' ,'Processes' , 'Functions' , 'Topics' ];
+export type ILayout1Page = 'Reporting' | 'Processes' | 'Functions' | 'Topics' | '';
+export const Layout1PageValues: ILayout1Page[] = [ 'Reporting' ,'Processes' , 'Functions' , 'Topics' ];
 
 export interface ILayout1PageState {
   // description: string;
