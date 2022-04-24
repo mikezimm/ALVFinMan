@@ -12,6 +12,7 @@ import "@pnp/sp/items";
 import * as strings from 'AlvFinManWebPartStrings';
 
 import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfunctions/dist/Lists/getFunctions';
+import { warnMutuallyExclusive } from 'office-ui-fabric-react';
 
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
@@ -298,7 +299,7 @@ export function createEmptySearchBucket () {
       let searchHref = '';
 
       if ( item.Sections ) { item.Reporting = item.Sections ; }
-      
+
       let meta: string[] = [];
       //This is for display purposes so user can see what property the search criteria is found in
       let searchText : string = searchNest.map( ( propArray, idx)  => {
@@ -316,6 +317,8 @@ export function createEmptySearchBucket () {
           let hasError: boolean = false;
           try {
             item[ searchProps[ idx ] ] = item[ propArray[0] ][ propArray[1] ]; //Add flattened value - item["Author/Title"]= item.Author.Title
+            //Manually copy Sections/Title over to Reporting/Title
+            if ( searchProps[ idx ] === 'Sections/Title' ) { item[ 'Reporting/Title'] = item[ searchProps[ idx ] ]; }
           } catch (e) {
             // alert('Error doing search props');
             let lastPart = item[propArray[0] ] ? item[propArray[0] ][ propArray[1] ] : 'UNK';
@@ -327,11 +330,30 @@ export function createEmptySearchBucket () {
           if ( hasError === true ) {
             return `${searchProps[ idx ]}=UNK`;
           } else {
+            
+            //This first loop never gets triggered with multi-select lookups because the array is really item [ propArray[0] ]
             if ( Array.isArray( item[ propArray[0] ][ propArray[1] ]  )) {
-              return `${searchProps[ idx ]}=${item[ propArray[0] ][ propArray[1] ] .join(';')}`;
+              let result = `${searchProps[ idx ]}=${item[ propArray[0] ][ propArray[1] ] .join(';')}`;
+              if ( searchProps[ idx ] === 'Sections/Title' ) { 
+                result += ` || Reporting/Title=${item[ propArray[0] ][ propArray[1] ] .join(';')}`; }
+              return result;
     
+            } else if ( Array.isArray( item[ propArray[0] ] )  ) {
+              /**
+               * NEED TO ADD LOOP HERE TO CHECK FOR MULTI-SELECT Lookups like Sections/Titles.
+               * They don't get caught in the above one because the logic does not work that way
+               */
+
+
             } else {
-              return `${searchProps[ idx ]}=${item[ propArray[0] ][ propArray[1] ] }`;
+
+
+
+              let result = `${searchProps[ idx ]}=${item[ propArray[0] ][ propArray[1] ] }`;
+              if ( searchProps[ idx ] === 'Sections/Title' ) { 
+                result += ` || Reporting/Title=${item[ propArray[0] ][ propArray[1] ] }`; }
+
+              return result;
             }
           }
 
