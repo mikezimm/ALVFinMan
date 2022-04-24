@@ -22,13 +22,17 @@ export function updateBuckets ( buckets: IFMBuckets, docs: any[], sort: boolean 
   docs.map( doc => {
 
     Object.keys( buckets ).map ( key => {
-      if ( doc[ key ] ) {
-        if ( Array.isArray( doc[ key ] ) ) {
-          doc[ key ].map( item => {
-            if ( item.Title && buckets[ key ].indexOf( item.Title ) < 0 ) { buckets[key].push( item.Title) ; }
+      let docProp = key === 'Reporting' ? 'Sections' : key;
+      if ( doc[ docProp ] ) {
+        if ( Array.isArray( doc[ docProp ] ) ) {
+          doc[ docProp ].map( item => {
+            if ( item.Title && buckets[ key ].indexOf( item.Title ) < 0 ) { 
+              
+              buckets[key].push( item.Title) ;
+             }
           });
         } else {
-          if ( doc[key] && buckets[ key ].indexOf( doc[key].Title ) < 0 ) { buckets[key].push( doc[key].Title) ; }
+          if ( doc[docProp] && buckets[ key ].indexOf( doc[docProp].Title ) < 0 ) { buckets[key].push( doc[docProp].Title) ; }
         }
       }
     });

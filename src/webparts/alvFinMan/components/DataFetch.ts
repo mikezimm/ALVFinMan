@@ -296,6 +296,9 @@ export function createEmptySearchBucket () {
       let searchTitle = '';
       let searchDesc = '';
       let searchHref = '';
+
+      if ( item.Sections ) { item.Reporting = item.Sections ; }
+      
       let meta: string[] = [];
       //This is for display purposes so user can see what property the search criteria is found in
       let searchText : string = searchNest.map( ( propArray, idx)  => {
