@@ -24,7 +24,7 @@
     "properties": {
       "description": "ALV Financial Manual",
 
-      "defaultPivotKey": "Main",
+      "defaultPivotKey": "General",
 
       "leftSearchFixed": true,
       "leftSearchStr": "",

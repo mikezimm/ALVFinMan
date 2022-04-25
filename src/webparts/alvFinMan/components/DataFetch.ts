@@ -1,6 +1,5 @@
 
-import { IAlvFinManProps, IAlvFinManState, IFMBuckets, ILayoutMPage, ILayoutSPage, ILayoutAll, ILayoutAPage, IAnyContent, IFinManSearch, IAppFormat, ISearchBucket } from './IAlvFinManProps';
-import { ILayout1Page, ILayout1PageProps, Layout1PageValues } from './Layout1Page/ILayout1PageProps';
+import { IAlvFinManProps, IAlvFinManState, IFMBuckets, ILayoutNPage, ILayoutGPage, ILayoutSPage, ILayoutAll, ILayoutAPage, ILayoutHPage, IAnyContent, IFinManSearch, IAppFormat, ISearchBucket, IPagesContent, IAllContentType } from './IAlvFinManProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 
 import { Web, ISite } from '@pnp/sp/presets/all';
@@ -11,79 +10,21 @@ import "@pnp/sp/items";
 
 import * as strings from 'AlvFinManWebPartStrings';
 
+
+//Interfaces
+import { ISourceProps, ISourceInfo, IFMSearchType, IFMSearchTypes } from './DataInterface';
+
+//Constants
+import { SourceInfo, thisSelect, SearchTypes } from './DataInterface';
+
 import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfunctions/dist/Lists/getFunctions';
 import { warnMutuallyExclusive } from 'office-ui-fabric-react';
 
+import { getHelpfullErrorV2 } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
 
 
-export const AccountSearch = [ 'Title', 'Description', 'ALGroup', 'Name1','RCM','SubCategory' ];
-export const accountColumns: string[] = [ 'ID','ALGroup','Description','Name1','RCM','SubCategory'];
-
-export const thisSelect = ['*','ID','FileRef','FileLeafRef','Author/Title','Editor/Title','Author/Name','Editor/Name','Modified','Created','CheckoutUserId','HasUniqueRoleAssignments','Title','FileSystemObjectType','FileSizeDisplay','FileLeafRef','LinkFilename','OData__UIVersion','OData__UIVersionString','DocIcon'];
-
-export const sitePagesColumns: string[] = [ "ID", "Title0", "Author/Title", "File/ServerRelativeUrl", "FileRef", ]; //Do not exist on old SitePages library:   "Descritpion","BannerImageUrl.Url", "ServerRelativeUrl"
-export const libraryColumns: string[] = [ 'ID','FileRef','FileLeafRef','Author/Title','Editor/Title','Author/Name','Editor/Name','Modified','Created','CheckoutUserId','HasUniqueRoleAssignments','Title','FileSystemObjectType','FileSizeDisplay','File_x0020_Type','FileLeafRef','LinkFilename','OData__UIVersion','OData__UIVersionString','DocIcon'];
-
-export const appLinkColumns: string[] = [ 'ID','Title','Tab', 'SortOrder', 'LinkColumn', 'Active', 'SearchWords','RichTextPanel','Author/Title','Editor/Title','Author/Name','Editor/Name','Modified','Created','HasUniqueRoleAssignments','OData__UIVersion','OData__UIVersionString'];
-export const AppLinkSearch = [ 'Title', 'LinkColumn','RichTextPanel', 'SearchWords' ];
-
-export const FinManSitePieces = ['/sites','/au','tol','iv','finan','cialmanual/']; //Just so this is not searchable easily
-export const FinManSite: string =`${FinManSitePieces.join('')}`;
-export const StandardsLib: string = "StandardDocuments";
-export const SupportingLib: string = "SupportDocuments";
-export const AppLinksList: string = "ALVFMAppLinks";
-export const LookupColumns: string[] = ['Functions/Title', 'Topics/Title', 'ALGroup/Title', 'Sections/Title','Processes/Title' ];
-export const AccountsList: string = "HFMAccounts";
-
-export interface IFMSearchType {
-  key: string;
-  title: string;
-  icon: string;
-  style: string;
-  count: number;
-  adjust?: number; //Use to adjust the index to get a common one like all Excel files;
-}
-
-export interface IFMSearchTypes {
-  keys: string[];
-  objs: IFMSearchType[];
-}
-
-export const SearchTypes:IFMSearchTypes  = {
-  keys: [ "account", "doc", "docx",
-    "link",    "msg",
-    "page",
-    "pdf",    "ppt",    "pptx",
-    "rtf",
-    "xls", "xlsm",  "xlsx",
-    "unknown" ],
-  objs:
-    [
-      //NOTE:  key must be exact match to strings in keys array above.
-      { key: "account", title: "account", icon: "Bank", style: "", count: 0 }, 
-      { key: "doc", title: "doc", icon: "WordDocument", style: "", count: 0 }, 
-      { key: "docx", title: "doc", icon: "WordDocument", style: "", count: 0, adjust: -1 }, 
-
-      { key: "link", title: "Link", icon: "Link12", style: "", count: 0 }, 
-      { key: "msg", title: "msg", icon: "Read", style: "", count: 0 }, 
-
-      { key: "page", title: "page", icon: "KnowledgeArticle", style: "", count: 0 }, 
-
-      { key: "pdf", title: "pdf", icon: "PDF", style: "", count: 0 }, 
-      { key: "ppt", title: "ppt", icon: "PowerPointDocument", style: "", count: 0 }, 
-      { key: "pptx", title: "ppt", icon: "PowerPointDocument", style: "", count: 0, adjust: -1 }, 
-
-      { key: "rtf", title: "rtf", icon: "AlignLeft", style: "", count: 0 }, 
-
-      { key: "xls", title: "xls", icon: "ExcelDocument", style: "", count: 0 }, 
-      { key: "xlsm", title: "xls", icon: "ExcelDocument", style: "", count: 0, adjust: -1 }, 
-      { key: "xlsx", title: "xls", icon: "ExcelDocument", style: "", count: 0, adjust: -2 }, 
-
-      { key: "unknown", title: "unkown", icon: "Help", style: "", count: 0 }, 
-  ]
-};
 
 export function createEmptySearchBucket () {
 
@@ -101,30 +42,69 @@ export function createEmptySearchBucket () {
     stds: [],
     sups: [],
     docs: [],
+
+    news: [],
+    help: [],
   };
 
   return result;
 
 }
 
+
   //Standards are really site pages, supporting docs are files
-  export async function getAppLinks( webUrl: string, listTitle: string, columns: string[], searchProps: string[], search: IFinManSearch ) {
+  export async function getALVFinManContent( sourceProps: ISourceProps, search: IFinManSearch ) {
 
-    let web = await Web( `${window.location.origin}${webUrl}` );
+    // debugger;
+    let web = await Web( `${window.location.origin}${sourceProps.webUrl}` );
 
-    let expColumns = getExpandColumns( columns );
-    let selColumns = getSelectColumns( columns );
+    let expColumns = getExpandColumns( sourceProps.columns );
+    let selColumns = getSelectColumns( sourceProps.columns );
 
     const expandThese = expColumns.join(",");
     //Do not get * columns when using standards so you don't pull WikiFields
-    let selectThese = [ ...columns, ...selColumns].join(",");
+    let baseSelectColumns = sourceProps.selectThese ? sourceProps.selectThese : sourceProps.columns;
+    let selectThese = [ baseSelectColumns, ...selColumns].join(",");
+    let restFilter = sourceProps.restFilter ? sourceProps.restFilter : '';
+    let items = [];
+    console.log('sourceProps', sourceProps );
+    try {
+      items = await web.lists.getByTitle( sourceProps.listTitle ).items
+        .select(selectThese).expand(expandThese).filter(restFilter).getAll();
+
+    } catch (e) {
+      getHelpfullErrorV2( e, true, true, 'getALVFinManContent ~ 73');
+      console.log('sourceProps', sourceProps );
+    }
+
+
+    // debugger;
+    items = addSearchMeta( items, sourceProps.searchProps, search, sourceProps.defType );
+
+    console.log( sourceProps.listTitle , search, items );
+
+    return items;
+
+
+  }
+  //Standards are really site pages, supporting docs are files
+  export async function getAppLinks( sourceProps: ISourceProps, search: IFinManSearch ) {
+
+    let web = await Web( `${window.location.origin}${sourceProps.webUrl}` );
+
+    let expColumns = getExpandColumns( sourceProps.columns );
+    let selColumns = getSelectColumns( sourceProps.columns );
+
+    const expandThese = expColumns.join(",");
+    //Do not get * columns when using standards so you don't pull WikiFields
+    let selectThese = [ ...sourceProps.columns, ...selColumns].join(",");
     let restFilter = "";
 
-    let items = await web.lists.getByTitle( listTitle ).items
+    let items = await web.lists.getByTitle( sourceProps.listTitle ).items
           .select(selectThese).expand(expandThese).filter(restFilter).getAll();
 
     // debugger;
-    items = addSearchMeta( items, searchProps, search, 'link' );
+    items = addSearchMeta( items, sourceProps.searchProps, search, 'link' );
 
     console.log( 'AppLinksList', search, items );
 
@@ -134,51 +114,52 @@ export function createEmptySearchBucket () {
 
 
   //Standards are really site pages, supporting docs are files
-  export async function getStandardDocs( webUrl: string, library: string, columns: string[], searchProps: string[], search: IFinManSearch ) {
+  export async function getStandardDocs( sourceProps: ISourceProps, search: IFinManSearch ) {
 
-    let web = await Web( `${window.location.origin}${webUrl}` );
+    let web = await Web( `${window.location.origin}${sourceProps.webUrl}` );
     
-    let expColumns = getExpandColumns( columns );
-    let selColumns = getSelectColumns( columns );
+    let expColumns = getExpandColumns( sourceProps.columns );
+    let selColumns = getSelectColumns( sourceProps.columns );
     
     const expandThese = expColumns.join(",");
     //Do not get * columns when using standards so you don't pull WikiFields
-    let selectThese = library === StandardsLib ? [ ...columns, ...selColumns].join(",") : '*,' + [ ...columns, ...selColumns].join(",");
+    let selectThese = sourceProps.listTitle === 'StandardDocuments' ? [ ...sourceProps.columns, ...selColumns].join(",") : '*,' + [ ...sourceProps.columns, ...selColumns].join(",");
     // let selectThese = library === StandardsLib ? [ ...selColumns].join(",") : '*,' + [ ...selColumns].join(",");
     // let selectThese = '*,' + [ ...selColumns].join(",");
     let restFilter = "";
 
-    let docs: IAnyContent[] = await web.lists.getByTitle( library ).items
+    let docs: IAnyContent[] = await web.lists.getByTitle( sourceProps.listTitle ).items
           .select(selectThese).expand(expandThese).filter(restFilter).getAll();
 
             
-    docs = addSearchMeta( docs, searchProps, search, library );
+    docs = addSearchMeta( docs, sourceProps.searchProps, search, sourceProps.listTitle );
 
-    console.log( library, search, docs );
+    console.log( sourceProps.listTitle, search, docs );
 
     return docs;
 
   }
 
-  export async function getAccounts( webUrl: string, library: string, columns: string[], searchProps: string[], search: IFinManSearch ) {
+
+  export async function getAccounts( sourceProps: ISourceProps, search: IFinManSearch ) {
 
     let preFetchTime = new Date();
   
-    let web = await Web( `${window.location.origin}${webUrl}` );
+    let web = await Web( `${window.location.origin}${sourceProps.webUrl}` );
     
-    let expColumns = getExpandColumns( columns );
-    let selColumns = getSelectColumns( columns );
+    let expColumns = getExpandColumns( sourceProps.columns );
+    let selColumns = getSelectColumns( sourceProps.columns );
     
     const expandThese = expColumns.join(",");
-    let selectThese = '*,' + columns.join(",");
+    let selectThese = '*,' + sourceProps.columns.join(",");
     let restFilter = "";
   
-    let accounts: IAnyContent[] = await web.lists.getByTitle( library ).items
+    let accounts: IAnyContent[] = await web.lists.getByTitle( sourceProps.listTitle ).items
           .select(selectThese).expand(expandThese).filter(restFilter).getAll();
   
     let postFetchTime = new Date();
   
-    accounts = addSearchMeta( accounts, searchProps, search, 'account' );
+    accounts = addSearchMeta( accounts, sourceProps.searchProps, search, 'account' );
   
     let fetchTime = postFetchTime.getTime() - preFetchTime.getTime();
   
@@ -188,15 +169,15 @@ export function createEmptySearchBucket () {
   
   }
 
-  export function updateSearchCounts( format: IAppFormat, items: IAnyContent[], search: IFinManSearch ) {
+  export function updateSearchCounts( format: IAppFormat, items: IAllContentType[], search: IFinManSearch ) {
 
-    items.map( item => {
+    items.map( item  => {
       //Update search count and add items to search buckets
 
       search.left.SearchLC.map( ( searchLC, idx ) => {
         if ( item.leftSearchLC.indexOf( searchLC ) > -1 ) { 
           search.left.SearchCount[ idx ] ++ ; 
-          search.left[format].push( item );
+          search.left[format].push( item as any );  //2022-04-24:  Added as any to remove typescript warning after adding IPageContent
           search.left.items.push( item );
 
         }
@@ -207,7 +188,7 @@ export function createEmptySearchBucket () {
       search.top.SearchLC.map( ( searchLC, idx ) => {
         if ( item.topSearchLC.indexOf( searchLC ) > -1 ) { 
           search.top.SearchCount[ idx ] ++ ;
-          search.top[format].push( item );
+          search.top[format].push( item as any );  //2022-04-24:  Added as any to remove typescript warning after adding IPageContent
           search.top.items.push( item );
 
          }
@@ -330,14 +311,14 @@ export function createEmptySearchBucket () {
           if ( hasError === true ) {
             return `${searchProps[ idx ]}=UNK`;
           } else {
-            
+
             //This first loop never gets triggered with multi-select lookups because the array is really item [ propArray[0] ]
             if ( Array.isArray( item[ propArray[0] ][ propArray[1] ]  )) {
               let result = `${searchProps[ idx ]}=${item[ propArray[0] ][ propArray[1] ] .join(';')}`;
               if ( searchProps[ idx ] === 'Sections/Title' ) { 
                 result += ` || Reporting/Title=${item[ propArray[0] ][ propArray[1] ] .join(';')}`; }
               return result;
-    
+
             } else if ( Array.isArray( item[ propArray[0] ] )  ) {
               /**
                * NEED TO ADD LOOP HERE TO CHECK FOR MULTI-SELECT Lookups like Sections/Titles.

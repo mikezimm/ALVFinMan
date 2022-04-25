@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styles from '../AlvFinMan.module.scss';
-import { ILayoutMPage, ILayoutSPage, ILayoutAll, ILayoutAPage, IFMBuckets,   } from '../IAlvFinManProps';
+import { ILayoutGPage, ILayoutSPage, ILayoutAll, ILayoutAPage, IFMBuckets,   } from '../IAlvFinManProps';
 import { ILayout1PageProps, ILayout1PageState, ILayout1Page, Layout1PageValues, } from './ILayout1PageProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 
@@ -26,7 +26,7 @@ import ReactJson from "react-json-view";
 import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfunctions/dist/Lists/getFunctions';
 
 import AlvAccounts from '../Accounts/Accounts';
-import { FinManSite, LookupColumns, sitePagesColumns, StandardsLib } from '../DataFetch';
+import { FinManSite, LookupColumns, sitePagesColumns, SourceInfo } from '../DataInterface';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
 
@@ -120,8 +120,8 @@ export default class Layout1Page extends React.Component<ILayout1PageProps, ILay
 
     let page = <div className={ styles.layout1 } >
       <div className={ styles.titleList }> { titles } </div>
-      <div className={ styles.docsList }> { showDocs } </div>
-      <div className={ styles.docsList }> { showSups } </div>
+      <div className={ styles.docsList }><h3>Standards</h3> { showDocs } </div>
+      <div className={ styles.docsList }><h3>Supporting Docs</h3> { showSups } </div>
     </div>;
     return page;
 
@@ -254,7 +254,7 @@ public async updateWebInfo ( webUrl: string, listChangeOnly : boolean ) {
 
     // Why an await does not work here is beyond me.  It should work :(
     // let fullItem = await web.lists.getByTitle( StandardsLib ).items.select(selectThese).expand(expandThese).getById( item.ID );
-    web.lists.getByTitle( StandardsLib ).items.select(selectThese).expand(expandThese).getById( item.ID )().then( result => {
+    web.lists.getByTitle( SourceInfo.stds.listTitle ).items.select(selectThese).expand(expandThese).getById( item.ID )().then( result => {
       console.log( 'ALVFinManDocs', result );
       this.setState({ showItemPanel: true, showPanelItem: result });
     }).catch( e => {

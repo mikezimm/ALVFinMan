@@ -8,7 +8,7 @@ import { IQuickCommands } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuick
 import { IRefinerRulesStrs, IRefinerRulesInts, IRefinerRulesNums, IRefinerRulesTime, IRefinerRulesUser, IRefinerRulesEXPE, IRefinerRulesNone } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
 import { RefinerRulesStrs, RefinerRulesInts, RefinerRulesNums, RefinerRulesTime, RefinerRulesUser, RefinerRulesEXPE, RefinerRulesNone } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
 
-import { gitRepoDrillDownSmall, gitRepoSecureScript7Small } from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
+import { gitRepoALVFinManSmall } from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
 
 import { defaultBannerCommandStyles, } from "@mikezimm/npmfunctions/dist/HelpPanel/onNpm/defaults";
 
@@ -92,7 +92,7 @@ export function putObjectIntoJSON ( obj: any, name: string = null ) {
   return <ReactJson src={ obj } name={ name } collapsed={ false } displayDataTypes={ false } displayObjectSize={ false } enableClipboard={ true } style={{ padding: '20px 0px' }} theme= { 'rjv-default' } indentWidth={ 2}/>;
 }
 
-const PleaseSeeWiki = <p>Please see the { gitRepoSecureScript7Small.wiki }  for more information</p>;
+const PleaseSeeWiki = <p>Please see the { gitRepoALVFinManSmall.wiki }  for more information</p>;
 
 const tenantServiceRequestURL = `https://servicenow.${window.location.hostname}.com/`;
 const RequestStorageHere = <span>Please request storage <a href={tenantServiceRequestURL} target="_blank">here in Service Now.</a></span>;

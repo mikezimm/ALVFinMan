@@ -43,6 +43,8 @@ export interface ISearchObject {
   SearchCount: number;
 }
 
+export type IAllContentType = IAnyContent | IPagesContent;
+
 export interface ISearchBucket {
   SearchFixed: boolean;
   SearchStr: string;
@@ -52,12 +54,14 @@ export interface ISearchBucket {
 
   Objects: ISearchObject[];
 
-  items: IAnyContent[];
+  items: IAllContentType[];
   appLinks: IAnyContent[];
   docs: IAnyContent[];
   stds: IAnyContent[]; //This is currently not used.... Originally considered it as Standards since the library was 'Standard Docs'.  Maybe could be list of relavant standards in the future?
   sups: IAnyContent[];
   accounts: IAnyContent[];
+  news: IPagesContent[];
+  help: IPagesContent[];
 
 }
 
@@ -96,13 +100,15 @@ export interface IFMBucketItems {
 }
 
 
-export type ILayoutMPage = 'Main';
+export type ILayoutNPage = 'News';
+export type ILayoutGPage = 'General';
 export type ILayoutSPage = 'Statements';
 export type ILayoutAPage = 'Accounts';
 export type ILayoutQPage = 'Search';
-export type ILayoutAll = ILayout1Page | ILayoutSPage | ILayoutMPage | ILayoutAPage | ILayoutQPage;
+export type ILayoutHPage = 'Help';
+export type ILayoutAll = ILayoutNPage | ILayoutGPage | ILayout1Page | ILayoutSPage | ILayoutAPage | ILayoutQPage | ILayoutHPage;
 
-export type IAppFormat = 'accounts' | 'docs' | 'stds' | 'sups' | 'appLinks';
+export type IAppFormat = 'accounts' | 'docs' | 'stds' | 'sups' | 'appLinks' | 'news' | 'help';
 
 
 // leftSearchFixed: boolean; //Locks the search options
@@ -136,6 +142,22 @@ export interface IAnyContent extends Partial<any> {
   meta: string[];
 }
 
+export interface IPagesContent extends Partial<IAnyContent> {
+  ID: string;
+  Title: string;
+  'File/ServerRelativeUrl': string;
+  'BannerImageUrl.Url': string;
+  FirstPublishedDate: any;
+  PromotedState: any;
+  BannerImageUrl: {
+    Url: string;
+  };
+  File: {
+    ServerRelativeUrl: string;
+  };
+
+}
+
 export interface IAlvFinManState {
   // description: string;
 
@@ -153,14 +175,19 @@ export interface IAlvFinManState {
   sups: IAnyContent[];
   accounts: IAnyContent[];
 
+  news: IPagesContent[];
+  help: IPagesContent[];
+
   fetchedAccounts: boolean;
   fetchedDocs: boolean;
+  fetchedNews: boolean;
+  fetchedHelp: boolean;
   buckets: IFMBuckets;
   standards: IFMBucketItems;
   supporting: IFMBucketItems;
 
   mainPivotKey: ILayoutAll;
-  bucketClickKey: string;
+  // bucketClickKey: string;
   docItemKey: string;
   supItemKey: string;
 

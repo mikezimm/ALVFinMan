@@ -32,6 +32,11 @@
     .docsList{
       width: 300px;
       padding: 0px 30px;
+
+      h3 {
+        margin-top: 0px;
+      }
+      
       li {
         white-space: nowrap;
         overflow: 'hidden';

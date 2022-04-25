@@ -27,7 +27,8 @@ import * as strings from 'AlvFinManWebPartStrings';
 import ReactJson from "react-json-view";
 
 import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfunctions/dist/Lists/getFunctions';
-import { getAccounts, IFMSearchType, SearchTypes } from '../DataFetch';
+import { getAccounts,  } from '../DataFetch';
+import { IFMSearchType, SearchTypes } from '../DataInterface';
 import { IAnyContent, ISearchObject } from '../IAlvFinManProps';
 import { NoItems } from '@mikezimm/npmfunctions/dist/Icons/iconNames';
 
