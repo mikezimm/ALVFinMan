@@ -22,8 +22,12 @@ import * as strings from 'AlvFinManWebPartStrings';
 
 import ReactJson from "react-json-view";
 
+import { getHighlightedText } from '../Search/HighlightedText';
+
 import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfunctions/dist/Lists/getFunctions';
 import { getAccounts } from '../DataFetch';
+
+import { createAccountRow } from './AccountItem';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
 
@@ -63,28 +67,6 @@ const pivotStyles = {
 
 export default class AlvAccounts extends React.Component<IAlvAccountsProps, IAlvAccountsState> {
 
-  /**
- * Copied from ECStorage
- * Super cool solution based on:  https://stackoverflow.com/a/43235785
- * @param text 
- * @param highlight 
- */
-  private getHighlightedText(text, highlight) {
-  // <div dangerouslySetInnerHTML={{ __html: this.state.showPanelItem.WikiField }} />
-  // Split on highlight term and include term into parts, ignore case
-  if ( !highlight ) {
-    return text;
-
-  } else {
-    const parts = text.split(new RegExp(`(${highlight})`, 'gi'));
-    return <span> { parts.map((part, i) => 
-      <span key={i} style={part.toLowerCase() === highlight.toLowerCase() ? { fontWeight: 'bold', backgroundColor: 'yellow' } : {} }>
-        { part }
-      </span>)
-    } </span>;
-  }
-
-}
 
   private LastSearch = '';
 
@@ -207,15 +189,18 @@ public async updateWebInfo (   ) {
     let filtered = [];
     this.state.filtered.map( account => {
       if ( filtered.length < this.state.slideCount ) {
-        filtered.push( <div>
-          <li>{ this.getHighlightedText( `${ account.Title } - ${ account.Name1 } - ${ account.Description }`, this.state.searchText )  }</li>
-        </div>);
+        // filtered.push( <div>
+        //   <li>{ getHighlightedText( `${ account.Title } - ${ account.Name1 } - ${ account.Description }`, this.state.searchText )  }</li>
+        // </div>);
+
+        filtered.push( createAccountRow( account, this.state.searchText, null ));
+
       }
     });
 
     /*https://developer.microsoft.com/en-us/fabric#/controls/web/searchbox*/
     let searchBox =  
-    <div className={[styles.searchContainer, styles.padLeft20 ].join(' ')} >
+    <div className={[styles.searchContainer ].join(' ')} >
       <SearchBox
         className={styles.searchBox}
         styles={{ root: { maxWidth:250 } }}
@@ -234,18 +219,18 @@ public async updateWebInfo (   ) {
 
     return (
       <div className={ styles.alvFinMan }>
-        <div className={ styles.container }>
+        {/* <div className={ styles.container }> */}
           <div className={ styles.row }>
-            <div className={ styles.column }>
+            {/* <div className={ styles.column }> */}
               { this.props.fetchTime }
               { searchBox }
               { filtered }
               {/* { componentPivot }
               { showPage }
               { userPanel } */}
-            </div>
+            {/* </div> */}
           </div>
-        </div>
+        {/* </div> */}
       </div>
     );
   }

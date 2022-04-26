@@ -282,7 +282,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
       exportProps: buildExportProps( this.properties, this.wpInstanceID, this.context.pageContext.web.serverRelativeUrl ),
 
       //Webpart related info
-      panelTitle: 'ALV Financial Manual',
+      panelTitle: 'ALV Financial Manual - Beta App',
       modifyBannerTitle: this.modifyBannerTitle,
       repoLinks: repoLink,
 

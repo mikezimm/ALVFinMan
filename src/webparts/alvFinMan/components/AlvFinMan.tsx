@@ -56,11 +56,14 @@ import Layout2Page from './Layout2Page/Layout2Page';
 import SearchPage from './Search/SearchPage';
 import NewsPage from './News/NewsPage';
 
+import { MainHelpPage } from './AlvFMHelp';
+
 import { SourceInfo, ISourceInfo, ISourceProps } from './DataInterface';
 import {  getAppLinks, getStandardDocs, getAccounts, updateSearchCounts, updateSearchTypes, getALVFinManContent, } from './DataFetch';
 
 
 import {  createEmptyBuckets,  updateBuckets } from './DataProcess';
+import { gitRepoALVFinManSmall } from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
 
@@ -202,7 +205,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
   // }
 
-
+  private mainHelp = MainHelpPage( gitRepoALVFinManSmall );
   /***
  *    d8b   db d88888b  .d8b.  d8888b.      d88888b  .d8b.  d8888b.      d88888b db      d88888b 
  *    888o  88 88'     d8' `8b 88  `8D      88'     d8' `8b 88  `8D      88'     88      88'     
@@ -570,7 +573,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
     ></NewsPage>;
 
-
+    const help = this.state.mainPivotKey === 'Help' ? this.mainHelp : null;
         
 
       /***
@@ -651,6 +654,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
             { accounts }
             { news }
             { SearchContent }
+            { help }
             {/* </div> */}
           </div>
         </div>

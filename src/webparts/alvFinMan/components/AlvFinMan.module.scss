@@ -112,7 +112,9 @@ $screen-xl-min: 1200px;
         list-style-type: square;
         cursor: pointer;
     }
+  }
   
+
     .isSelected {
       font-weight: 600;
       text-decoration: underline;
@@ -330,10 +332,6 @@ $screen-xl-min: 1200px;
       display: inline-block;
     }
   }
-}
-
-
-
 
 
 .links {

@@ -63,7 +63,7 @@ export default class Layout2Page extends React.Component<ILayout2PageProps, ILay
         classNames.push( styles2.isSelected ) ;
         // showArticle = item;
       }
-      itemsList.push( <li className={ classNames.join( ' ' ) } onClick= { this.clickLayout2Item.bind( this, item.ID, 'appLinks', item  )} style={ FUStyle }>
+      itemsList.push( <li className={ classNames.join( ' ' ) } onClick= { this.clickLayout2Item.bind( this, item.ID, 'appLinks', item, 'none'  )} style={ FUStyle }>
         { item.Title } </li>  );
     });
 
@@ -75,6 +75,13 @@ export default class Layout2Page extends React.Component<ILayout2PageProps, ILay
 
     const content = !richText ? null : 
       <div dangerouslySetInnerHTML={{ __html: richText }} />;
+
+    let linkInfo: any = null;
+
+    if ( showArticle && showArticle.LinkColumn ) {
+      linkInfo = [ <div>Click here to go to <a href={ showArticle.LinkColumn.Url } > { showArticle.LinkColumn.Description }</a>.</div>,
+      <div>TIP:  You can also CTRL-Click any bullet items to quickly open the link in a new tab :)</div> ];
+    }
 
     let pageTitle: any = this.props.mainPivotKey;
     if ( pageTitle ==='Statements' ) { pageTitle = 'Financial Statements' ; }
@@ -88,7 +95,9 @@ export default class Layout2Page extends React.Component<ILayout2PageProps, ILay
         { itemsList } 
       </div>
       <div className={ styles2.article }>
-        <h3>{ articleTitle }</h3>
+        <h3 onClick= { this.clickLayout2Item.bind( this, showArticle ? showArticle.ID : null, 'appLinks', showArticle, '_blank'  )} style={{ cursor: showArticle && showArticle.LinkColumn ? 'pointer' : 'default' }}
+        >{ articleTitle }</h3>
+        { linkInfo }
         { content }
         { articleDesc }
       </div>
@@ -195,12 +204,12 @@ export default class Layout2Page extends React.Component<ILayout2PageProps, ILay
         <div className={ null }>
           {/* <div className={ stylesN.newsPage }> */}
           <div className={ null }>
-            {/* <div className={ styles.row }> */}
+            <div className={ styles.row }>
               {/* <div className={ styles.column }> */}
                 { showPage }
                 { userPanel }
               {/* </div> */}
-            {/* </div> */}
+            </div>
           </div>
         </div>
       );
@@ -209,17 +218,22 @@ export default class Layout2Page extends React.Component<ILayout2PageProps, ILay
 
   }
 
-  private clickLayout2Item( ID: number, category: string, item: IAnyContent, e: any ) {  //this, item.ID, 'news', item
-    console.log('clickLayout2Item:', ID, item );
+  private clickLayout2Item( ID: number, category: string, item: IAnyContent, target: 'none' | '_blank', e: any ) {  //this, item.ID, 'news', item
+    console.log('clickLayout2Item: target, ID, item', target, ID, item );
     // debugger;
 
     let newState = this.state.showItemPanel;
+
+
     if ( e.altKey === true ) {
       newState = this.state.showItemPanel === true ? false : true;
+
     } else if ( e.ctrlKey === true && item.LinkColumn ) {
-      
-      window.open( item.LinkColumn.Url , '_blank' );
-    }
+      if ( target === 'none' ) { //Do not open any links by default.
+        
+      } else if ( target === '_blank' ) { window.open( item.LinkColumn.Url , '_blank' ); }
+    } else {    }
+
 
     this.setState({ selectedItem: item, showItemPanel: newState });
   }
