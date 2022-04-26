@@ -101,12 +101,13 @@ export interface IFMBucketItems {
 
 
 export type ILayoutNPage = 'News';
+export type ILayoutLPage = 'Links';
 export type ILayoutGPage = 'General';
 export type ILayoutSPage = 'Statements';
 export type ILayoutAPage = 'Accounts';
 export type ILayoutQPage = 'Search';
 export type ILayoutHPage = 'Help';
-export type ILayoutAll = ILayoutNPage | ILayoutGPage | ILayout1Page | ILayoutSPage | ILayoutAPage | ILayoutQPage | ILayoutHPage;
+export type ILayoutAll = ILayoutNPage | ILayoutLPage | ILayoutGPage | ILayout1Page | ILayoutSPage | ILayoutAPage | ILayoutQPage | ILayoutHPage;
 
 export type IAppFormat = 'accounts' | 'docs' | 'stds' | 'sups' | 'appLinks' | 'news' | 'help';
 
@@ -140,11 +141,21 @@ export interface IAnyContent extends Partial<any> {
 
   descIsHTML: boolean;
   meta: string[];
+
+  modifiedMS: number;
+  createdMS: number;
+  publishedMS?: number;
+
+  modifiedLoc: string;
+  createdLoc: string;
+  publishedLoc?: string;
+
 }
 
 export interface IPagesContent extends Partial<IAnyContent> {
   ID: string;
   Title: string;
+  Description: string;
   'File/ServerRelativeUrl': string;
   'BannerImageUrl.Url': string;
   FirstPublishedDate: any;

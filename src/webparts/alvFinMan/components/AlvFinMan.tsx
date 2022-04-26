@@ -3,7 +3,7 @@ import styles from './AlvFinMan.module.scss';
 import { Icon, IIconProps } from 'office-ui-fabric-react/lib/Icon';
 import { DisplayMode, Version } from '@microsoft/sp-core-library';
 
-import { IAlvFinManProps, IAlvFinManState, IFMBuckets, ILayoutNPage, ILayoutGPage, ILayoutSPage, ILayoutAll, ILayoutAPage, ILayoutQPage, ILayoutHPage, IAnyContent, IFinManSearch, IAppFormat, ISearchBucket, IPagesContent } from './IAlvFinManProps';
+import { IAlvFinManProps, IAlvFinManState, IFMBuckets, ILayoutNPage, ILayoutGPage, ILayoutSPage, ILayoutAll, ILayoutAPage, ILayoutQPage, ILayoutHPage, IAnyContent, IFinManSearch, IAppFormat, ISearchBucket, IPagesContent, ILayoutLPage } from './IAlvFinManProps';
 import { ILayout1Page, ILayout1PageProps, Layout1PageValues } from './Layout1Page/ILayout1PageProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 
@@ -52,7 +52,9 @@ import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfu
 
 import AlvAccounts from './Accounts/Accounts';
 import Layout1Page from './Layout1Page/Layout1Page';
+import Layout2Page from './Layout2Page/Layout2Page';
 import SearchPage from './Search/SearchPage';
+import NewsPage from './News/NewsPage';
 
 import { SourceInfo, ISourceInfo, ISourceProps } from './DataInterface';
 import {  getAppLinks, getStandardDocs, getAccounts, updateSearchCounts, updateSearchTypes, getALVFinManContent, } from './DataFetch';
@@ -102,9 +104,10 @@ const pivotHeading6 : ILayoutAPage = 'Accounts';
 
 const pivotHeading9 : ILayoutQPage = 'Search';
 const pivotHeadingZ : ILayoutHPage = 'Help';
+const pivotHeadingY : ILayoutLPage = 'Links';
 
 
-const allPivots: ILayoutAll[] = [ pivotHeading0, pivotHeadingA, pivotHeading1, pivotHeading2, pivotHeading3, pivotHeading4, pivotHeading5, pivotHeading6, pivotHeading9, pivotHeadingZ ];
+export const allPivots: ILayoutAll[] = [ pivotHeading0, pivotHeadingA, pivotHeading1, pivotHeading2, pivotHeading3, pivotHeading4, pivotHeading5, pivotHeading6, pivotHeading9, pivotHeadingY, pivotHeadingZ ];
 const layout1Pivots : ILayout1Page[] = [ pivotHeading2, pivotHeading3, pivotHeading4, pivotHeading5,  ];
 
 const pivotTitles = allPivots.map( pivot => { return pivot.split('|')[0] ; } );
@@ -397,7 +400,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     search = updateSearchTypes( [ ...appLinks, ...docs, ...sups, ...accounts, ], search );
 
     console.log('state:  search', search );
-    this.setState({ search: search, docs: docs, buckets: buckets, sups: sups, appLinks: appLinks, mainPivotKey: mainPivotKey, fetchedDocs: fetchedDocs, accounts: accounts, refreshId: this.newRefreshId() });
+    this.setState({ search: search, docs: docs, buckets: buckets, sups: sups, appLinks: appLinks, mainPivotKey: mainPivotKey, fetchedDocs: fetchedDocs, accounts: accounts, news: news, help: help, refreshId: this.newRefreshId() });
 
   }
 
@@ -483,6 +486,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     </Pivot>;
 
     const showPage = <Layout1Page
+      source={ SourceInfo }
       refreshId={ this.state.refreshId }
       description={ this.props.description }
       appLinks={ this.state.appLinks }
@@ -494,6 +498,14 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       supporting={ this.state.supporting }
       mainPivotKey={ this.state.mainPivotKey as ILayout1Page }
     ></Layout1Page>;
+
+    const showPage2 = <Layout2Page 
+      mainPivotKey={this.state.mainPivotKey}
+
+      refreshId={ this.state.refreshId }
+      source={ SourceInfo.appLinks }
+      appLinks={ this.state.appLinks }
+    ></Layout2Page>;
 
     const SearchContent = <SearchPage
       refreshId={ this.state.refreshId }
@@ -535,13 +547,28 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     </Panel></div>;
 
     const accounts = this.state.mainPivotKey !== 'Accounts' ? null : <AlvAccounts
+      source={ SourceInfo }
+      primarySource={ SourceInfo.accounts }
       refreshId={ this.state.refreshId }
-      accountsList={ SourceInfo.accounts.listTitle }
       fetchTime={ 797979 }
       accounts={ this.state.accounts }
-      webUrl = { SourceInfo.accounts.webUrl }
-      searchProps = { SourceInfo.accounts.searchProps }
     ></AlvAccounts>;
+
+    const defNewsSort ={
+      prop: '',
+      order: 'asc',
+    };
+
+    const news = <NewsPage
+
+      mainPivotKey={this.state.mainPivotKey}
+      sort = { defNewsSort }
+
+      refreshId={ this.state.refreshId }
+      source={ SourceInfo.news }
+      news={ this.state.news }
+
+    ></NewsPage>;
 
 
         
@@ -619,8 +646,10 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
             { propsHelp }
             { componentPivot }
             { showPage }
+            { showPage2 }
             { userPanel }
             { accounts }
+            { news }
             { SearchContent }
             {/* </div> */}
           </div>

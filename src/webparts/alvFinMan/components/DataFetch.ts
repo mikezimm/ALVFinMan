@@ -66,11 +66,19 @@ export function createEmptySearchBucket () {
     let baseSelectColumns = sourceProps.selectThese ? sourceProps.selectThese : sourceProps.columns;
     let selectThese = [ baseSelectColumns, ...selColumns].join(",");
     let restFilter = sourceProps.restFilter ? sourceProps.restFilter : '';
+    let orderBy = sourceProps.orderBy ? sourceProps.orderBy : null;
     let items = [];
     console.log('sourceProps', sourceProps );
     try {
-      items = await web.lists.getByTitle( sourceProps.listTitle ).items
+      if ( orderBy ) {
+        //This does NOT DO ANYTHING at this moment.  Not sure why.
+        items = await web.lists.getByTitle( sourceProps.listTitle ).items
+        .select(selectThese).expand(expandThese).filter(restFilter).orderBy(orderBy.prop, orderBy.asc ).getAll();
+      } else {
+        items = await web.lists.getByTitle( sourceProps.listTitle ).items
         .select(selectThese).expand(expandThese).filter(restFilter).getAll();
+      }
+
 
     } catch (e) {
       getHelpfullErrorV2( e, true, true, 'getALVFinManContent ~ 73');
@@ -81,7 +89,7 @@ export function createEmptySearchBucket () {
     // debugger;
     items = addSearchMeta( items, sourceProps.searchProps, search, sourceProps.defType );
 
-    console.log( sourceProps.listTitle , search, items );
+    console.log( sourceProps.defType, sourceProps.listTitle , search, items );
 
     return items;
 
@@ -274,10 +282,28 @@ export function createEmptySearchBucket () {
       }
     });
 
+    // debugger;
+
     items.map ( item => {
       let searchTitle = '';
       let searchDesc = '';
       let searchHref = '';
+
+      //https://stackoverflow.com/a/15191245
+      if ( item.Created ) {
+        item.createdMS = Date.parse(item.Created);
+        item.createdLoc = item.Created.toLocaleString();
+      }
+
+      if ( item.Modified ) {
+        item.modifiedMS = Date.parse(item.Modified);
+        item.modifiedLoc = item.Modified.toLocaleString();
+      }
+
+      if ( item.FirstPublishedDate ) { 
+        item.publishedMS = Date.parse(item.FirstPublishedDate); 
+        item.publishedLoc = item.publishedMS.toLocaleString();
+      }
 
       if ( item.Sections ) { item.Reporting = item.Sections ; }
 

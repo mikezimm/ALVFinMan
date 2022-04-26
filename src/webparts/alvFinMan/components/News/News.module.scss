@@ -1,0 +1,128 @@
+@import '~office-ui-fabric-react/dist/sass/References.scss';
+
+//Credit for CSS media points:  https://medium.com/codeartisan/breakpoints-and-media-queries-in-scss-46e8f551e2f2
+// Small tablets and large smartphones (landscape view)
+$screen-sm-min: 576px;
+
+// Small tablets (portrait view)
+$screen-md-min: 768px;
+
+// Tablets and small desktops
+$screen-lg-min: 992px;
+
+// Large tablets and desktops
+$screen-xl-min: 1200px;
+
+// Small devices
+@mixin sm {
+  @media (min-width: #{$screen-sm-min}) {
+      @content;
+  }
+}
+
+// Medium devices
+@mixin md {
+  @media (min-width: #{$screen-md-min}) {
+      @content;
+  }
+}
+
+// Large devices
+@mixin lg {
+  @media (min-width: #{$screen-lg-min}) {
+      @content;
+  }
+}
+
+// Extra large devices
+@mixin xl {
+  @media (min-width: #{$screen-xl-min}) {
+      @content;
+  }
+}
+
+.newsPage {
+
+  overflow: hidden;
+  padding: 1em;
+  color: "[theme:bodyText, default: #323130]";
+  color: var(--bodyText);
+  &.teams {
+    font-family: $ms-font-family-fallbacks;
+  }
+
+  display: flex;
+  flex-direction: column;
+  padding: 20px 30px 20px 30px;
+
+  background-color: lightgray;
+  @include md {
+    background-color: lightyellow;
+    flex-direction: row;
+  }
+  // white-space: nowrap;
+  // overflow: 'hidden';
+  // text-overflow: 'ellipsis';
+
+
+  h3 {
+    margin-top: 0px;
+  }
+
+  .article {
+
+    min-width: 100%;
+    max-width: 100%;
+    padding-left: 0px;
+
+    @include md {
+      padding-left: 30px;
+      min-width: 40%;
+      max-width: 50%;
+    }
+  }
+
+  .titleList{
+
+    .isSelected {
+      font-weight: 600;
+      text-decoration: underline;
+      color: darkred;
+      list-style-type: circle;
+
+    }
+
+    flex-direction: column;
+
+    min-width: 100%;  //This is default for narrowest screen
+    max-width: 100%;  //This is default for narrowest screen
+
+    padding-bottom: 20px; //Added for narrow screens where article is below
+
+    .titleListItem {
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: 'hidden';
+      text-overflow: 'ellipsis';
+      width: 100%;
+      margin: 0px;
+      padding: 0px;
+
+    }
+
+    //Added for narrow screens where article is to the right
+    @include md {
+      // width: 280px;
+      padding-bottom: 0px; 
+      min-width: 40%;
+      max-width: 50%;
+      .titleListItem {
+
+      }
+    }
+
+
+  }
+
+}
+

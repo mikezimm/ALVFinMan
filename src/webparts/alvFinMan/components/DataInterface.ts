@@ -10,11 +10,11 @@ import { IAppFormat } from "./IAlvFinManProps";
 export const FinManSitePieces = ['/sites','/au','tol','iv','finan','cialmanual/']; //Just so this is not searchable easily
 export const FinManSite: string =`${FinManSitePieces.join('')}`;
 // export const ModernSitePagesColumns: string[] = ['ID','Title','Description','Author/Title','Editor/Title','File/ServerRelativeUrl','BannerImageUrl/Url','FileSystemObjectType','FirstPublishedDate','PromotedState','FileSizeDisplay','OData__UIVersion','OData__UIVersionString','DocIcon'];
-export const ModernSitePagesColumns: string[] = ['ID','Title','Description','Author/Title','Editor/Title','File/ServerRelativeUrl','BannerImageUrl', 'FileSystemObjectType','FirstPublishedDate','PromotedState','FileSizeDisplay','OData__UIVersion','OData__UIVersionString','DocIcon'];
+export const ModernSitePagesColumns: string[] = ['ID','Title','Description','Author/Title','Editor/Title','File/ServerRelativeUrl','BannerImageUrl', 'FileSystemObjectType','Modified','Created','FirstPublishedDate','PromotedState','FileSizeDisplay','OData__UIVersion','OData__UIVersionString','DocIcon'];
 
 export const ModernSitePagesSearc: string[] = ['Title','Description','Author/Title','Editor/Title','FirstPublishedDate','PromotedState',];
 
-export const sitePagesColumns: string[] = [ "ID", "Title0", "Author/Title", "File/ServerRelativeUrl", "FileRef", ]; //Do not exist on old SitePages library:   "Descritpion","BannerImageUrl.Url", "ServerRelativeUrl"
+export const sitePagesColumns: string[] = [ "ID", "Title0", "Author/Title", "Editor/Title", "File/ServerRelativeUrl", "FileRef", "Created", "Modified" ]; //Do not exist on old SitePages library:   "Descritpion","BannerImageUrl.Url", "ServerRelativeUrl"
 export const libraryColumns: string[] = [ 'ID','FileRef','FileLeafRef','Author/Title','Editor/Title','Author/Name','Editor/Name','Modified','Created','CheckoutUserId','HasUniqueRoleAssignments','Title','FileSystemObjectType','FileSizeDisplay','File_x0020_Type','FileLeafRef','LinkFilename','OData__UIVersion','OData__UIVersionString','DocIcon'];
 export const LookupColumns: string[] = ['Functions/Title', 'Topics/Title', 'ALGroup/Title', 'Sections/Title','Processes/Title' ];
 
@@ -28,10 +28,15 @@ export interface ISourceProps {
     defType: IDefSourceType;  //Used in Search Meta function
     webUrl: string;
     listTitle: string;
+    webRelativeLink: string;
     columns: string[];
     searchProps: string[];
     selectThese?: string[];
     restFilter?: string;
+    orderBy?: {
+        prop: string;
+        asc: boolean;
+    };
 
 }
 export interface ISourceInfo {
@@ -52,6 +57,7 @@ export const SourceInfo: ISourceInfo = {
         defType: 'news',
         webUrl: `${FinManSite}News/`,
         listTitle: "Site Pages",
+        webRelativeLink: "SitePages",
         columns: ModernSitePagesColumns,
         searchProps: ModernSitePagesSearc,
         restFilter: "Id ne 'X' and ContentTypeId ne '0x012000F6C75276DBE501468CA3CC575AD8E159' and Title ne 'Home'",
@@ -62,6 +68,7 @@ export const SourceInfo: ISourceInfo = {
         defType: 'help',
         webUrl: `${FinManSite}Help/`,
         listTitle: "Site Pages",
+        webRelativeLink: "SitePages",
         columns: ModernSitePagesColumns,
         searchProps: ModernSitePagesSearc,
         restFilter: "Id ne 'X' and ContentTypeId ne '0x012000F6C75276DBE501468CA3CC575AD8E159' and Title ne 'Home'",
@@ -71,15 +78,18 @@ export const SourceInfo: ISourceInfo = {
         key: 'appLinks',
         defType: 'link',
         webUrl: `${FinManSite}`,
+        webRelativeLink: "lists/ALVFMAppLinks",
         listTitle: "ALVFMAppLinks",
-        columns: [ 'ID','Title','Tab', 'SortOrder', 'LinkColumn', 'Active', 'SearchWords','RichTextPanel','Author/Title','Editor/Title','Author/Name','Editor/Name','Modified','Created','HasUniqueRoleAssignments','OData__UIVersion','OData__UIVersionString'],
-        searchProps: [ 'Title', 'LinkColumn','RichTextPanel', 'SearchWords' ],
+        columns: [ '*','ID','Title','Tab', 'SortOrder', 'LinkColumn', 'Active', 'SearchWords','RichTextPanel','Author/Title','Editor/Title','Author/Name','Editor/Name','StandardDocuments/ID','StandardDocuments/Title0','Modified','Created','HasUniqueRoleAssignments','OData__UIVersion','OData__UIVersionString'], //,'StandardDocuments/Title'
+        searchProps: [ 'Title', 'LinkColumn','RichTextPanel', 'SearchWords','StandardDocuments/Title0' ], //'StandardDocuments/Title'
+        orderBy: { prop: 'Title', asc: false }
     },
 
     accounts: {
         key: 'accounts',
         defType: 'account',
         webUrl: `${FinManSite}`,
+        webRelativeLink: "lists/HFMAccounts",
         listTitle: "HFMAccounts",
         columns: [ 'ID','ALGroup','Description','Name1','RCM','SubCategory'],
         searchProps: [ 'Title', 'Description', 'ALGroup', 'Name1','RCM','SubCategory' ],
@@ -93,6 +103,7 @@ export const SourceInfo: ISourceInfo = {
         key: 'stds',
         defType: 'StandardDocuments',
         webUrl: `${FinManSite}`,
+        webRelativeLink: "StandardDocuments",
         listTitle: "StandardDocuments",
         columns: ClassicSitePageColumns,
         searchProps: ClassicSitePageColumns,
@@ -106,6 +117,7 @@ export const SourceInfo: ISourceInfo = {
         key: 'docs',
         defType: 'StandardDocuments',
         webUrl: `${FinManSite}`,
+        webRelativeLink: "StandardDocuments",
         listTitle: "StandardDocuments",
         columns: ClassicSitePageColumns,
         searchProps: ClassicSitePageColumns,
@@ -119,6 +131,7 @@ export const SourceInfo: ISourceInfo = {
         key: 'sups',
         defType: 'SupportDocuments',
         webUrl: `${FinManSite}`,
+        webRelativeLink: "SupportDocuments",
         listTitle: "SupportDocuments",
         columns: [ ...libraryColumns, ...LookupColumns ],
         searchProps: [ ...libraryColumns, ...LookupColumns ],

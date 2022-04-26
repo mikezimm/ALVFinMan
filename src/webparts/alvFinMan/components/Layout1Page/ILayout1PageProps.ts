@@ -1,7 +1,10 @@
+import { ISourceInfo } from "../DataInterface";
 import { IFMBuckets, IFMBucketItems, IAnyContent } from "../IAlvFinManProps";
 
 export interface ILayout1PageProps {
   description: string;
+
+  source: ISourceInfo;
 
   appLinks: IAnyContent[];
   docs: IAnyContent[];
@@ -29,7 +32,7 @@ export interface ILayout1PageState {
   supItemKey: string;
 
   showItemPanel: boolean;
-  showPanelItem: any;
+  showPanelItem: IAnyContent;
   
   refreshId: string;
 

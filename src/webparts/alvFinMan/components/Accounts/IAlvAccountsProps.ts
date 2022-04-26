@@ -1,10 +1,12 @@
+import { ISourceInfo, ISourceProps } from "../DataInterface";
 import { IAnyContent } from "../IAlvFinManProps";
 
 export interface IAlvAccountsProps {
-  webUrl: string;
+
   refreshId: string;
-  accountsList: string;
-  searchProps: string[];
+
+  source: ISourceInfo;
+  primarySource: ISourceProps;
 
   accounts: IAnyContent[];
   fetchTime: number;
