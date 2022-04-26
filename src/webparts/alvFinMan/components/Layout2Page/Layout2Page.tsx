@@ -73,16 +73,24 @@ export default class Layout2Page extends React.Component<ILayout2PageProps, ILay
     const articleDesc = showArticle ? showArticle.Description : '';
     const richText = showArticle ? showArticle.RichTextPanel : null;
 
-    const image = !richText ? null : 
+    const content = !richText ? null : 
       <div dangerouslySetInnerHTML={{ __html: richText }} />;
+
+    let pageTitle: any = this.props.mainPivotKey;
+    if ( pageTitle ==='Statements' ) { pageTitle = 'Financial Statements' ; }
+    else if ( pageTitle ==='General' ) { pageTitle = 'General Information' ; }
+    else if ( pageTitle ==='Links' ) { pageTitle = 'Links to other systems' ; }
 
     let page = <div className={ styles2.newsPage } >
       {/* <div className={ styles.titleList }> <ul>{ newsList }</ul></div> */}
-      <div className={ styles2.titleList }> { itemsList } </div>
+      <div className={ styles2.titleList }>
+        <h3>{ pageTitle }</h3> 
+        { itemsList } 
+      </div>
       <div className={ styles2.article }>
         <h3>{ articleTitle }</h3>
-        { image }
-         { articleDesc }
+        { content }
+        { articleDesc }
       </div>
     </div>;
     return page;

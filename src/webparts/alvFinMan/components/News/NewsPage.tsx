@@ -69,7 +69,7 @@ export default class NewsPage extends React.Component<INewsPageProps, INewsPageS
 
     let page = <div className={ stylesN.newsPage } >
       {/* <div className={ styles.titleList }> <ul>{ newsList }</ul></div> */}
-      <div className={ stylesN.titleList }> { newsList } </div>
+      <div className={ stylesN.titleList }><h3>Financial News</h3> { newsList } </div>
       <div className={ stylesN.article }>
         { image }
         <h3>{ articleTitle }</h3>
