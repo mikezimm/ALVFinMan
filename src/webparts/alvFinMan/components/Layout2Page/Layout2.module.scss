@@ -55,9 +55,9 @@ $screen-xl-min: 1200px;
   flex-direction: column;
   padding: 20px 30px 20px 30px;
 
-  background-color: lightgray;
+  background-color: khaki;
   @include md {
-    background-color: lightyellow;
+    background-color: lavender;
     flex-direction: row;
   }
   // white-space: nowrap;
