@@ -1,5 +1,46 @@
 @import '~office-ui-fabric-react/dist/sass/References.scss';
 
+
+// Small tablets and large smartphones (landscape view)
+$screen-sm-min: 576px;
+
+// Small tablets (portrait view)
+$screen-md-min: 768px;
+
+// Tablets and small desktops
+$screen-lg-min: 992px;
+
+// Large tablets and desktops
+$screen-xl-min: 1200px;
+
+// Small devices
+@mixin sm {
+  @media (min-width: #{$screen-sm-min}) {
+      @content;
+  }
+}
+
+// Medium devices
+@mixin md {
+  @media (min-width: #{$screen-md-min}) {
+      @content;
+  }
+}
+
+// Large devices
+@mixin lg {
+  @media (min-width: #{$screen-lg-min}) {
+      @content;
+  }
+}
+
+// Extra large devices
+@mixin xl {
+  @media (min-width: #{$screen-xl-min}) {
+      @content;
+  }
+}
+
 .alvFinMan {
   overflow: hidden;
   padding: 1em;
@@ -17,9 +58,13 @@
     // overflow: 'hidden';
     // text-overflow: 'ellipsis';
 
+    h3 {
+      margin-top: 0px;
+    }
     .titleList{
       width: 250px;
       padding: 0px 30px;
+
       li {
         white-space: nowrap;
         overflow: 'hidden';
@@ -29,24 +74,47 @@
 
     }
 
+    
     .docsList{
       width: 300px;
-      padding: 0px 30px;
+      margin: 0px 30px;
+      
       li {
         white-space: nowrap;
         overflow: 'hidden';
         text-overflow: 'ellipsis';
         width: 100%;
+        margin: 0px 30px 5px 30px; //use margin so there is a gap between the cursor:pointers
+        cursor: pointer;
+      }
+
+      .supsLI {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        overflow: 'hidden';
+        text-overflow: 'ellipsis';
+        max-width: 99%;
+        // padding-top: 15px;
+        i {
+          list-style-type: none;
+          padding-right: 15px;
+        }  
       }
     }
 
     .leftFilter {
 
         color: darkblue;
-        padding: 0px 30px 5px 0px;
+        margin: 0px 30px 5px 0px; //use margin so there is a gap between the cursor:pointers
         list-style-type: square;
+        cursor: pointer;
     }
+  }
   
+
     .isSelected {
       font-weight: 600;
       text-decoration: underline;
@@ -54,7 +122,61 @@
       list-style-type: circle;
 
     }
-  }
+
+    
+  // .newsVertical {
+  //   display: flex;
+  //   padding: 20px 20px 20px 10px;
+  //   flex-direction: row;
+
+  //   // white-space: nowrap;
+  //   // overflow: 'hidden';
+  //   // text-overflow: 'ellipsis';
+
+  //   .titleList{
+  //     width: 300px;
+  //     padding: 0px 0px;
+
+  //     li {
+  //       white-space: nowrap;
+  //       overflow: 'hidden';
+  //       text-overflow: 'ellipsis';
+  //       width: 100%;
+  //     }
+
+  //   }
+
+  //   .docsList{
+  //     width: 300px;
+  //     padding: 0px 30px;
+
+  //     h3 {
+  //       margin-top: 0px;
+  //     }
+      
+  //     li {
+  //       white-space: nowrap;
+  //       overflow: 'hidden';
+  //       text-overflow: 'ellipsis';
+  //       width: 100%;
+  //     }
+  //   }
+
+  //   .leftFilter {
+
+  //       color: darkblue;
+  //       padding: 0px 30px 5px 0px;
+  //       list-style-type: square;
+  //   }
+  
+  //   .isSelected {
+  //     font-weight: 600;
+  //     text-decoration: underline;
+  //     color: darkred;
+  //     list-style-type: circle;
+
+  //   }
+  // }
 
 
   .container {
@@ -210,10 +332,6 @@
       display: inline-block;
     }
   }
-}
-
-
-
 
 
 .links {
@@ -227,5 +345,44 @@
       color: "[theme:linkHovered, default: #014446]";
       color: var(--linkHovered); // note: CSS Custom Properties support is limited to modern browsers only
     }
+  }
+}
+
+}
+
+
+
+.supPanelHeader {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  h3 {
+    
+  }
+
+  .dateStamps {
+    display: flex;
+    flex-direction: row;
+
+    div:nth-child(1) { //This is the Timestamp Label ie Created/Modified
+      color: 'darkblue';
+      width: 60px;
+      font-weight: 600;
+      padding-right: 15px;
+    }
+
+    div:nth-child(2) { //This is the Timestamp
+      color: 'darkblue';
+      width: 150px;
+      padding-left: 20px;
+    }
+
+    div:nth-child(3) { //This is the person
+      color: 'darkblue';
+      width: 150px;
+      padding-left: 20px;
+    }
+
   }
 }

@@ -75,16 +75,27 @@ export const repoLink: IRepoLinks = links.gitRepoALVFinManSmall;
 
 import * as strings from 'AlvFinManWebPartStrings';
 import AlvFinMan from './components/AlvFinMan';
+import { allPivots } from './components/AlvFinMan';
 import { IAlvFinManProps, IFinManSearch, ILayoutAll, ISearchBucket } from './components/IAlvFinManProps';
 import { IAlvFinManWebPartProps, exportIgnoreProps, importBlockProps, } from './IAlvFinManWebPartProps';
 import { baseFetchInfo, IFetchInfo } from './components/IFetchInfo';
-import { createEmptySearchBucket, SearchTypes } from './components/DataFetch';
+import { createEmptySearchBucket, } from './components/DataFetch';
 
 const leftSearchDefault = 'Assets;Inventory;Payable;Payroll;Receivable;Tax;Treasury;';
 const topSearchDefault = 'Capex;Inventory;Template;Policy;Weekly;Monthly;Quarterly;';
 
 export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWebPartProps> {
 
+   private DefaultPivotChoices =  allPivots.map( ( pivot, idx ) => {
+     return { index: idx, key: pivot, text: pivot };
+   });
+//   private DefaultPivotChoices =  [
+//     { index: 0, key: 'Site Admins', text: "Site Admins" },
+//     { index: 1, key: 'Site Owners', text: "Site Owners" },
+//     { index: 2, key: 'Page Editors', text: "Page Editors" },
+//     { index: 3, key: 'Item Editors', text: "Item Editors" },
+//     { index: 4, key: 'Everyone', text: "Everyone" },
+// ];
   //Added in v1.14
   private _isDarkTheme: boolean = false;
   private _environmentMessage: string = '';
@@ -222,7 +233,9 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
       };
 
       // DEFAULTS SECTION:  ALVFinMan   <<< ================================================================
-      if ( !this.properties.defaultPivotKey ) { this.properties.defaultPivotKey = 'Main' ; }
+      if ( !this.properties.defaultPivotKey ) { this.properties.defaultPivotKey = 'General' ; }
+      if ( allPivots.indexOf( this.properties.defaultPivotKey ) < 0 ) { this.properties.defaultPivotKey = allPivots[0] ; }
+
       this.resetAllSearch();
 
     });
@@ -269,7 +282,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
       exportProps: buildExportProps( this.properties, this.wpInstanceID, this.context.pageContext.web.serverRelativeUrl ),
 
       //Webpart related info
-      panelTitle: 'ALV Financial Manual',
+      panelTitle: 'ALV Financial Manual - Beta App',
       modifyBannerTitle: this.modifyBannerTitle,
       repoLinks: repoLink,
 
@@ -337,6 +350,9 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
         sups: [],
         docs: [],
 
+        news: [],
+        help: [],
+
       },
       top: {
         SearchFixed: this.properties.topSearchFixed,
@@ -352,6 +368,9 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
         stds: [],
         sups: [],
         docs: [],
+        
+        news: [],
+        help: [],
         
       },
       type: createEmptySearchBucket(),
@@ -604,10 +623,11 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
             {
               groupName: 'ALV Financial Manual - Basic',
               groupFields: [
-                PropertyPaneTextField('defaultPivotKey', {
-                  label: 'Default Tab',
-                  description: 'Recent News always loads first though',
+                PropertyPaneDropdown('defaultPivotKey', <IPropertyPaneDropdownProps>{
+                  label: 'Full Help Panel Audience',
+                  options: this.DefaultPivotChoices,
                 }),
+
               ]
             }, // this group
             // searchPlural: boolean; //Future use, basically search for the keywords specified in props but also look for ones with an s after it.

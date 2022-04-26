@@ -193,6 +193,8 @@
   .listItems {
     max-width: calc( 100% - 200px );
     .listItem {
+
+      //This is the same styling that should be in accountItem
       display: flex;
       flex-direction: row;
       align-items: flex-start;

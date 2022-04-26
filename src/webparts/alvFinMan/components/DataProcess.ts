@@ -1,5 +1,5 @@
 
-import { IAlvFinManProps, IAlvFinManState, IFMBuckets, ILayoutMPage, ILayoutSPage, ILayoutAll, ILayoutAPage } from './IAlvFinManProps';
+import { IAlvFinManProps, IAlvFinManState, IFMBuckets, ILayoutNPage, ILayoutGPage, ILayoutSPage, ILayoutAll, ILayoutAPage, ILayoutQPage, ILayoutHPage, IAnyContent, IFinManSearch, IAppFormat, ISearchBucket } from './IAlvFinManProps';
 import { ILayout1Page, ILayout1PageProps, Layout1PageValues } from './Layout1Page/ILayout1PageProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 
@@ -9,7 +9,8 @@ export function createEmptyBuckets() {
     Functions: [],
     Topics: [],
     ALGroup: [],
-    Sections: [],
+    // Sections: [],
+    Reporting: [],
     Processes: [],
     DocumentType: [],
   };
@@ -21,13 +22,17 @@ export function updateBuckets ( buckets: IFMBuckets, docs: any[], sort: boolean 
   docs.map( doc => {
 
     Object.keys( buckets ).map ( key => {
-      if ( doc[ key ] ) {
-        if ( Array.isArray( doc[ key ] ) ) {
-          doc[ key ].map( item => {
-            if ( item.Title && buckets[ key ].indexOf( item.Title ) < 0 ) { buckets[key].push( item.Title) ; }
+      let docProp = key === 'Reporting' ? 'Sections' : key;
+      if ( doc[ docProp ] ) {
+        if ( Array.isArray( doc[ docProp ] ) ) {
+          doc[ docProp ].map( item => {
+            if ( item.Title && buckets[ key ].indexOf( item.Title ) < 0 ) { 
+              
+              buckets[key].push( item.Title) ;
+             }
           });
         } else {
-          if ( doc[key] && buckets[ key ].indexOf( doc[key].Title ) < 0 ) { buckets[key].push( doc[key].Title) ; }
+          if ( doc[docProp] && buckets[ key ].indexOf( doc[docProp].Title ) < 0 ) { buckets[key].push( doc[docProp].Title) ; }
         }
       }
     });

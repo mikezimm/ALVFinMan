@@ -3,7 +3,7 @@ import styles from './AlvFinMan.module.scss';
 import { Icon, IIconProps } from 'office-ui-fabric-react/lib/Icon';
 import { DisplayMode, Version } from '@microsoft/sp-core-library';
 
-import { IAlvFinManProps, IAlvFinManState, IFMBuckets, ILayoutMPage, ILayoutSPage, ILayoutAll, ILayoutAPage, ILayoutQPage, IAnyContent } from './IAlvFinManProps';
+import { IAlvFinManProps, IAlvFinManState, IFMBuckets, ILayoutNPage, ILayoutGPage, ILayoutSPage, ILayoutAll, ILayoutAPage, ILayoutQPage, ILayoutHPage, IAnyContent, IFinManSearch, IAppFormat, ISearchBucket, IPagesContent, ILayoutLPage } from './IAlvFinManProps';
 import { ILayout1Page, ILayout1PageProps, Layout1PageValues } from './Layout1Page/ILayout1PageProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 
@@ -52,9 +52,18 @@ import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfu
 
 import AlvAccounts from './Accounts/Accounts';
 import Layout1Page from './Layout1Page/Layout1Page';
+import Layout2Page from './Layout2Page/Layout2Page';
 import SearchPage from './Search/SearchPage';
-import {  getAppLinks, getStandardDocs, accountColumns, getAccounts, AppLinkSearch, FinManSite, AppLinksList, appLinkColumns, StandardsLib, SupportingLib, sitePagesColumns, libraryColumns, LookupColumns, AccountsList, AccountSearch, updateSearchCounts, updateSearchTypes,  } from './DataFetch';
+import NewsPage from './News/NewsPage';
+
+import { MainHelpPage } from './AlvFMHelp';
+
+import { SourceInfo, ISourceInfo, ISourceProps } from './DataInterface';
+import {  getAppLinks, getStandardDocs, getAccounts, updateSearchCounts, updateSearchTypes, getALVFinManContent, } from './DataFetch';
+
+
 import {  createEmptyBuckets,  updateBuckets } from './DataProcess';
+import { gitRepoALVFinManSmall } from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
 
@@ -84,21 +93,28 @@ const pivotStyles = {
   //   textAlign: "center"
   }};
 
-const pivotHeading0 : ILayoutMPage = 'Main';
+  
+const pivotHeadingA : ILayoutNPage = 'News';
+const pivotHeading0 : ILayoutGPage = 'General';
 
 const pivotHeading1 : ILayoutSPage = 'Statements';
-const pivotHeading2 : ILayout1Page = 'Reporting|Sections';
+// const pivotHeading2 : ILayout1Page = 'Reporting|Sections';
+const pivotHeading2 : ILayout1Page = 'Reporting';
 const pivotHeading3 : ILayout1Page = 'Processes';
 const pivotHeading4 : ILayout1Page = 'Functions';
 const pivotHeading5 : ILayout1Page = 'Topics';
 const pivotHeading6 : ILayoutAPage = 'Accounts';
 
 const pivotHeading9 : ILayoutQPage = 'Search';
+const pivotHeadingZ : ILayoutHPage = 'Help';
+const pivotHeadingY : ILayoutLPage = 'Links';
 
-const allPivots: ILayoutAll[] = [ pivotHeading0, pivotHeading1, pivotHeading2, pivotHeading3, pivotHeading4, pivotHeading5, pivotHeading6, pivotHeading9 ];
+
+export const allPivots: ILayoutAll[] = [ pivotHeading0, pivotHeadingA, pivotHeading1, pivotHeading2, pivotHeading3, pivotHeading4, pivotHeading5, pivotHeading6, pivotHeading9, pivotHeadingY, pivotHeadingZ ];
 const layout1Pivots : ILayout1Page[] = [ pivotHeading2, pivotHeading3, pivotHeading4, pivotHeading5,  ];
 
 const pivotTitles = allPivots.map( pivot => { return pivot.split('|')[0] ; } );
+// const pivotKeys = allPivots.map( pivot => { return pivot.split('|')[1] ? pivot.split('|')[1] : pivot.split('|')[0] ; } );
 const pivotKeys = allPivots.map( pivot => { return pivot.split('|')[1] ? pivot.split('|')[1] : pivot.split('|')[0] ; } );
 const pivotItems = pivotKeys.map( ( key, idx ) => {
   return <PivotItem headerText={ pivotTitles[idx] } ariaLabel={pivotTitles[idx]} title={pivotTitles[idx]} itemKey={ key } ></PivotItem>;
@@ -189,7 +205,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
   // }
 
-
+  private mainHelp = MainHelpPage( gitRepoALVFinManSmall );
   /***
  *    d8b   db d88888b  .d8b.  d8888b.      d88888b  .d8b.  d8888b.      d88888b db      d88888b 
  *    888o  88 88'     d8' `8b 88  `8D      88'     d8' `8b 88  `8D      88'     88      88'     
@@ -257,9 +273,11 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       showDevHeader: showDevHeader,  
       lastStateChange: '',
 
-      mainPivotKey: this.props.defaultPivotKey ? this.props.defaultPivotKey : 'Main',
+      mainPivotKey: this.props.defaultPivotKey ? this.props.defaultPivotKey : 'General',
       fetchedDocs: false,
       fetchedAccounts: false,
+      fetchedNews: false,
+      fetchedHelp: false,
 
       search: JSON.parse(JSON.stringify( this.props.search )),
       appLinks: [],
@@ -268,10 +286,12 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       sups: [],
       accounts: [],
 
+      news: [],
+      help: [],
+
       buckets: createEmptyBuckets(),
       standards: createEmptyBuckets(),
       supporting: createEmptyBuckets(),
-      bucketClickKey: '',
       docItemKey: '',
       supItemKey: '',
       showItemPanel: false,
@@ -283,7 +303,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
 
   public componentDidMount() {
-    this.updateWebInfo( this.state.mainPivotKey, this.state.bucketClickKey );
+    this.updateWebInfo( this.state.mainPivotKey );
   }
 
 
@@ -309,48 +329,68 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     }
 
     if ( refresh === true ) {
-      this.updateWebInfo( this.state.mainPivotKey, this.state.bucketClickKey );
+      this.updateWebInfo( this.state.mainPivotKey );
     }
 
   }
 
-  public async updateWebInfo ( mainPivotKey: ILayoutAll, bucketClickKey: string ) {
+  public async updateWebInfo ( mainPivotKey: ILayoutAll ) {
 
     let search = JSON.parse(JSON.stringify( this.state.search ));
     let updateBucketsNow: boolean = false;
     let appLinks: IAnyContent[] = this.state.appLinks;
     let docs: IAnyContent[] = this.state.docs;
     let sups: IAnyContent[] = this.state.sups;
+    let news: IPagesContent[] = this.state.news;
+    let help: IPagesContent[] = this.state.help;
     // let accounts: IAnyContent[] = this.state.accounts;
-    let accounts: any = {
-      accounts: this.state.accounts
-    };
+    let accounts: any = this.state.accounts;
 
     let fetchedDocs = this.state.fetchedDocs === true ? true : false;
+    let fetchedNews = this.state.fetchedNews === true ? true : false;
+    let fetchedHelp = this.state.fetchedHelp === true ? true : false;
 
     if ( appLinks.length === 0 ) {
-      appLinks = await getAppLinks( FinManSite, AppLinksList, appLinkColumns, AppLinkSearch, this.props.search );
+      appLinks = await getALVFinManContent( SourceInfo.appLinks, this.props.search );
       search = updateSearchCounts( 'appLinks', appLinks, search );
       updateBucketsNow = true;
     }
 
     //Check if tab requires docs and sup and is not yet loaded
     let Layout1PageValuesAny: any = Layout1PageValues;
+
     if ( fetchedDocs !== true && ( Layout1PageValuesAny.indexOf( mainPivotKey ) > -1 || mainPivotKey === 'Search' ) ) {
-      docs = await getStandardDocs( FinManSite, StandardsLib , [ ...sitePagesColumns, ...LookupColumns, ...[ 'DocumentType/Title' ] ], [ ...sitePagesColumns, ...LookupColumns, ...[ 'DocumentType/Title' ] ], this.props.search );
+      docs = await getALVFinManContent( SourceInfo.docs, this.props.search );
       search = updateSearchCounts( 'docs', docs, search );
 
-      sups = await getStandardDocs( FinManSite, SupportingLib , [ ...libraryColumns, ...LookupColumns ], [ ...libraryColumns, ...LookupColumns ], this.props.search );
+      sups = await getALVFinManContent( SourceInfo.sups, this.props.search );
       search = updateSearchCounts( 'sups', sups, search );
 
       fetchedDocs = true;
       updateBucketsNow = true;
 
     }
-    
+
+   
+    if ( fetchedNews !== true && ( mainPivotKey === 'News' || mainPivotKey === 'Search' ) ) {
+      news = await getALVFinManContent( SourceInfo.news, this.props.search );
+      search = updateSearchCounts( 'sups', sups, search );
+
+      fetchedNews = true;
+
+    }
+   
+    // if ( fetchedHelp !== true && ( mainPivotKey === 'Help' || mainPivotKey === 'Search' ) ) {
+    //   help = await getALVFinManContent( SourceInfo.help, this.props.search );
+    //   search = updateSearchCounts( 'sups', sups, search );
+
+    //   fetchedNews = true;
+
+    // }
+
     if ( ( mainPivotKey === 'Search' || mainPivotKey === 'Accounts' ) && this.state.accounts.length === 0 ) {
-      accounts = await getAccounts ( FinManSite, AccountsList , [ ...accountColumns ] , [ ...AccountSearch, ], this.props.search );
-      search = updateSearchCounts( 'accounts', accounts.accounts, search );
+      accounts = await getALVFinManContent ( SourceInfo.accounts, this.props.search );
+      search = updateSearchCounts( 'accounts', accounts, search );
 
     }
 
@@ -360,10 +400,10 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       buckets = updateBuckets( buckets, sups, true );
     }
     // debugger;
-    search = updateSearchTypes( [ ...appLinks, ...docs, ...sups, ...accounts.accounts, ], search );
+    search = updateSearchTypes( [ ...appLinks, ...docs, ...sups, ...accounts, ], search );
 
     console.log('state:  search', search );
-    this.setState({ search: search, docs: docs, buckets: buckets, sups: sups, appLinks: appLinks, mainPivotKey: mainPivotKey, bucketClickKey: bucketClickKey, fetchedDocs: fetchedDocs, accounts: accounts.accounts, refreshId: this.newRefreshId() });
+    this.setState({ search: search, docs: docs, buckets: buckets, sups: sups, appLinks: appLinks, mainPivotKey: mainPivotKey, fetchedDocs: fetchedDocs, accounts: accounts, news: news, help: help, refreshId: this.newRefreshId() });
 
   }
 
@@ -430,12 +470,10 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
   let bannerSuffix = '';
   //Exclude the props.bannerProps.title if the webpart is narrow to make more responsive
-  let bannerTitle = bannerProps.bannerWidth < 900 ? bannerProps.title : `${bannerProps.title} - ${bannerSuffix}`;
+  let bannerTitle = bannerProps.bannerWidth < 900 ? bannerProps.title : `${bannerProps.title} ${ ( bannerSuffix ? ' - ' + bannerSuffix : '' ) }`;
   
   if ( bannerTitle === '' ) { bannerTitle = 'ALV Financial Manual' ; }
   if ( this.props.displayMode === DisplayMode.Edit ) { bannerTitle += '' ; }
-
-
 
     let componentPivot = 
     <Pivot
@@ -451,6 +489,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     </Pivot>;
 
     const showPage = <Layout1Page
+      source={ SourceInfo }
       refreshId={ this.state.refreshId }
       description={ this.props.description }
       appLinks={ this.state.appLinks }
@@ -462,6 +501,14 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       supporting={ this.state.supporting }
       mainPivotKey={ this.state.mainPivotKey as ILayout1Page }
     ></Layout1Page>;
+
+    const showPage2 = <Layout2Page 
+      mainPivotKey={this.state.mainPivotKey}
+
+      refreshId={ this.state.refreshId }
+      source={ SourceInfo.appLinks }
+      appLinks={ this.state.appLinks }
+    ></Layout2Page>;
 
     const SearchContent = <SearchPage
       refreshId={ this.state.refreshId }
@@ -503,15 +550,30 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     </Panel></div>;
 
     const accounts = this.state.mainPivotKey !== 'Accounts' ? null : <AlvAccounts
+      source={ SourceInfo }
+      primarySource={ SourceInfo.accounts }
       refreshId={ this.state.refreshId }
-      accountsList={ AccountsList }
       fetchTime={ 797979 }
       accounts={ this.state.accounts }
-      webUrl = { FinManSite }
-      searchProps = { AccountSearch }
     ></AlvAccounts>;
 
+    const defNewsSort ={
+      prop: '',
+      order: 'asc',
+    };
 
+    const news = <NewsPage
+
+      mainPivotKey={this.state.mainPivotKey}
+      sort = { defNewsSort }
+
+      refreshId={ this.state.refreshId }
+      source={ SourceInfo.news }
+      news={ this.state.news }
+
+    ></NewsPage>;
+
+    const help = this.state.mainPivotKey === 'Help' ? this.mainHelp : null;
         
 
       /***
@@ -587,9 +649,12 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
             { propsHelp }
             { componentPivot }
             { showPage }
+            { showPage2 }
             { userPanel }
             { accounts }
+            { news }
             { SearchContent }
+            { help }
             {/* </div> */}
           </div>
         </div>
@@ -600,7 +665,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
   private pivotMainClick( temp ) {
     console.log('pivotMainClick:', temp.props.itemKey );
 
-    this.updateWebInfo( temp.props.itemKey, '' );
+    this.updateWebInfo( temp.props.itemKey );
     // this.setState({ 
     //   mainPivotKey: temp.props.itemKey, 
     //   bucketClickKey: '', //Clear bucketItemClick for new page

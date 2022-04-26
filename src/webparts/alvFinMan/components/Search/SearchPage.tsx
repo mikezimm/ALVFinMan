@@ -27,19 +27,15 @@ import * as strings from 'AlvFinManWebPartStrings';
 import ReactJson from "react-json-view";
 
 import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfunctions/dist/Lists/getFunctions';
-import { getAccounts, IFMSearchType, SearchTypes } from '../DataFetch';
+import { getAccounts,  } from '../DataFetch';
+import { IFMSearchType, SearchTypes } from '../DataInterface';
 import { IAnyContent, ISearchObject } from '../IAlvFinManProps';
 import { NoItems } from '@mikezimm/npmfunctions/dist/Icons/iconNames';
+import { getHighlightedText } from './HighlightedText';
+import { createAccountRow } from '../Accounts/AccountItem';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
 
-const consoleLineItemBuild: boolean = false;
-
-const thisSelect = ['*','ID','FileRef','FileLeafRef','Author/Title','Editor/Title','Author/Name','Editor/Name','Modified','Created','CheckoutUserId','HasUniqueRoleAssignments','Title','FileSystemObjectType','FileSizeDisplay','FileLeafRef','LinkFilename','OData__UIVersion','OData__UIVersionString','DocIcon'];
-
-
-
-const LookupColumns: string[] = ['Functions/Title', 'Topics/Title', 'ALGroup/Title', 'Sections/Title','Processes/Title' ];
 
 const pivotStyles = {
   root: {
@@ -69,28 +65,6 @@ const pivotStyles = {
 
 export default class SearchPage extends React.Component<ISearchPageProps, ISearchPageState> {
 
-  /**
- * Copied from ECStorage
- * Super cool solution based on:  https://stackoverflow.com/a/43235785
- * @param text 
- * @param highlight 
- */
-  private getHighlightedText(text, highlight) {
-  // <div dangerouslySetInnerHTML={{ __html: this.state.showPanelItem.WikiField }} />
-  // Split on highlight term and include term into parts, ignore case
-  if ( !highlight ) {
-    return text;
-
-  } else {
-    const parts = text.split(new RegExp(`(${highlight})`, 'gi'));
-    return <span> { parts.map((part, i) => 
-      <span key={i} style={part.toLowerCase() === highlight.toLowerCase() ? { fontWeight: 'bold', backgroundColor: 'yellow' } : {} }>
-        { part }
-      </span>)
-    } </span>;
-  }
-
-}
 
   private LastSearch = '';
 
@@ -216,7 +190,7 @@ public async updateWebInfo (   ) {
 
       /*https://developer.microsoft.com/en-us/fabric#/controls/web/searchbox*/
       let searchBox =  
-      <div className={[styles.searchContainer, styles.padLeft20 ].join(' ')} >
+      <div className={[styles.searchContainer ].join(' ')} >
         <SearchBox
           className={styles.searchBox}
           styles={{ root: { maxWidth:250 } }}
@@ -227,7 +201,7 @@ public async updateWebInfo (   ) {
           onChange={ this._onSearchChange.bind(this) }
         />
         <div className={styles.searchStatus}>
-          { 'Searching ' + this.state.filtered.length + ' accounts' }
+          { 'Searching ' + this.state.filtered.length + ' items' }
           { this.state.searchTime === null ? '' : ' ~ Time ' + this.state.searchTime + ' ms' }
           { /* 'Searching ' + (this.state.searchType !== 'all' ? this.state.filteredTiles.length : ' all' ) + ' items' */ }
         </div>
@@ -237,27 +211,30 @@ public async updateWebInfo (   ) {
       this.state.filtered.map( ( item: IAnyContent ) => {
         if ( filtered.length < this.state.slideCount ) {
           if ( item.type === 'account' ) {
-            filtered.push( <div className={ stylesS.listItem }>
-              <div><Icon iconName={ SearchTypes.objs[item.typeIdx].icon }></Icon></div>
+            filtered.push( 
+              createAccountRow( item , this.state.searchText, this._onClickItem.bind( this, item ) )
+            //   <div className={ stylesS.listItem }>
+            //   <div><Icon iconName={ SearchTypes.objs[item.typeIdx].icon }></Icon></div>
 
-              <div className={ stylesS.accountDetails}>
-                <div className={ stylesS.accountRow1 } style={{cursor: item.searchHref ? 'pointer' : null }} onClick = { this._onClickItem.bind( this, item ) }>
-                  <div title="Account Number">{ this.getHighlightedText( `${ item.Title }`, this.state.searchText )  }</div>
-                  <div title="ALGroup">{ this.getHighlightedText( `${ item.ALGroup }`, this.state.searchText )  }</div>
-                  <div title="SubCategory">{ this.getHighlightedText( `${ item.SubCategory }`, this.state.searchText )  }</div>
-                  <div title="Name">{ this.getHighlightedText( `${ item.Name1 }`, this.state.searchText )  }</div>
-                </div>
-                <div className={ stylesS.accountRow2}>
-                  <div>{ this.getHighlightedText( `${ item.Description }`, this.state.searchText )  }</div>
-                  <div>{ this.getHighlightedText( `${ item['RCM'] }`, this.state.searchText )  }</div>
-                </div>
-              </div>
-            </div>);
+            //   <div className={ stylesS.accountDetails}>
+            //     <div className={ stylesS.accountRow1 } style={{cursor: item.searchHref ? 'pointer' : null }} onClick = { this._onClickItem.bind( this, item ) }>
+            //       <div title="Account Number">{ getHighlightedText( `${ item.Title }`, this.state.searchText )  }</div>
+            //       <div title="ALGroup">{ getHighlightedText( `${ item.ALGroup }`, this.state.searchText )  }</div>
+            //       <div title="SubCategory">{ getHighlightedText( `${ item.SubCategory }`, this.state.searchText )  }</div>
+            //       <div title="Name">{ getHighlightedText( `${ item.Name1 }`, this.state.searchText )  }</div>
+            //     </div>
+            //     <div className={ stylesS.accountRow2}>
+            //       <div>{ getHighlightedText( `${ item.Description }`, this.state.searchText )  }</div>
+            //       <div>{ getHighlightedText( `${ item['RCM'] }`, this.state.searchText )  }</div>
+            //     </div>
+            //   </div>
+            // </div>
+            );
           } else {
             filtered.push( <div className={ stylesS.listItem }>
               <div><Icon iconName={ SearchTypes.objs[item.typeIdx].icon }></Icon></div>
               <div style={{cursor: 'pointer'}} onClick = { this._onClickItem.bind( this, item ) }>
-                { this.getHighlightedText( `${ item.searchTitle } - ${ item.searchDesc }`, this.state.searchText )  }</div>
+                { getHighlightedText( `${ item.searchTitle } - ${ item.searchDesc }`, this.state.searchText )  }</div>
             </div>);
           }
 
@@ -270,9 +247,9 @@ public async updateWebInfo (   ) {
   
       return (
         <div className={ stylesS.searchPage }>
-          {/* <div className={ styles.container }>
+          {/* <div className={ styles.container }> */}
             <div className={ styles.row }>
-              <div className={ styles.column }> */}
+              {/* <div className={ styles.column }> */}
                 {/* { this.props.fetchTime } */}
                 { searchBox }
 
@@ -289,9 +266,9 @@ public async updateWebInfo (   ) {
                 {/* { componentPivot }
                 { showPage }
                 { userPanel } */}
-              {/* </div>
+              {/* </div> */}
             </div>
-          </div> */}
+          {/* </div> */}
         </div>
       );
 
