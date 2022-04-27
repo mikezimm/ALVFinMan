@@ -65,7 +65,6 @@ export default class NewsPage extends React.Component<INewsPageProps, INewsPageS
 
     const imageUrl = showArticle ? showArticle.BannerImageUrl : null;
 
-
     const CanvasContent1 = showCanvasContent1 !== true ? null :
       <div>
         {/* <h2>CanvasContent1</h2> */}
