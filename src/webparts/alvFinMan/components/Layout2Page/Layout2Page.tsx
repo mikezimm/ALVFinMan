@@ -230,6 +230,7 @@ export default class Layout2Page extends React.Component<ILayout2PageProps, ILay
 
     } else if ( e.ctrlKey === true && item.LinkColumn ) {
       if ( target === 'none' ) { //Do not open any links by default.
+        window.open( item.LinkColumn.Url , '_blank' );
         
       } else if ( target === '_blank' ) { window.open( item.LinkColumn.Url , '_blank' ); }
     } else {    }

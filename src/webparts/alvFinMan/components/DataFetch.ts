@@ -305,7 +305,7 @@ export function createEmptySearchBucket () {
         item.publishedLoc = item.publishedMS.toLocaleString();
       }
 
-      if ( item.Sections ) { item.Reporting = item.Sections ; }
+      if ( item.ReportingSections ) { item.Reporting = item.ReportingSections ; }
 
       let meta: string[] = [];
       //This is for display purposes so user can see what property the search criteria is found in
@@ -324,8 +324,8 @@ export function createEmptySearchBucket () {
           let hasError: boolean = false;
           try {
             item[ searchProps[ idx ] ] = item[ propArray[0] ][ propArray[1] ]; //Add flattened value - item["Author/Title"]= item.Author.Title
-            //Manually copy Sections/Title over to Reporting/Title
-            if ( searchProps[ idx ] === 'Sections/Title' ) { item[ 'Reporting/Title'] = item[ searchProps[ idx ] ]; }
+            //Manually copy ReportingSections/Title over to Reporting/Title
+            if ( searchProps[ idx ] === 'ReportingSections/Title' ) { item[ 'Reporting/Title'] = item[ searchProps[ idx ] ]; }
           } catch (e) {
             // alert('Error doing search props');
             let lastPart = item[propArray[0] ] ? item[propArray[0] ][ propArray[1] ] : 'UNK';
@@ -341,13 +341,13 @@ export function createEmptySearchBucket () {
             //This first loop never gets triggered with multi-select lookups because the array is really item [ propArray[0] ]
             if ( Array.isArray( item[ propArray[0] ][ propArray[1] ]  )) {
               let result = `${searchProps[ idx ]}=${item[ propArray[0] ][ propArray[1] ] .join(';')}`;
-              if ( searchProps[ idx ] === 'Sections/Title' ) { 
+              if ( searchProps[ idx ] === 'ReportingSections/Title' ) { 
                 result += ` || Reporting/Title=${item[ propArray[0] ][ propArray[1] ] .join(';')}`; }
               return result;
 
             } else if ( Array.isArray( item[ propArray[0] ] )  ) {
               /**
-               * NEED TO ADD LOOP HERE TO CHECK FOR MULTI-SELECT Lookups like Sections/Titles.
+               * NEED TO ADD LOOP HERE TO CHECK FOR MULTI-SELECT Lookups like ReportingSections/Titles.
                * They don't get caught in the above one because the logic does not work that way
                */
 
@@ -357,7 +357,7 @@ export function createEmptySearchBucket () {
 
 
               let result = `${searchProps[ idx ]}=${item[ propArray[0] ][ propArray[1] ] }`;
-              if ( searchProps[ idx ] === 'Sections/Title' ) { 
+              if ( searchProps[ idx ] === 'ReportingSections/Title' ) { 
                 result += ` || Reporting/Title=${item[ propArray[0] ][ propArray[1] ] }`; }
 
               return result;
@@ -368,8 +368,12 @@ export function createEmptySearchBucket () {
 
         
       }).join(' || ');
-  
-      meta = searchText.split(' || ' );
+      
+      //Get rid of any empty strings
+      searchText.split(' || ' ).map( text => {
+        if ( text ) { meta.push( text ); }
+      });
+
       //searchTextLC is used for actual search function - removes Column Titles from searchable text
       let searchTextLC : string = searchProps.map( prop => {
         if ( Array.isArray( item[ prop ] )) {
@@ -457,6 +461,7 @@ export function createEmptySearchBucket () {
 
       //This if was added for the Standards Wiki Library where the title column is actually Title0
       if ( !searchTitle && item.Title0 ) { searchTitle = item.Title0 ; } 
+      if ( !searchTitle && item.FileLeafRef ) { searchTitle = item.FileLeafRef.substr(0, item.FileLeafRef.lastIndexOf('.') ) ; } //Added for Std #139 which does not have a Title value.
       if ( !searchDesc ) { searchDesc = '' ; } 
 
       if ( !searchHref ) { 

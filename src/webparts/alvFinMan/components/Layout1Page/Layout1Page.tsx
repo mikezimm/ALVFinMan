@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styles from '../AlvFinMan.module.scss';
-import { ILayoutGPage, ILayoutSPage, ILayoutAll, ILayoutAPage, IFMBuckets,   } from '../IAlvFinManProps';
+import { ILayoutGPage, ILayoutSPage, ILayoutAll, ILayoutAPage, IFMBuckets, IAnyContent,   } from '../IAlvFinManProps';
 import { ILayout1PageProps, ILayout1PageState, ILayout1Page, Layout1PageValues, } from './ILayout1PageProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 
@@ -29,6 +29,7 @@ import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfu
 import AlvAccounts from '../Accounts/Accounts';
 import { FinManSite, ISourceInfo, ISourceProps, LookupColumns, sitePagesColumns, SourceInfo } from '../DataInterface';
 import { IFMSearchType, SearchTypes } from '../DataInterface';
+import { getSearchTypeIcon } from '../Search/FileTypeIcon';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
 
@@ -76,7 +77,7 @@ const consoleLineItemBuild: boolean = false;
 
 export default class Layout1Page extends React.Component<ILayout1PageProps, ILayout1PageState> {
 
-  private buildLay1Page( pivot: string, bucketClickKey: string, buckets: IFMBuckets, docs: any[] , sups: any[] ) {
+  private buildLay1Page( pivot: string, bucketClickKey: string, buckets: IFMBuckets, docs: IAnyContent[] , sups: any[] ) {
     console.log('buildLay1Page:', pivot,bucketClickKey  );
     const key = pivot.split('|')[1] ? pivot.split('|')[1] : pivot.split('|')[0] ;
 
@@ -93,38 +94,43 @@ export default class Layout1Page extends React.Component<ILayout1PageProps, ILay
     let showDocs : any[] = [];
     let checkBucketKey = !bucketClickKey ? firstTitle : bucketClickKey;
     docs.map( item => {
+      let showTitle = item.Title0 ? item.Title0 : item.Title? item.Title: item.searchTitle + '*';
       if ( Array.isArray( item [key] ) === true ) {
         item [key].map( value => {
           if ( consoleLineItemBuild === true ) console.log( 'key value - item', key, value, item ) ;
           if ( value.Title === checkBucketKey ) { showDocs.push( 
           <li onClick= { this.clickDocumentItem.bind( this, key, 'docs', item  )}> 
-            { item.Title0 ? item.Title0 : item.Title } </li> ) ; }
+            { showTitle } </li> ) ; }
         });
       } else { //This is not a multi-select key
           if ( item [key] && item [key].Title === checkBucketKey ) { showDocs.push(  
           <li onClick= { this.clickDocumentItem.bind( this, key, 'docs', item  )}>
-            { item.Title0 ? item.Title0 : item.Title } </li>  ) ; }
+            { showTitle } </li>  ) ; }
       }
     });
+    if ( showDocs.length === 0 ) { showDocs.push( <li >None found for { checkBucketKey }</li>  ) ; }
 
     let showSups : any[] = [];
     sups.map( item => {
+      let showTitle = item.Title0 ? item.Title0 : item.Title? item.Title: item.searchTitle + '*';
       if ( Array.isArray( item [key] ) === true ) {
         item [key].map( value => {
           if ( consoleLineItemBuild === true ) console.log( 'key value - item', key, value, item ) ;
           if ( value.Title === checkBucketKey ) { showSups.push( 
           <li  className={ styles.supsLI } onClick= { this.clickDocumentItem.bind( this, key, 'sups', item  )}>
-            <div><Icon iconName={ SearchTypes.objs[item.typeIdx].icon }></Icon></div>
-            { item.Title0 ? item.Title0 : item.Title } </li> ) ; }
+            { getSearchTypeIcon( SearchTypes.objs[item.typeIdx] ) }
+            { showTitle } </li> ) ; }
         });
       } else { //This is not a multi-select key
           if ( item [key] && item [key].Title === checkBucketKey ) { showSups.push(  
           <li  onClick= { this.clickDocumentItem.bind( this, key, 'sups', item  )}>
-            <div title={ SearchTypes.objs[item.typeIdx].title }><Icon iconName={ SearchTypes.objs[item.typeIdx].icon }></Icon></div>
-            { item.FileLeafRef ? item.FileLeafRef : item.Title } </li>  ) ; }
+            { getSearchTypeIcon( SearchTypes.objs[item.typeIdx] ) }
+            { item.FileLeafRef ? item.FileLeafRef : showTitle } </li>  ) ; }
 
       }
     });
+
+    if ( showSups.length === 0 ) { showSups.push( <li >None found for { checkBucketKey }</li>  ) ; }
 
     let page = <div className={ styles.layout1 } >
       <div className={ styles.titleList }><h3>{ this.props.mainPivotKey}</h3> { titles } </div>
@@ -288,22 +294,27 @@ public async updateWebInfo ( webUrl: string, listChangeOnly : boolean ) {
 
    //Standards are really site pages, supporting docs are files
   private async getDocWiki( item: any, ) {
+    
+    let sourceInfo: ISourceProps = SourceInfo.stds;
 
     let web = await Web( `${window.location.origin}${FinManSite}` );
     
-    const columns = [ ...sitePagesColumns, ...LookupColumns, ...[ 'DocumentType/Title' ] ];
+    const columns = sourceInfo.columns;
 
     let expColumns = getExpandColumns( columns );
     let selColumns = getSelectColumns( columns );
     
     const expandThese = expColumns.join(",");
-    let selectThese = '*,WikiField' + selColumns.join(",");
+    let selectThese = '*,WikiField,FileRef,FileLeafRef,' + selColumns.join(",");
 
     // Why an await does not work here is beyond me.  It should work :(
     // let fullItem = await web.lists.getByTitle( StandardsLib ).items.select(selectThese).expand(expandThese).getById( item.ID );
-    web.lists.getByTitle( SourceInfo.stds.listTitle ).items.select(selectThese).expand(expandThese).getById( item.ID )().then( result => {
+    web.lists.getByTitle( sourceInfo.listTitle ).items.select(selectThese).expand(expandThese).getById( item.ID )().then( result => {
       console.log( 'ALVFinManDocs', result );
-      this.setState({ showItemPanel: true, showPanelItem: result });
+      //Only real addition is the WikiField
+      item.WikiField = result.WikiField;
+      this.setState({ showItemPanel: true, showPanelItem: item });
+
     }).catch( e => {
       console.log('Error getting item wiki');
     });

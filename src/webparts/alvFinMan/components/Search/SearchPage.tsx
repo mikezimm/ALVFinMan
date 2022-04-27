@@ -33,6 +33,7 @@ import { IAnyContent, ISearchObject } from '../IAlvFinManProps';
 import { NoItems } from '@mikezimm/npmfunctions/dist/Icons/iconNames';
 import { getHighlightedText } from './HighlightedText';
 import { createAccountRow } from '../Accounts/AccountItem';
+import { getSearchTypeIcon } from './FileTypeIcon';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
 
@@ -180,7 +181,7 @@ public async updateWebInfo (   ) {
           if ( this.state.typeSearch.indexOf( typeObj.key ) > -1 ) { classNames.push( stylesS.isSelected ) ; }
 
           typeSearch.push( <div className={ classNames.join(' ') } style={ null }  onClick={ this._clickType.bind( this, typeObj )} title={ typeObj.title }>
-            <Icon iconName={ typeObj.icon }></Icon>
+            { getSearchTypeIcon(typeObj) }
             </div> );
         }
 
@@ -232,7 +233,7 @@ public async updateWebInfo (   ) {
             );
           } else {
             filtered.push( <div className={ stylesS.listItem }>
-              <div><Icon iconName={ SearchTypes.objs[item.typeIdx].icon }></Icon></div>
+              { getSearchTypeIcon( SearchTypes.objs[item.typeIdx] ) }
               <div style={{cursor: 'pointer'}} onClick = { this._onClickItem.bind( this, item ) }>
                 { getHighlightedText( `${ item.searchTitle } - ${ item.searchDesc }`, this.state.searchText )  }</div>
             </div>);

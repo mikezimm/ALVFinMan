@@ -15,6 +15,8 @@ import { IHelpTableRow, IHelpTable, IPageContent, ISinglePageProps } from '../ba
 
 export function basicsContent( repoLinks: IRepoLinks ) {
 
+    return null;
+    
     let messageRows = [];
 
     let iconSize = 'large';
