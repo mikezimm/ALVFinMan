@@ -57,7 +57,7 @@ export default class NewsPage extends React.Component<INewsPageProps, INewsPageS
     SortedNews.map( item => {
       let classNames = [ stylesN.titleListItem ];
       if ( showItem && ( item.ID === showItem.ID ) ) { classNames.push( stylesN.isSelected ) ; }
-      newsList.push( <li className={ classNames.join( ' ' ) } onClick= { this.clickNewsItem.bind( this, item.ID, 'news', item  )} style={ FUStyle }>
+      newsList.push( <li className={ classNames.join( ' ' ) } onClick= { this.clickNewsItem.bind( this, item.ID, 'news', item  )} style={ null }>
         { item.Title } </li>  );
     });
 

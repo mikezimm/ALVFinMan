@@ -366,9 +366,8 @@ export function createEmptySearchBucket () {
 
         }
 
-        
       }).join(' || ');
-      
+
       //Get rid of any empty strings
       searchText.split(' || ' ).map( text => {
         if ( text ) { meta.push( text ); }

@@ -127,23 +127,6 @@ const FetchingSpinner = <Spinner size={SpinnerSize.large} label={"FetchingSpinne
 
 export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinManState> {
 
-  private reStyleButtons( ) {
-    const buttonStyles = defaultBannerCommandStyles;
-    buttonStyles.margin = '0px 10px';
-    return buttonStyles;
-  }
-
-  private reStyleButtons2( background: string = null, color: string = null ) {
-    let buttonStyles = JSON.parse(JSON.stringify( defaultBannerCommandStyles )) ;
-    buttonStyles.margin = '0px 10px';
-
-    if ( background ) { buttonStyles.background = background; }
-    if ( color ) { buttonStyles.color = color; }
-
-    return buttonStyles;
-  }
-
-  
   private newRefreshId() {
 
     let startTime = new Date();
@@ -151,59 +134,6 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     return refreshId;
 
   }
-
-  // private buildLay1Page( pivot: string, bucketClickKey: string, buckets: IFMBuckets, docs: any[] , sups: any[] ) {
-
-  //     const key = pivot.split('|')[1] ? pivot.split('|')[1] : pivot.split('|')[0] ;
-  //     const firstTitle = buckets[key][0];
-  //     let titles = buckets[key].map( title => {
-  //       let classNames = [ styles.leftFilter ];
-  //       if ( title === bucketClickKey ) { classNames.push( styles.isSelected ) ; }
-  //       return <li className={ classNames.join( ' ' ) } onClick = { this.clickBucketItem.bind( this, key, title ) }> { title } </li>;
-  //     });
-
-  //     let showDocs : any[] = [];
-  //     let checkBucketKey = !bucketClickKey ? firstTitle : bucketClickKey;
-  //     docs.map( item => {
-  //       if ( Array.isArray( item [key] ) === true ) {
-  //         item [key].map( value => {
-  //           if ( consoleLineItemBuild === true ) console.log( 'key value - item', key, value, item ) ;
-  //           if ( value.Title === checkBucketKey ) { showDocs.push( 
-  //           <li onClick= { this.clickDocumentItem.bind( this, key, 'docs', item  )}> 
-  //             { item.Title0 ? item.Title0 : item.Title } </li> ) ; }
-  //         });
-  //       } else { //This is not a multi-select key
-  //           if ( item [key] && item [key].Title === checkBucketKey ) { showDocs.push(  
-  //           <li onClick= { this.clickDocumentItem.bind( this, key, 'docs', item  )}>
-  //             { item.Title0 ? item.Title0 : item.Title } </li>  ) ; }
-  //       }
-  //     });
-
-  //     let showSups : any[] = [];
-  //     sups.map( item => {
-  //       if ( Array.isArray( item [key] ) === true ) {
-  //         item [key].map( value => {
-  //           if ( consoleLineItemBuild === true ) console.log( 'key value - item', key, value, item ) ;
-  //           if ( value.Title === checkBucketKey ) { showSups.push( 
-  //           <li  onClick= { this.clickDocumentItem.bind( this, key, 'sups', item  )}>
-  //             { item.Title0 ? item.Title0 : item.Title } </li> ) ; }
-  //         });
-  //       } else { //This is not a multi-select key
-  //           if ( item [key] && item [key].Title === checkBucketKey ) { showSups.push(  
-  //           <li  onClick= { this.clickDocumentItem.bind( this, key, 'sups', item  )}>
-  //             { item.FileLeafRef ? item.FileLeafRef : item.Title } </li>  ) ; }
-
-  //       }
-  //     });
-
-  //     let page = <div className={ styles.layout1 } >
-  //       <div className={ styles.titleList }> { titles } </div>
-  //       <div className={ styles.docsList }> { showDocs } </div>
-  //       <div className={ styles.docsList }> { showSups } </div>
-  //     </div>;
-  //     return page;
-
-  // }
 
   private mainHelp = MainHelpPage( gitRepoALVFinManSmall );
   /***
@@ -231,10 +161,6 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
    }
  
    private buildFarBannerElements() {
-     //See banner/NearAndFarSample.js for how to build this.
-     // minimizeTiles= { this.minimizeTiles.bind(this) }
-     // searchMe= { this.searchMe.bind(this) }
-     // showAll= { this.showAll.bind(this) }
      let farElements: any[] = [];
  
      if ( this.props.bannerProps.showTricks === true ) {
@@ -379,14 +305,6 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       fetchedNews = true;
 
     }
-   
-    // if ( fetchedHelp !== true && ( mainPivotKey === 'Help' || mainPivotKey === 'Search' ) ) {
-    //   help = await getALVFinManContent( SourceInfo.help, this.props.search );
-    //   search = updateSearchCounts( 'sups', sups, search );
-
-    //   fetchedNews = true;
-
-    // }
 
     if ( ( mainPivotKey === 'Search' || mainPivotKey === 'Accounts' ) && this.state.accounts.length === 0 ) {
       accounts = await getALVFinManContent ( SourceInfo.accounts, this.props.search );
@@ -421,21 +339,10 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
   public render(): React.ReactElement<IAlvFinManProps> {
     const {
-      description,
-      isDarkTheme,
-      environmentMessage,
-      hasTeamsContext,
-      userDisplayName,
       bannerProps,
-
     } = this.props;
 
     const {
-      // fetchInfo,
-      // toggleTag,
-      // showPanel,
-      // panelFileType,
-      // panelSource,
     } = this.state;
 
     
@@ -524,30 +431,6 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       mainPivotKey={ this.state.mainPivotKey }
       cmdButtonCSS={bannerProps.bannerCmdReactCSS }
     ></SearchPage>;
-
-    if ( this.state.showPanelItem && this.state.showPanelItem.WikiField ) {
-      // const replaceString = '<a onClick=\"console.log(\'Going to\',this.href);window.open(this.href,\'_blank\')\" style="pointer-events:none" href=';
-      const replaceString = '<a onClick=\"window.open(this.href,\'_blank\')\" href=';
-      this.state.showPanelItem.WikiField = this.state.showPanelItem.WikiField.replace(linkNoLeadingTarget,replaceString);
-    }
-    
-    const docsPage = !this.state.showPanelItem || !this.state.showPanelItem.WikiField ? null : <div dangerouslySetInnerHTML={{ __html: this.state.showPanelItem.WikiField }} />;
-    const panelContent = <div>
-      <ReactJson src={ this.state.showPanelItem } name={ 'Summary' } collapsed={ false } displayDataTypes={ true } displayObjectSize={ true } enableClipboard={ true } style={{ padding: '20px 0px' }}/>
-    </div>;
-
-    const userPanel = <div><Panel
-      isOpen={ this.state.showItemPanel === true ? true : false }
-      // this prop makes the panel non-modal
-      isBlocking={true}
-      onDismiss={ this._onClosePanel.bind(this) }
-      closeButtonAriaLabel="Close"
-      type = { PanelType.large }
-      isLightDismiss = { true }
-      >
-        { docsPage }
-        { panelContent }
-    </Panel></div>;
 
     const accounts = this.state.mainPivotKey !== 'Accounts' ? null : <AlvAccounts
       source={ SourceInfo }
@@ -650,7 +533,6 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
             { componentPivot }
             { showPage }
             { showPage2 }
-            { userPanel }
             { accounts }
             { news }
             { SearchContent }
@@ -666,74 +548,12 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     console.log('pivotMainClick:', temp.props.itemKey );
 
     this.updateWebInfo( temp.props.itemKey );
-    // this.setState({ 
-    //   mainPivotKey: temp.props.itemKey, 
-    //   bucketClickKey: '', //Clear bucketItemClick for new page
-    // });
-  }
-
-  //onClick = { this.clickBucketItem.bind( this, key, title ) }
-  // private clickBucketItem( pivot, leftMenu, ex ) {
-  //   console.log('clickBucketItem:', pivot, leftMenu );
-  //   this.updateWebInfo( this.state.mainPivotKey, leftMenu );
-  //   // this.setState({ bucketClickKey: leftMenu });
-  // }
-
-  
-  // private async clickDocumentItem( pivot, supDoc, item, title ) {
-  //   console.log('clickDocumentItem:', pivot, supDoc, item );
-  //   if ( supDoc === 'docs' ) {
-  //     await this.getDocWiki( item );
-  //   } else {
-  //     this.setState({ showItemPanel: true, showPanelItem: item });
-  //   }
-
-  // }
-
-
-
-   //Standards are really site pages, supporting docs are files
-  // private async getDocWiki( item: any, ) {
-
-  //   let web = await Web( `${window.location.origin}${FinManSite}` );
-    
-  //   const columns = [ ...sitePagesColumns, ...LookupColumns, ...[ 'DocumentType/Title' ] ];
-
-  //   let expColumns = getExpandColumns( columns );
-  //   let selColumns = getSelectColumns( columns );
-    
-  //   const expandThese = expColumns.join(",");
-  //   let selectThese = '*,WikiField' + selColumns.join(",");
-
-  //   // Why an await does not work here is beyond me.  It should work :(
-  //   // let fullItem = await web.lists.getByTitle( StandardsLib ).items.select(selectThese).expand(expandThese).getById( item.ID );
-  //   web.lists.getByTitle( StandardsLib ).items.select(selectThese).expand(expandThese).getById( item.ID )().then( result => {
-  //     console.log( 'ALVFinManDocs', result );
-  //     result.meta = item.meta;
-  //     result.searchText = item.searchText;
-  //     result.searchTextLC = item.searchTextLC;
-
-
-  //     this.setState({ showItemPanel: true, showPanelItem: result });
-  //   }).catch( e => {
-  //     console.log('Error getting item wiki');
-  //   });
-  // }
-
-  private _onClosePanel( ) {
-    this.setState({ showItemPanel: false, showPanelItem: null });
   }
 
   private togglePropsHelp(){
     let newState = this.state.showPropsHelp === true ? false : true;
     this.setState( { showPropsHelp: newState });
 }
-
-
-  // private linkClick( this ) {
-  //   console.log('linkClick', this);
-  //   console.log('linkClick href', this, this.href);
-  // }
 
 
 }
