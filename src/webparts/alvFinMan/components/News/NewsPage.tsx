@@ -52,7 +52,6 @@ export default class NewsPage extends React.Component<INewsPageProps, INewsPageS
     // debugger;
 
     let SortedNews: IPagesContent[] = sortObjectArrayByNumberKey( News, order, sortProp );
-    const FUStyle : React.CSSProperties = { whiteSpace: 'nowrap', textOverflow: 'ellipsis', maxWidth: '100%', overflow: 'hidden' };
 
     SortedNews.map( item => {
       let classNames = [ stylesN.titleListItem ];
