@@ -34,9 +34,10 @@ export function aboutTable( repoLinks: IRepoLinks, showRepoLinks: boolean ) {
 
 
 
+    table.rows.push( createAboutRow('2022-04-26',"1.0.0.03","#46 - Modern News import to app", showRepoLinks === true ? repoLinks : null ) );
     table.rows.push( createAboutRow('2022-04-26',"1.0.0.02","#37 - Help tab", showRepoLinks === true ? repoLinks : null ) );
     table.rows.push( createAboutRow('',"","Improvements and fixes:  #3, #5, #16, #20, #25, #30, #33, #34, #35, #36", showRepoLinks === true ? repoLinks : null ) );
-    
+
     table.rows.push( createAboutRow('2022-04-19',"1.0.0.01","", showRepoLinks === true ? repoLinks : null ) );
 
     

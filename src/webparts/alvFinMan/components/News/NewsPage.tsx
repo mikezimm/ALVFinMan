@@ -32,6 +32,7 @@ import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfu
 
 import AlvAccounts from '../Accounts/Accounts';
 import { FinManSite, LookupColumns, sitePagesColumns, SourceInfo } from '../DataInterface';
+import { divide } from 'lodash';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
 
@@ -40,7 +41,7 @@ const consoleLineItemBuild: boolean = false;
 
 export default class NewsPage extends React.Component<INewsPageProps, INewsPageState> {
 
-  private buildNewsList( News: IPagesContent[], sortProp: ISeriesSort, order: ISeriesSort, showItem: IPagesContent ) {
+  private buildNewsList( News: IPagesContent[], sortProp: ISeriesSort, order: ISeriesSort, showItem: IPagesContent, showCanvasContent1: boolean ) {
     console.log('buildNewsList:', News );
 
     let newsList : any[] = [];
@@ -60,8 +61,36 @@ export default class NewsPage extends React.Component<INewsPageProps, INewsPageS
     let showArticle: IPagesContent = showItem ? showItem : null;
 
     const articleTitle = showArticle ? showArticle.Title : 'Select news to show...';
-    const articleDesc = showArticle ? showArticle.Description : '';
+    let articleDesc: any  = showArticle ? showArticle.Description : '';
+
     const imageUrl = showArticle ? showArticle.BannerImageUrl : null;
+
+
+    const CanvasContent1 = showCanvasContent1 !== true ? null :
+      <div>
+        {/* <h2>CanvasContent1</h2> */}
+        <div dangerouslySetInnerHTML={{ __html: showArticle.CanvasContent1Str }} />
+      </div>;
+
+    if ( CanvasContent1 ) { articleDesc = null ; } //Remove Description because full article is shown below
+
+    let ClickInstructions = showCanvasContent1 === true ? null : 
+    <div style={{ paddingTop: '15px'}}>
+      <div>To go to article: <span style={{ cursor: 'pointer', color: 'darkblue' }}onClick={ this.openArticleNewTab.bind( this, showArticle )}>click here</span></div>
+      <div>To open article in NEW full-size tab: <b>CTRL-Click the Title</b> </div>
+      <div>To show it right here: <b>CTRL-ALT-Click the Title</b></div>
+      <div>To show it in a side panel: <b>ALT-Click the Title</b></div>
+    </div>;
+
+    if ( showArticle && showArticle['OData__OriginalSourceUrl'] && showArticle['OData__OriginalSourceUrl'].indexOf( window.location.origin ) < 0 ) {
+      //Link is external...  Use different instructions
+      ClickInstructions =
+      <div style={{ paddingTop: '15px'}}>
+        <div style={{ paddingBottom: '10px', fontWeight: 600 }}>To go to article: <span style={{ cursor: 'pointer', color: 'darkblue' }}onClick={ this.openThisLink.bind( this, showArticle['OData__OriginalSourceUrl'] )}>click here</span></div>
+        <div style={{ color: 'red', }}>Security check :)  This is the full link you will be clicking on</div>
+        <div>{ showArticle['OData__OriginalSourceUrl'] } </div>
+      </div>;
+    }
 
     if ( !showItem && SortedNews.length > 0 ) { showArticle = SortedNews[0]; }
     const image = !showItem || !imageUrl ? null : 
@@ -74,6 +103,8 @@ export default class NewsPage extends React.Component<INewsPageProps, INewsPageS
         { image }
         <h3>{ articleTitle }</h3>
          { articleDesc }
+         { ClickInstructions }
+         { CanvasContent1 }
       </div>
     </div>;
     return page;
@@ -85,6 +116,7 @@ export default class NewsPage extends React.Component<INewsPageProps, INewsPageS
     console.log('constructor:',   );
     this.state = {
       showItemPanel: false,
+      showCanvasContent1: false,
       showThisItem: this.props.news.length > 0 ? this.props.news[ 0 ] : null,
       refreshId: `${this.props.refreshId}`,
       sort: {
@@ -135,7 +167,7 @@ export default class NewsPage extends React.Component<INewsPageProps, INewsPageS
     } else {
       console.log('NewsPage: ReactElement', this.props.refreshId  );
 
-      const showPage = <div> { this.buildNewsList( this.props.news, this.state.sort.prop, this.state.sort.order, this.state.showThisItem ) } </div>; 
+      const showPage = <div> { this.buildNewsList( this.props.news, this.state.sort.prop, this.state.sort.order, this.state.showThisItem, this.state.showCanvasContent1 ) } </div>; 
   
       if ( this.state.showThisItem && this.state.showThisItem.WikiField ) {
         // const replaceString = '<a onClick=\"console.log(\'Going to\',this.href);window.open(this.href,\'_blank\')\" style="pointer-events:none" href=';
@@ -143,7 +175,19 @@ export default class NewsPage extends React.Component<INewsPageProps, INewsPageS
         this.state.showThisItem.WikiField = this.state.showThisItem.WikiField.replace(linkNoLeadingTarget,replaceString);
       }
       
-      const docsPage = !this.state.showThisItem || !this.state.showThisItem.WikiField ? null : <div dangerouslySetInnerHTML={{ __html: this.state.showThisItem.WikiField }} />;
+      //CanvasContent1,LayoutsWebpartsContent'
+      const CanvasContent1 = !this.state.showThisItem || !this.state.showThisItem.CanvasContent1Str ? null : 
+      <div>
+        <h2>CanvasContent1</h2>
+        <div dangerouslySetInnerHTML={{ __html: this.state.showThisItem.CanvasContent1Str }} />
+      </div>;
+
+      const LayoutsWebpartsContent = !this.state.showThisItem || !this.state.showThisItem.LayoutsWebpartsContent ? null : 
+      <div>
+        <h2>LayoutsWebpartsContent</h2>
+        <div dangerouslySetInnerHTML={{ __html: this.state.showThisItem.LayoutsWebpartsContent }} />
+      </div>;
+
       const panelContent = <div>
         <ReactJson src={ this.state.showThisItem } name={ 'Summary' } collapsed={ false } displayDataTypes={ true } displayObjectSize={ true } enableClipboard={ true } style={{ padding: '20px 0px' }}/>
       </div>;
@@ -157,7 +201,8 @@ export default class NewsPage extends React.Component<INewsPageProps, INewsPageS
         type = { PanelType.large }
         isLightDismiss = { true }
         >
-          { docsPage }
+          { CanvasContent1 }
+          { LayoutsWebpartsContent }
           { panelContent }
       </Panel></div>;
 
@@ -181,13 +226,23 @@ export default class NewsPage extends React.Component<INewsPageProps, INewsPageS
 
   }
 
+  private openArticleNewTab( item: IPagesContent ) {
+    window.open( item.File.ServerRelativeUrl , '_blank' );
+  }
+
+  private openThisLink( link:string ) {
+    window.open( link , '_blank' );
+  }
+
   private clickNewsItem( ID: number, category: string, item: IPagesContent, e: any ) {  //this, item.ID, 'news', item
     console.log('clickNewsItem:', ID, item );
     // debugger;
 
     let newState = this.state.showItemPanel;
     if ( e.altKey === true ) {
-      newState = this.state.showItemPanel === true ? false : true;
+      // newState = this.state.showItemPanel === true ? false : true;
+      let showCanvasContent1 = e.ctrlKey === true ? true : false;
+      this.getDocWiki( item , showCanvasContent1 );
 
     } else if ( e.ctrlKey === true && item.File ) {
       window.open( item.File.ServerRelativeUrl , '_blank' );
@@ -198,34 +253,35 @@ export default class NewsPage extends React.Component<INewsPageProps, INewsPageS
   }
 
   
-  private async clickDocumentItem( pivot, supDoc, item, title ) {
-    console.log('clickDocumentItem:', pivot, supDoc, item );
-    if ( supDoc === 'docs' ) {
-      await this.getDocWiki( item );
-    } else {
-      this.setState({ showItemPanel: true, showThisItem: item });
-    }
+  //Standards are really site pages, supporting docs are files
+  private async getDocWiki( item: IPagesContent, showCanvasContent1: boolean ) {
 
-  }
-
-   //Standards are really site pages, supporting docs are files
-  private async getDocWiki( item: any, ) {
-
-    let web = await Web( `${window.location.origin}${FinManSite}` );
+    let web = await Web( `${window.location.origin}${SourceInfo.news.webUrl}` );
     
-    const columns = [ ...sitePagesColumns, ...LookupColumns, ...[ 'DocumentType/Title' ] ];
+    const columns = SourceInfo.news.columns;
 
     let expColumns = getExpandColumns( columns );
     let selColumns = getSelectColumns( columns );
     
     const expandThese = expColumns.join(",");
-    let selectThese = '*,WikiField' + selColumns.join(",");
+    let selectThese = '*,WikiField,CanvasContent1,LayoutsWebpartsContent,BannerImageUrl' + selColumns.join(",");
 
     // Why an await does not work here is beyond me.  It should work :(
     // let fullItem = await web.lists.getByTitle( StandardsLib ).items.select(selectThese).expand(expandThese).getById( item.ID );
-    web.lists.getByTitle( SourceInfo.stds.listTitle ).items.select(selectThese).expand(expandThese).getById( item.ID )().then( result => {
+    web.lists.getByTitle( SourceInfo.news.listTitle ).items.select(selectThese).expand(expandThese).getById( parseInt( item.ID ) ).fieldValuesAsHTML().then( result => {
       console.log( 'ALVFinManDocs', result );
-      this.setState({ showItemPanel: true, showThisItem: result });
+
+    //Added this to fit images into the current width or else the image is full size
+    if ( result.CanvasContent1 ) { result.CanvasContent1Str = result.CanvasContent1.replace( /<img\s*/ig , '<img width="100%" ' ) ; }
+
+      //Need to manually update the BannerImageUrl property from original item because it comes across as an attribute link as text
+      result.BannerImageUrl = item.BannerImageUrl;
+
+      this.setState({ 
+        showItemPanel: showCanvasContent1 === false ? true : false, 
+        showCanvasContent1: showCanvasContent1, 
+        showThisItem: result });
+
     }).catch( e => {
       console.log('Error getting item wiki');
     });
