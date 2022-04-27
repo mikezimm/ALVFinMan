@@ -17,11 +17,13 @@ export const ModernSitePagesColumns: string[] = ['ID','Title','Description','Aut
 export const ModernSitePagesSearc: string[] = ['Title','Description','Author/Title','Editor/Title','FirstPublishedDate','PromotedState',];
 
 export const sitePagesColumns: string[] = [ "ID", "Title0", "Author/Title", "Editor/Title", "File/ServerRelativeUrl", "FileRef","FileLeafRef", "Created", "Modified" ]; //Do not exist on old SitePages library:   "Descritpion","BannerImageUrl.Url", "ServerRelativeUrl"
-export const libraryColumns: string[] = [ 'ID','FileRef','FileLeafRef','Author/Title','Editor/Title','Author/Name','Editor/Name','Modified','Created','CheckoutUserId','HasUniqueRoleAssignments','Title','FileSystemObjectType','FileSizeDisplay','File_x0020_Type','FileLeafRef','LinkFilename','OData__UIVersion','OData__UIVersionString','DocIcon'];
+export const libraryColumns: string[] = [ 'ID','FileRef','FileLeafRef','ServerRedirectedEmbedUrl','Author/Title','Editor/Title','Author/Name','Editor/Name','Modified','Created','CheckoutUserId','HasUniqueRoleAssignments','Title','FileSystemObjectType','FileSizeDisplay','File_x0020_Type','FileLeafRef','LinkFilename','OData__UIVersion','OData__UIVersionString','DocIcon'];
 export const LookupColumns: string[] = ['Functions/Title', 'Topics/Title', 'ALGroup/Title', 'ReportingSections/Title','Processes/Title' ]; // removed 'Sections/Title', for now since it should be ReportingSections
 
 export const ClassicSitePageColumns: string [] = [ ...sitePagesColumns, ...LookupColumns, ...[ 'DocumentType/Title' ] ];
 
+export const ExtraFetchClassicWiki = ['WikiField'];
+export const ExtraFetchModernPage = ['WikiField','CanvasContent1','LayoutsWebpartsContent'];
 
 export type IDefSourceType = 'link' | 'news' | 'help' | 'account' | 'StandardDocuments' | 'SupportDocuments';
 
@@ -35,6 +37,7 @@ export interface ISourceProps {
     searchProps: string[];
     selectThese?: string[];
     restFilter?: string;
+    itemFetchCol?: string[]; //higher cost columns to fetch on opening panel
     orderBy?: {
         prop: string;
         asc: boolean;
@@ -62,6 +65,7 @@ export const SourceInfo: ISourceInfo = {
         webRelativeLink: "SitePages",
         columns: ModernSitePagesColumns,
         searchProps: ModernSitePagesSearc,
+        itemFetchCol: ExtraFetchModernPage,
         restFilter: "Id ne 'X' and ContentTypeId ne '0x012000F6C75276DBE501468CA3CC575AD8E159' and Title ne 'Home'",
     },
 
@@ -73,6 +77,7 @@ export const SourceInfo: ISourceInfo = {
         webRelativeLink: "SitePages",
         columns: ModernSitePagesColumns,
         searchProps: ModernSitePagesSearc,
+        itemFetchCol: ExtraFetchModernPage,
         restFilter: "Id ne 'X' and ContentTypeId ne '0x012000F6C75276DBE501468CA3CC575AD8E159' and Title ne 'Home'",
     },
 
@@ -108,6 +113,7 @@ export const SourceInfo: ISourceInfo = {
         webRelativeLink: "StandardDocuments",
         listTitle: "StandardDocuments",
         columns: ClassicSitePageColumns,
+        itemFetchCol: ExtraFetchClassicWiki,
         searchProps: ClassicSitePageColumns,
         selectThese: ClassicSitePageColumns,
     },
@@ -122,6 +128,7 @@ export const SourceInfo: ISourceInfo = {
         webRelativeLink: "StandardDocuments",
         listTitle: "StandardDocuments",
         columns: ClassicSitePageColumns,
+        itemFetchCol: ExtraFetchClassicWiki,
         searchProps: ClassicSitePageColumns,
         selectThese: ClassicSitePageColumns,
     },

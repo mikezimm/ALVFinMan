@@ -32,8 +32,9 @@ import { ILabelColor, ICSSChartTypes, CSSChartTypes, ISeriesSort, ICSSChartSerie
 import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfunctions/dist/Lists/getFunctions';
 
 import AlvAccounts from '../Accounts/Accounts';
-import { FinManSite, LookupColumns, sitePagesColumns, SourceInfo } from '../DataInterface';
+import { FinManSite, ISourceProps, LookupColumns, sitePagesColumns, SourceInfo } from '../DataInterface';
 import { filter } from 'lodash';
+import { makeToggleJSONCmd } from '../Elements/CmdButton';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
 
@@ -41,6 +42,14 @@ const consoleLineItemBuild: boolean = false;
 
 
 export default class Layout2Page extends React.Component<ILayout2PageProps, ILayout2PageState> {
+
+  private ToggleJSONCmd = makeToggleJSONCmd( this._toggleJSON.bind( this ) );
+
+  
+  private _toggleJSON( ) {
+    let newState = this.state.showPanelJSON === true ? false : true;
+    this.setState( { showPanelJSON: newState });
+  }
 
   private buildLayout2List( Items: IAnyContent[], sortProp: ISeriesSort, order: ISeriesSort, showItem: IAnyContent ) {
     console.log('buildLayout2List:', Items );
@@ -79,8 +88,8 @@ export default class Layout2Page extends React.Component<ILayout2PageProps, ILay
     let linkInfo: any = null;
 
     if ( showArticle && showArticle.LinkColumn ) {
-      linkInfo = [ <div>Click here to go to <a href={ showArticle.LinkColumn.Url } > { showArticle.LinkColumn.Description }</a>.</div>,
-      <div>TIP:  You can also CTRL-Click any bullet items to quickly open the link in a new tab :)</div> ];
+      linkInfo = [ <div style={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>Click here to go to <a href={ showArticle.LinkColumn.Url } > { showArticle.LinkColumn.Description }</a>.</div>,
+      <div style={{ paddingBottom: '20px' }}>TIP:  You can also CTRL-Click any bullet items to quickly open the link in a new tab :)</div> ];
     }
 
     let pageTitle: any = this.props.mainPivotKey;
@@ -111,6 +120,8 @@ export default class Layout2Page extends React.Component<ILayout2PageProps, ILay
     console.log('constructor:',   );
     this.state = {
       showItemPanel: false,
+      showPanelJSON: false,
+
       selectedItem: null,
       refreshId: `${this.props.refreshId}`,
       filteredItems: [],
@@ -181,7 +192,7 @@ export default class Layout2Page extends React.Component<ILayout2PageProps, ILay
       }
       
       const docsPage = !this.state.selectedItem || !this.state.selectedItem.WikiField ? null : <div dangerouslySetInnerHTML={{ __html: this.state.selectedItem.WikiField }} />;
-      const panelContent = <div>
+      const panelContent = this.state.showPanelJSON !== true ? null : <div>
         <ReactJson src={ this.state.selectedItem } name={ 'Summary' } collapsed={ false } displayDataTypes={ true } displayObjectSize={ true } enableClipboard={ true } style={{ padding: '20px 0px' }}/>
       </div>;
   
@@ -195,6 +206,7 @@ export default class Layout2Page extends React.Component<ILayout2PageProps, ILay
         isLightDismiss = { true }
         >
           { docsPage }
+          { this.ToggleJSONCmd }
           { panelContent }
       </Panel></div>;
 
@@ -224,19 +236,20 @@ export default class Layout2Page extends React.Component<ILayout2PageProps, ILay
 
     let newState = this.state.showItemPanel;
 
-
     if ( e.altKey === true ) {
-      newState = this.state.showItemPanel === true ? false : true;
+      this.getDocWiki ( item );
 
     } else if ( e.ctrlKey === true && item.LinkColumn ) {
       if ( target === 'none' ) { //Do not open any links by default.
         window.open( item.LinkColumn.Url , '_blank' );
         
+
       } else if ( target === '_blank' ) { window.open( item.LinkColumn.Url , '_blank' ); }
-    } else {    }
+    } else { 
+      this.setState({ selectedItem: item, showItemPanel: newState });
 
+    }
 
-    this.setState({ selectedItem: item, showItemPanel: newState });
   }
 
   
@@ -253,21 +266,38 @@ export default class Layout2Page extends React.Component<ILayout2PageProps, ILay
    //Standards are really site pages, supporting docs are files
   private async getDocWiki( item: any, ) {
 
+    let sourceInfo: ISourceProps = SourceInfo[ item.format ];
+
+    //Someday maybe fetch followupLink content for Panel
+    this.setState({ showItemPanel: true, selectedItem: item });
+
+    return;
+
     let web = await Web( `${window.location.origin}${FinManSite}` );
     
-    const columns = [ ...sitePagesColumns, ...LookupColumns, ...[ 'DocumentType/Title' ] ];
+    //followUpLink was intended to be able to show content from the LinkColumn as well but that's a little to much 
+    let followUpLink = item.LinkColumn ? item.LinkColumn.Url : '';
+    if ( followUpLink.indexOf( FinManSite ) > -1 ) {
+
+    }
+
+    const columns = sourceInfo.columns;
 
     let expColumns = getExpandColumns( columns );
     let selColumns = getSelectColumns( columns );
     
     const expandThese = expColumns.join(",");
-    let selectThese = '*,WikiField' + selColumns.join(",");
+    let extraFetch = sourceInfo.itemFetchCol && sourceInfo.itemFetchCol.length > 0 ? sourceInfo.itemFetchCol.join(",") + ',' : '';
+    let selectThese = '*,' + extraFetch + selColumns.join(",");
 
     // Why an await does not work here is beyond me.  It should work :(
     // let fullItem = await web.lists.getByTitle( StandardsLib ).items.select(selectThese).expand(expandThese).getById( item.ID );
-    web.lists.getByTitle( SourceInfo.stds.listTitle ).items.select(selectThese).expand(expandThese).getById( item.ID )().then( result => {
-      console.log( 'ALVFinManDocs', result );
-      this.setState({ showItemPanel: true, selectedItem: result });
+    web.lists.getByTitle( sourceInfo.listTitle ).items.select(selectThese).expand(expandThese).getById( item.ID )().then( result => {
+      console.log( `Opening Panel for ${sourceInfo.listTitle} item:`, result );
+      //Only real addition is the WikiField
+      item.WikiField = result.WikiField;
+      this.setState({ showItemPanel: true, selectedItem: item });
+
     }).catch( e => {
       console.log('Error getting item wiki');
     });
@@ -277,7 +307,8 @@ export default class Layout2Page extends React.Component<ILayout2PageProps, ILay
 
 
   private _onClosePanel( ) {
-    this.setState({ showItemPanel: false, selectedItem: null });
+    // this.setState({ showItemPanel: false, selectedItem: null });
+    this.setState({ showItemPanel: false });
   }
 
 }

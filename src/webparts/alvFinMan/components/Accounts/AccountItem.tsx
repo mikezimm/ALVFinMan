@@ -31,7 +31,7 @@ import { Icon, IIconProps } from 'office-ui-fabric-react/lib/Icon';
 
 import { IFMSearchType, SearchTypes } from '../DataInterface';
 import { IAnyContent, ISearchObject } from '../IAlvFinManProps';
-import { getHighlightedText } from '../Search/HighlightedText';
+import { getHighlightedText } from '../Elements/HighlightedText';
 
 export function createAccountRow( item: IAnyContent , searchText: string, onClick: any ) {
 

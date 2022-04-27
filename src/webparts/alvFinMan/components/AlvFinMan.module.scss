@@ -118,7 +118,7 @@ $screen-xl-min: 1200px;
     .isSelected {
       font-weight: 600;
       text-decoration: underline;
-      color: darkred;
+      color: darkred !important;
       list-style-type: circle;
 
     }

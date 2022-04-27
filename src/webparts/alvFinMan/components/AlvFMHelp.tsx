@@ -22,6 +22,7 @@ export function MainHelpPage( repoLinks: IRepoLinks ) {
         <li>CTRL-Click on Standards or Supporting Documents Titles (at the top) to go to those full libraries</li>
         <li>CTRL-Click on an item in the Standards column to go directly to the full page (not the side panel)</li>
         <li>CTRL-Click on an item in the Supporting Documents column to open the file as a full page in the browser (not the side panel)</li>
+        <li>If you get access denied due to a policy (possibly due to your liscening or are using a unregistered device (personal device), normal click on the item and see a preview in the panel.</li>
 
         <h3>Search</h3>
         <ul>

@@ -33,6 +33,7 @@ import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfu
 import AlvAccounts from '../Accounts/Accounts';
 import { FinManSite, LookupColumns, sitePagesColumns, SourceInfo } from '../DataInterface';
 import { divide } from 'lodash';
+import { makeToggleJSONCmd } from '../Elements/CmdButton';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
 
@@ -40,6 +41,8 @@ const consoleLineItemBuild: boolean = false;
 
 
 export default class NewsPage extends React.Component<INewsPageProps, INewsPageState> {
+
+  private ToggleJSONCmd = makeToggleJSONCmd( this._toggleJSON.bind( this ) );
 
   private buildNewsList( News: IPagesContent[], sortProp: ISeriesSort, order: ISeriesSort, showItem: IPagesContent, showCanvasContent1: boolean ) {
     console.log('buildNewsList:', News );
@@ -116,6 +119,7 @@ export default class NewsPage extends React.Component<INewsPageProps, INewsPageS
     this.state = {
       showItemPanel: false,
       showCanvasContent1: false,
+      showPanelJSON: false,
       showThisItem: this.props.news.length > 0 ? this.props.news[ 0 ] : null,
       refreshId: `${this.props.refreshId}`,
       sort: {
@@ -187,7 +191,7 @@ export default class NewsPage extends React.Component<INewsPageProps, INewsPageS
         <div dangerouslySetInnerHTML={{ __html: this.state.showThisItem.LayoutsWebpartsContent }} />
       </div>;
 
-      const panelContent = <div>
+      const panelContent = this.state.showPanelJSON !== true ? null : <div>
         <ReactJson src={ this.state.showThisItem } name={ 'Summary' } collapsed={ false } displayDataTypes={ true } displayObjectSize={ true } enableClipboard={ true } style={{ padding: '20px 0px' }}/>
       </div>;
   
@@ -202,6 +206,7 @@ export default class NewsPage extends React.Component<INewsPageProps, INewsPageS
         >
           { CanvasContent1 }
           { LayoutsWebpartsContent }
+          { this.ToggleJSONCmd }
           { panelContent }
       </Panel></div>;
 
@@ -287,10 +292,13 @@ export default class NewsPage extends React.Component<INewsPageProps, INewsPageS
 
   }
 
-
+  private _toggleJSON( ) {
+    let newState = this.state.showPanelJSON === true ? false : true;
+    this.setState( { showPanelJSON: newState });
+  }
 
   private _onClosePanel( ) {
-    this.setState({ showItemPanel: false, showThisItem: null });
+    this.setState({ showItemPanel: false });
   }
 
 }

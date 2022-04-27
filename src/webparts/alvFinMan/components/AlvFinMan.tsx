@@ -59,7 +59,7 @@ import NewsPage from './News/NewsPage';
 import { MainHelpPage } from './AlvFMHelp';
 
 import { SourceInfo, ISourceInfo, ISourceProps } from './DataInterface';
-import {  getAppLinks, getStandardDocs, getAccounts, updateSearchCounts, updateSearchTypes, getALVFinManContent, } from './DataFetch';
+import {  updateSearchCounts, updateSearchTypes, getALVFinManContent, } from './DataFetch';
 
 
 import {  createEmptyBuckets,  updateBuckets } from './DataProcess';

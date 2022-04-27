@@ -33,6 +33,7 @@ export interface ILayout1PageState {
 
   showItemPanel: boolean;
   showPanelItem: IAnyContent;
+  showPanelJSON: boolean;
   
   refreshId: string;
 
