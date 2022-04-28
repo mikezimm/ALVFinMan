@@ -54,7 +54,7 @@ export default class NewsPage extends React.Component<INewsPageProps, INewsPageS
     let SortedNews: IPagesContent[] = sortObjectArrayByNumberKey( News, order, sortProp );
 
     SortedNews.map( item => {
-      let classNames = [ stylesN.titleListItem ];
+      let classNames = [ stylesN.titleListItem, styles.leftFilter ];
       if ( showItem && ( item.ID === showItem.ID ) ) { classNames.push( stylesN.isSelected ) ; }
       newsList.push( <li className={ classNames.join( ' ' ) } onClick= { this.clickNewsItem.bind( this, item.ID, 'news', item  )} style={ null }>
         { item.Title } </li>  );

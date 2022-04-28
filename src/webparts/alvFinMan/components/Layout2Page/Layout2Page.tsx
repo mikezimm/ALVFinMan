@@ -60,10 +60,9 @@ export default class Layout2Page extends React.Component<ILayout2PageProps, ILay
     // debugger;
 
     let SortedItems: IAnyContent[] = sortObjectArrayByNumberKey( Items, order, sortProp );
-    const FUStyle : React.CSSProperties = { whiteSpace: 'nowrap', textOverflow: 'ellipsis', maxWidth: '100%', overflow: 'hidden' };
 
     SortedItems.map( ( item, idx ) => {
-      let classNames = [ styles2.titleListItem ];
+      let classNames = [ styles2.titleListItem, styles.leftFilter ];
       if ( showItem && ( item.ID === showItem.ID ) ) { 
         classNames.push( styles2.isSelected ) ;
         showArticle = item;
@@ -72,7 +71,7 @@ export default class Layout2Page extends React.Component<ILayout2PageProps, ILay
         classNames.push( styles2.isSelected ) ;
         // showArticle = item;
       }
-      itemsList.push( <li className={ classNames.join( ' ' ) } onClick= { this.clickLayout2Item.bind( this, item.ID, 'appLinks', item, 'none'  )} style={ FUStyle }>
+      itemsList.push( <li className={ classNames.join( ' ' ) } onClick= { this.clickLayout2Item.bind( this, item.ID, 'appLinks', item, 'none'  )} style={ null }>
         { item.Title } </li>  );
     });
 
