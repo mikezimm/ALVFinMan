@@ -271,16 +271,16 @@ public async updateWebInfo ( webUrl: string, listChangeOnly : boolean ) {
       </Panel></div>;
   
       return (
-        <div className={ styles.alvFinMan }>
-          <div className={ styles.container }>
+        // <div className={ styles.alvFinMan }>
+        //   <div className={ styles.container }>
             <div className={ styles.row }>
               {/* <div className={ styles.column }> */}
                 { showPage }
                 { userPanel }
               {/* </div> */}
             </div>
-          </div>
-        </div>
+        //   </div>
+        // </div>
       );
 
     }
