@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styles from '../AlvFinMan.module.scss';
-import { ILayoutGPage, ILayoutSPage, ILayoutAll, ILayoutAPage, IFMBuckets,   } from '../IAlvFinManProps';
+import { ILayoutGPage, ILayoutSPage, ILayoutAll, ILayoutAPage, IFMBuckets, IAnyContent,   } from '../IAlvFinManProps';
 import { ILayout1PageProps, ILayout1PageState, ILayout1Page, Layout1PageValues, } from './ILayout1PageProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 
@@ -19,6 +19,7 @@ import { Pivot, PivotItem, IPivotItemProps, PivotLinkFormat, PivotLinkSize,} fro
 import { Dropdown, DropdownMenuItemType, IDropdownStyles, IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
 import { TextField,  IStyleFunctionOrObject, ITextFieldStyleProps, ITextFieldStyles } from "office-ui-fabric-react";
 import { Icon, IIconProps } from 'office-ui-fabric-react/lib/Icon';
+import { IFrameDialog,  } from "@pnp/spfx-controls-react/lib/IFrameDialog";
 
 import * as strings from 'AlvFinManWebPartStrings';
 
@@ -29,6 +30,10 @@ import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfu
 import AlvAccounts from '../Accounts/Accounts';
 import { FinManSite, ISourceInfo, ISourceProps, LookupColumns, sitePagesColumns, SourceInfo } from '../DataInterface';
 import { IFMSearchType, SearchTypes } from '../DataInterface';
+import { getSearchTypeIcon } from '../Elements/FileTypeIcon';
+import { makeToggleJSONCmd } from '../Elements/CmdButton';
+import { IFramePanel } from '@pnp/spfx-controls-react';
+import { IFPSUser } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterfaces';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
 
@@ -75,8 +80,12 @@ const consoleLineItemBuild: boolean = false;
 // const pivotHeading6 = 'Function';
 
 export default class Layout1Page extends React.Component<ILayout1PageProps, ILayout1PageState> {
+  private FPSWindow: any = window;
+  private FPSUser: IFPSUser = this.FPSWindow.FPSUser ? this.FPSWindow.FPSUser : null;
 
-  private buildLay1Page( pivot: string, bucketClickKey: string, buckets: IFMBuckets, docs: any[] , sups: any[] ) {
+  private ToggleJSONCmd = makeToggleJSONCmd( this._toggleJSON.bind( this ) );
+
+  private buildLay1Page( pivot: string, bucketClickKey: string, buckets: IFMBuckets, docs: IAnyContent[] , sups: any[] ) {
     console.log('buildLay1Page:', pivot,bucketClickKey  );
     const key = pivot.split('|')[1] ? pivot.split('|')[1] : pivot.split('|')[0] ;
 
@@ -93,38 +102,42 @@ export default class Layout1Page extends React.Component<ILayout1PageProps, ILay
     let showDocs : any[] = [];
     let checkBucketKey = !bucketClickKey ? firstTitle : bucketClickKey;
     docs.map( item => {
+      let showTitle = item.Title0 ? item.Title0 : item.Title? item.Title: item.searchTitle + '*';
       if ( Array.isArray( item [key] ) === true ) {
         item [key].map( value => {
           if ( consoleLineItemBuild === true ) console.log( 'key value - item', key, value, item ) ;
           if ( value.Title === checkBucketKey ) { showDocs.push( 
           <li onClick= { this.clickDocumentItem.bind( this, key, 'docs', item  )}> 
-            { item.Title0 ? item.Title0 : item.Title } </li> ) ; }
+            { showTitle } </li> ) ; }
         });
       } else { //This is not a multi-select key
           if ( item [key] && item [key].Title === checkBucketKey ) { showDocs.push(  
           <li onClick= { this.clickDocumentItem.bind( this, key, 'docs', item  )}>
-            { item.Title0 ? item.Title0 : item.Title } </li>  ) ; }
+            { showTitle } </li>  ) ; }
       }
     });
+    if ( showDocs.length === 0 ) { showDocs.push( <li >None found for { checkBucketKey }</li>  ) ; }
 
     let showSups : any[] = [];
     sups.map( item => {
+      let showTitle = item.Title0 ? item.Title0 : item.Title? item.Title: item.searchTitle + '*';
       if ( Array.isArray( item [key] ) === true ) {
         item [key].map( value => {
           if ( consoleLineItemBuild === true ) console.log( 'key value - item', key, value, item ) ;
           if ( value.Title === checkBucketKey ) { showSups.push( 
           <li  className={ styles.supsLI } onClick= { this.clickDocumentItem.bind( this, key, 'sups', item  )}>
-            <div><Icon iconName={ SearchTypes.objs[item.typeIdx].icon }></Icon></div>
-            { item.Title0 ? item.Title0 : item.Title } </li> ) ; }
+            { getSearchTypeIcon( SearchTypes.objs[item.typeIdx] ) }
+            { showTitle } </li> ) ; }
         });
       } else { //This is not a multi-select key
           if ( item [key] && item [key].Title === checkBucketKey ) { showSups.push(  
           <li  onClick= { this.clickDocumentItem.bind( this, key, 'sups', item  )}>
-            <div title={ SearchTypes.objs[item.typeIdx].title }><Icon iconName={ SearchTypes.objs[item.typeIdx].icon }></Icon></div>
-            { item.FileLeafRef ? item.FileLeafRef : item.Title } </li>  ) ; }
-
+            { getSearchTypeIcon( SearchTypes.objs[item.typeIdx] ) }
+            { item.FileLeafRef ? item.FileLeafRef : showTitle } </li>  ) ; }
       }
     });
+
+    if ( showSups.length === 0 ) { showSups.push( <li >None found for { checkBucketKey }</li>  ) ; }
 
     let page = <div className={ styles.layout1 } >
       <div className={ styles.titleList }><h3>{ this.props.mainPivotKey}</h3> { titles } </div>
@@ -137,6 +150,7 @@ export default class Layout1Page extends React.Component<ILayout1PageProps, ILay
   }
 public constructor(props:ILayout1PageProps){
   super(props);
+
   console.log('constructor:',   );
   this.state = {
     bucketClickKey: '',
@@ -145,6 +159,7 @@ public constructor(props:ILayout1PageProps){
     showItemPanel: false,
     showPanelItem: null,
     refreshId: `${this.props.refreshId}`,
+    showPanelJSON: false, //this.FPSUser && this.FPSUser.simple === 'SharePoint' ? true : false,
   };
 }
 
@@ -187,6 +202,8 @@ public async updateWebInfo ( webUrl: string, listChangeOnly : boolean ) {
 
   public render(): React.ReactElement<ILayout1PageProps> {
 
+    const showPanelItem = this.state.showPanelItem;
+    
     if ( this.props.mainPivotKey === '' || Layout1PageValues.indexOf( this.props.mainPivotKey ) < 0 ) {
       return ( null );
 
@@ -196,37 +213,45 @@ public async updateWebInfo ( webUrl: string, listChangeOnly : boolean ) {
       const showPage = !layout1 ? null :
       <div> { this.buildLay1Page( layout1 , this.state.bucketClickKey, this.props.buckets, this.props.docs , this.props.sups ) } </div>; 
   
-      if ( this.state.showPanelItem && this.state.showPanelItem.WikiField ) {
+      if ( showPanelItem && showPanelItem.WikiField ) {
         // const replaceString = '<a onClick=\"console.log(\'Going to\',this.href);window.open(this.href,\'_blank\')\" style="pointer-events:none" href=';
         const replaceString = '<a onClick=\"window.open(this.href,\'_blank\')\" href=';
-        this.state.showPanelItem.WikiField = this.state.showPanelItem.WikiField.replace(linkNoLeadingTarget,replaceString);
+        showPanelItem.WikiField = showPanelItem.WikiField.replace(linkNoLeadingTarget,replaceString);
       }
       
       let panelHeading = null;
-      if ( this.state.showPanelItem ) {
+      if ( showPanelItem ) {
         let panelTitle = 'Unknown Title';
-        if ( this.state.showPanelItem.Title ) { panelTitle = this.state.showPanelItem.Title ; }
-        else if ( this.state.showPanelItem.Title0 ) { panelTitle = this.state.showPanelItem.Title0 ; }
-        else if ( this.state.showPanelItem.FileLeafRef ) { panelTitle = this.state.showPanelItem.FileLeafRef ; }
+        if ( showPanelItem.Title ) { panelTitle = showPanelItem.Title ; }
+        else if ( showPanelItem.Title0 ) { panelTitle = showPanelItem.Title0 ; }
+        else if ( showPanelItem.FileLeafRef ) { panelTitle = showPanelItem.FileLeafRef ; }
 
         panelHeading = <div className={ styles.supPanelHeader }>
           <h3>{ panelTitle }</h3>
           <div className={ styles.dateStamps}>
-            <div>Created</div> <div>{ this.state.showPanelItem.createdLoc }</div> <div>{ this.state.showPanelItem['Author/Title'] }</div>
+            <div>Created</div> <div>{ showPanelItem.createdLoc }</div> <div>{ showPanelItem['Author/Title'] }</div>
           </div>
           <div className={ styles.dateStamps}>
-            <div>Modified</div> <div>{ this.state.showPanelItem.modifiedLoc }</div> <div>{ this.state.showPanelItem['Editor/Title'] }</div>
+            <div>Modified</div> <div>{ showPanelItem.modifiedLoc }</div> <div>{ showPanelItem['Editor/Title'] }</div>
+          </div>
+
+          <div style={{ paddingBottom: '20px'}}>
+            <h3 style={{ cursor: 'pointer', paddingTop: '15px', marginBottom: '0px' }} 
+              onClick={ this.clickOpenInNewTab.bind( this, showPanelItem.FileRef ? showPanelItem.FileRef : showPanelItem.searchHref ) }>
+              Click here to go to full page item ( in a new tab ) <Icon iconName='OpenInNewTab'></Icon></h3>
+            <div>File Location: { showPanelItem.FileRef ? showPanelItem.FileRef : showPanelItem.searchHref }</div>
           </div>
           {/* <div className={ styles.dateStamps}>
-            <div>Version</div> <div>{ this.state.showPanelItem.modifiedLoc }</div> <div>{ this.state.showPanelItem['Editor/Title'] }</div>
+            <div>Version</div> <div>{ showPanelItem.modifiedLoc }</div> <div>{ showPanelItem['Editor/Title'] }</div>
           </div> */}
         </div>;
 
       }
 
-      const docsPage = !this.state.showPanelItem || !this.state.showPanelItem.WikiField ? null : <div dangerouslySetInnerHTML={{ __html: this.state.showPanelItem.WikiField }} />;
-      const panelContent = <div>
-        <ReactJson src={ this.state.showPanelItem } name={ 'Summary' } collapsed={ false } displayDataTypes={ true } displayObjectSize={ true } enableClipboard={ true } style={{ padding: '20px 0px' }}/>
+      const docsPage = !showPanelItem || !showPanelItem.WikiField ? null : <div dangerouslySetInnerHTML={{ __html: showPanelItem.WikiField }} />;
+      const fileEmbed = !showPanelItem || !showPanelItem.ServerRedirectedEmbedUrl ? null : <iframe src={ showPanelItem.ServerRedirectedEmbedUrl } height='350px' width='100%' style={{paddingTop: '20px' }}></iframe>;
+      const panelContent = this.state.showPanelJSON !== true ? null : <div>
+        <ReactJson src={ showPanelItem } name={ 'Summary' } collapsed={ false } displayDataTypes={ true } displayObjectSize={ true } enableClipboard={ true } style={{ padding: '20px 0px' }}/>
       </div>;
   
       const userPanel = <div><Panel
@@ -239,25 +264,37 @@ public async updateWebInfo ( webUrl: string, listChangeOnly : boolean ) {
         isLightDismiss = { true }
         >
           { panelHeading }
+          { fileEmbed }
           { docsPage }
+          { this.ToggleJSONCmd }
           { panelContent }
       </Panel></div>;
   
       return (
-        <div className={ styles.alvFinMan }>
-          <div className={ styles.container }>
+        // <div className={ styles.alvFinMan }>
+        //   <div className={ styles.container }>
             <div className={ styles.row }>
               {/* <div className={ styles.column }> */}
                 { showPage }
                 { userPanel }
               {/* </div> */}
             </div>
-          </div>
-        </div>
+        //   </div>
+        // </div>
       );
 
     }
 
+  }
+
+  private _toggleJSON( ) {
+    let newState = this.state.showPanelJSON === true ? false : true;
+    this.setState( { showPanelJSON: newState });
+  }
+
+  private clickOpenInNewTab( href ) {
+    console.log('clickOpenInNewTab:', href );
+    window.open( href , '_blank' );
   }
 
   private clickBucketItem( pivot, leftMenu, ex ) {
@@ -266,10 +303,17 @@ public async updateWebInfo ( webUrl: string, listChangeOnly : boolean ) {
   }
 
   
-  private async clickDocumentItem( pivot, supDoc, item, title ) {
+  private async clickDocumentItem( pivot, supDoc, item, e ) {
     console.log('clickDocumentItem:', pivot, supDoc, item );
-    if ( supDoc === 'docs' ) {
+    if ( e.ctrlKey === true && item.FileRef ) {
+      window.open( item.FileRef, '_blank' );
+
+    }  else if ( e.ctrlKey === true && item.ServerRedirectedEmbedUrl ) {
+      window.open( item.ServerRedirectedEmbedUrl, '_blank' );
+
+    }  else if ( supDoc === 'docs' ) {
       await this.getDocWiki( item );
+
     } else {
       this.setState({ showItemPanel: true, showPanelItem: item });
     }
@@ -288,22 +332,27 @@ public async updateWebInfo ( webUrl: string, listChangeOnly : boolean ) {
 
    //Standards are really site pages, supporting docs are files
   private async getDocWiki( item: any, ) {
+    
+    let sourceInfo: ISourceProps = SourceInfo.stds;
 
     let web = await Web( `${window.location.origin}${FinManSite}` );
     
-    const columns = [ ...sitePagesColumns, ...LookupColumns, ...[ 'DocumentType/Title' ] ];
+    const columns = sourceInfo.columns;
 
     let expColumns = getExpandColumns( columns );
     let selColumns = getSelectColumns( columns );
     
     const expandThese = expColumns.join(",");
-    let selectThese = '*,WikiField' + selColumns.join(",");
+    let selectThese = '*,WikiField,FileRef,FileLeafRef,' + selColumns.join(",");
 
     // Why an await does not work here is beyond me.  It should work :(
     // let fullItem = await web.lists.getByTitle( StandardsLib ).items.select(selectThese).expand(expandThese).getById( item.ID );
-    web.lists.getByTitle( SourceInfo.stds.listTitle ).items.select(selectThese).expand(expandThese).getById( item.ID )().then( result => {
+    web.lists.getByTitle( sourceInfo.listTitle ).items.select(selectThese).expand(expandThese).getById( item.ID )().then( result => {
       console.log( 'ALVFinManDocs', result );
-      this.setState({ showItemPanel: true, showPanelItem: result });
+      //Only real addition is the WikiField
+      item.WikiField = result.WikiField;
+      this.setState({ showItemPanel: true, showPanelItem: item });
+
     }).catch( e => {
       console.log('Error getting item wiki');
     });
@@ -313,7 +362,7 @@ public async updateWebInfo ( webUrl: string, listChangeOnly : boolean ) {
 
 
   private _onClosePanel( ) {
-    this.setState({ showItemPanel: false, showPanelItem: null });
+    this.setState({ showItemPanel: false });
   }
 
 }

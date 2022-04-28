@@ -22,7 +22,7 @@ export function updateBuckets ( buckets: IFMBuckets, docs: any[], sort: boolean 
   docs.map( doc => {
 
     Object.keys( buckets ).map ( key => {
-      let docProp = key === 'Reporting' ? 'Sections' : key;
+      let docProp = key === 'Reporting' ? 'ReportingSections' : key;
       if ( doc[ docProp ] ) {
         if ( Array.isArray( doc[ docProp ] ) ) {
           doc[ docProp ].map( item => {

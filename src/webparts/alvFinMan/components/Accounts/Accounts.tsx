@@ -14,30 +14,14 @@ import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
 
 import { Panel, IPanelProps, IPanelStyleProps, IPanelStyles, PanelType } from 'office-ui-fabric-react/lib/Panel';
 
-import { Pivot, PivotItem, IPivotItemProps, PivotLinkFormat, PivotLinkSize,} from 'office-ui-fabric-react/lib/Pivot';
-import { Dropdown, DropdownMenuItemType, IDropdownStyles, IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
-import { TextField,  IStyleFunctionOrObject, ITextFieldStyleProps, ITextFieldStyles } from "office-ui-fabric-react";
-
 import * as strings from 'AlvFinManWebPartStrings';
 
 import ReactJson from "react-json-view";
 
-import { getHighlightedText } from '../Search/HighlightedText';
-
-import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfunctions/dist/Lists/getFunctions';
-import { getAccounts } from '../DataFetch';
 
 import { createAccountRow } from './AccountItem';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
-
-const consoleLineItemBuild: boolean = false;
-
-const thisSelect = ['*','ID','FileRef','FileLeafRef','Author/Title','Editor/Title','Author/Name','Editor/Name','Modified','Created','CheckoutUserId','HasUniqueRoleAssignments','Title','FileSystemObjectType','FileSizeDisplay','FileLeafRef','LinkFilename','OData__UIVersion','OData__UIVersionString','DocIcon'];
-
-
-
-const LookupColumns: string[] = ['Functions/Title', 'Topics/Title', 'ALGroup/Title', 'Sections/Title','Processes/Title' ];
 
 const pivotStyles = {
   root: {

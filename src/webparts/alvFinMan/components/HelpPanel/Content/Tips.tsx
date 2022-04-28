@@ -28,9 +28,9 @@ const dashIcon = <Icon iconName={"ChromeMinimize"}  style={ iconStyles } />;
 const tipCellStyle: React.CSSProperties = {paddingRight: '20px' };
 
 export const webParTips : any[] = [
-  <tr><td style={tipCellStyle}>Alt-Click</td>
-      <td style={tipCellStyle}>HTML File Link</td>
-      <td>Open the html file <b>in Edit Mode</b></td></tr>,
+  // <tr><td style={tipCellStyle}>Alt-Click</td>
+  //     <td style={tipCellStyle}>HTML File Link</td>
+  //     <td>Open the html file <b>in Edit Mode</b></td></tr>,
 
 //   <tr><td style={tipCellStyle}>CTRL-ALT-SHFT-Click <b>Tile</b></td>
 //       <td style={tipCellStyle}>Tile</td>

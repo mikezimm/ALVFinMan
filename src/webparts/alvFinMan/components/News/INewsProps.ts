@@ -29,6 +29,8 @@ export interface INewsPageState {
 
   showItemPanel: boolean;
   showThisItem: any;
+  showCanvasContent1: boolean;
+  showPanelJSON: boolean;
   
   sort: {
     prop: string;

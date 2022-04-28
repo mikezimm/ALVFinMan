@@ -87,7 +87,7 @@ export function createEmptySearchBucket () {
 
 
     // debugger;
-    items = addSearchMeta( items, sourceProps.searchProps, search, sourceProps.defType );
+    items = addSearchMeta( items, sourceProps, search );
 
     console.log( sourceProps.defType, sourceProps.listTitle , search, items );
 
@@ -96,86 +96,86 @@ export function createEmptySearchBucket () {
 
   }
   //Standards are really site pages, supporting docs are files
-  export async function getAppLinks( sourceProps: ISourceProps, search: IFinManSearch ) {
+  // export async function getAppLinks( sourceProps: ISourceProps, search: IFinManSearch ) {
 
-    let web = await Web( `${window.location.origin}${sourceProps.webUrl}` );
+  //   let web = await Web( `${window.location.origin}${sourceProps.webUrl}` );
 
-    let expColumns = getExpandColumns( sourceProps.columns );
-    let selColumns = getSelectColumns( sourceProps.columns );
+  //   let expColumns = getExpandColumns( sourceProps.columns );
+  //   let selColumns = getSelectColumns( sourceProps.columns );
 
-    const expandThese = expColumns.join(",");
-    //Do not get * columns when using standards so you don't pull WikiFields
-    let selectThese = [ ...sourceProps.columns, ...selColumns].join(",");
-    let restFilter = "";
+  //   const expandThese = expColumns.join(",");
+  //   //Do not get * columns when using standards so you don't pull WikiFields
+  //   let selectThese = [ ...sourceProps.columns, ...selColumns].join(",");
+  //   let restFilter = "";
 
-    let items = await web.lists.getByTitle( sourceProps.listTitle ).items
-          .select(selectThese).expand(expandThese).filter(restFilter).getAll();
+  //   let items = await web.lists.getByTitle( sourceProps.listTitle ).items
+  //         .select(selectThese).expand(expandThese).filter(restFilter).getAll();
 
-    // debugger;
-    items = addSearchMeta( items, sourceProps.searchProps, search, 'link' );
+  //   // debugger;
+  //   items = addSearchMeta( items, sourceProps.searchProps, search, 'link' );
 
-    console.log( 'AppLinksList', search, items );
+  //   console.log( 'AppLinksList', search, items );
 
-    return items;
+  //   return items;
 
-  }
+  // }
 
 
   //Standards are really site pages, supporting docs are files
-  export async function getStandardDocs( sourceProps: ISourceProps, search: IFinManSearch ) {
+  // export async function getStandardDocs( sourceProps: ISourceProps, search: IFinManSearch ) {
 
-    let web = await Web( `${window.location.origin}${sourceProps.webUrl}` );
+  //   let web = await Web( `${window.location.origin}${sourceProps.webUrl}` );
     
-    let expColumns = getExpandColumns( sourceProps.columns );
-    let selColumns = getSelectColumns( sourceProps.columns );
+  //   let expColumns = getExpandColumns( sourceProps.columns );
+  //   let selColumns = getSelectColumns( sourceProps.columns );
     
-    const expandThese = expColumns.join(",");
-    //Do not get * columns when using standards so you don't pull WikiFields
-    let selectThese = sourceProps.listTitle === 'StandardDocuments' ? [ ...sourceProps.columns, ...selColumns].join(",") : '*,' + [ ...sourceProps.columns, ...selColumns].join(",");
-    // let selectThese = library === StandardsLib ? [ ...selColumns].join(",") : '*,' + [ ...selColumns].join(",");
-    // let selectThese = '*,' + [ ...selColumns].join(",");
-    let restFilter = "";
+  //   const expandThese = expColumns.join(",");
+  //   //Do not get * columns when using standards so you don't pull WikiFields
+  //   let selectThese = sourceProps.listTitle === 'StandardDocuments' ? [ ...sourceProps.columns, ...selColumns].join(",") : '*,' + [ ...sourceProps.columns, ...selColumns].join(",");
+  //   // let selectThese = library === StandardsLib ? [ ...selColumns].join(",") : '*,' + [ ...selColumns].join(",");
+  //   // let selectThese = '*,' + [ ...selColumns].join(",");
+  //   let restFilter = "";
 
-    let docs: IAnyContent[] = await web.lists.getByTitle( sourceProps.listTitle ).items
-          .select(selectThese).expand(expandThese).filter(restFilter).getAll();
+  //   let docs: IAnyContent[] = await web.lists.getByTitle( sourceProps.listTitle ).items
+  //         .select(selectThese).expand(expandThese).filter(restFilter).getAll();
 
             
-    docs = addSearchMeta( docs, sourceProps.searchProps, search, sourceProps.listTitle );
+  //   docs = addSearchMeta( docs, sourceProps.searchProps, search, sourceProps.listTitle );
 
-    console.log( sourceProps.listTitle, search, docs );
+  //   console.log( sourceProps.listTitle, search, docs );
 
-    return docs;
+  //   return docs;
 
-  }
+  // }
 
 
-  export async function getAccounts( sourceProps: ISourceProps, search: IFinManSearch ) {
+  // export async function getAccounts( sourceProps: ISourceProps, search: IFinManSearch ) {
 
-    let preFetchTime = new Date();
+  //   let preFetchTime = new Date();
   
-    let web = await Web( `${window.location.origin}${sourceProps.webUrl}` );
+  //   let web = await Web( `${window.location.origin}${sourceProps.webUrl}` );
     
-    let expColumns = getExpandColumns( sourceProps.columns );
-    let selColumns = getSelectColumns( sourceProps.columns );
+  //   let expColumns = getExpandColumns( sourceProps.columns );
+  //   let selColumns = getSelectColumns( sourceProps.columns );
     
-    const expandThese = expColumns.join(",");
-    let selectThese = '*,' + sourceProps.columns.join(",");
-    let restFilter = "";
+  //   const expandThese = expColumns.join(",");
+  //   let selectThese = '*,' + sourceProps.columns.join(",");
+  //   let restFilter = "";
   
-    let accounts: IAnyContent[] = await web.lists.getByTitle( sourceProps.listTitle ).items
-          .select(selectThese).expand(expandThese).filter(restFilter).getAll();
+  //   let accounts: IAnyContent[] = await web.lists.getByTitle( sourceProps.listTitle ).items
+  //         .select(selectThese).expand(expandThese).filter(restFilter).getAll();
   
-    let postFetchTime = new Date();
+  //   let postFetchTime = new Date();
   
-    accounts = addSearchMeta( accounts, sourceProps.searchProps, search, 'account' );
+  //   accounts = addSearchMeta( accounts, sourceProps.searchProps, search, 'account' );
   
-    let fetchTime = postFetchTime.getTime() - preFetchTime.getTime();
+  //   let fetchTime = postFetchTime.getTime() - preFetchTime.getTime();
   
-    console.log( 'getAccounts', search, accounts );
+  //   console.log( 'getAccounts', search, accounts );
   
-    return { fetchTime: fetchTime, accounts: accounts, filtered: accounts };
+  //   return { fetchTime: fetchTime, accounts: accounts, filtered: accounts };
   
-  }
+  // }
 
   export function updateSearchCounts( format: IAppFormat, items: IAllContentType[], search: IFinManSearch ) {
 
@@ -270,11 +270,11 @@ export function createEmptySearchBucket () {
     return search;
   }
 
-  export function addSearchMeta ( items: IAnyContent[], searchProps: string[], search: IFinManSearch, defType: string ) {
+  export function addSearchMeta ( items: IAnyContent[], sourceProps: ISourceProps, search: IFinManSearch ) {
     
     //searchNest will be an array of prop key arrays... so [ 'Author/Title' ] => [ ["Author","Title"] ]
     let searchNest: string[][] = [];  
-    searchProps.map( prop => {
+    sourceProps.searchProps.map( prop => {
       if ( prop.indexOf('.') > -1 || prop.indexOf('/') > -1) {
         searchNest.push( prop.trim().replace(' ','' ).split(/[.\/]/gm) ) ;
       } else {
@@ -305,49 +305,49 @@ export function createEmptySearchBucket () {
         item.publishedLoc = item.publishedMS.toLocaleString();
       }
 
-      if ( item.Sections ) { item.Reporting = item.Sections ; }
+      if ( item.ReportingSections ) { item.Reporting = item.ReportingSections ; }
 
       let meta: string[] = [];
       //This is for display purposes so user can see what property the search criteria is found in
       let searchText : string = searchNest.map( ( propArray, idx)  => {
 
         if ( propArray.length === 1 ) {
-          item[ searchProps[ idx ] ] = item[ propArray[0] ]; //Add flattened value - item["Author/Title"]= item.Author.Title
+          item[ sourceProps.searchProps[ idx ] ] = item[ propArray[0] ]; //Add flattened value - item["Author/Title"]= item.Author.Title
           if ( Array.isArray( item[ propArray[0] ] )) {
-            return `${searchProps[ idx ]}=${item[ propArray[0] ].join(';')}`;
+            return `${sourceProps.searchProps[ idx ]}=${item[ propArray[0] ].join(';')}`;
   
           } else {
-            return `${searchProps[ idx ]}=${item[ propArray[0] ]}`;
+            return `${sourceProps.searchProps[ idx ]}=${item[ propArray[0] ]}`;
           }
 
         } else if ( propArray.length === 2 ) {
           let hasError: boolean = false;
           try {
-            item[ searchProps[ idx ] ] = item[ propArray[0] ][ propArray[1] ]; //Add flattened value - item["Author/Title"]= item.Author.Title
-            //Manually copy Sections/Title over to Reporting/Title
-            if ( searchProps[ idx ] === 'Sections/Title' ) { item[ 'Reporting/Title'] = item[ searchProps[ idx ] ]; }
+            item[ sourceProps.searchProps[ idx ] ] = item[ propArray[0] ][ propArray[1] ]; //Add flattened value - item["Author/Title"]= item.Author.Title
+            //Manually copy ReportingSections/Title over to Reporting/Title
+            if ( sourceProps.searchProps[ idx ] === 'ReportingSections/Title' ) { item[ 'Reporting/Title'] = item[ sourceProps.searchProps[ idx ] ]; }
           } catch (e) {
             // alert('Error doing search props');
             let lastPart = item[propArray[0] ] ? item[propArray[0] ][ propArray[1] ] : 'UNK';
-            item[ searchProps[ idx ] ] = lastPart;
-            console.log( 'Search Error: ~ `77', item, searchProps, idx, item[propArray[0] ] , lastPart  );
+            item[ sourceProps.searchProps[ idx ] ] = lastPart;
+            console.log( 'Search Error: ~ `77', item, sourceProps.searchProps, idx, item[propArray[0] ] , lastPart  );
             hasError = true;
           }
 
           if ( hasError === true ) {
-            return `${searchProps[ idx ]}=UNK`;
+            return `${sourceProps.searchProps[ idx ]}=UNK`;
           } else {
 
             //This first loop never gets triggered with multi-select lookups because the array is really item [ propArray[0] ]
             if ( Array.isArray( item[ propArray[0] ][ propArray[1] ]  )) {
-              let result = `${searchProps[ idx ]}=${item[ propArray[0] ][ propArray[1] ] .join(';')}`;
-              if ( searchProps[ idx ] === 'Sections/Title' ) { 
+              let result = `${sourceProps.searchProps[ idx ]}=${item[ propArray[0] ][ propArray[1] ] .join(';')}`;
+              if ( sourceProps.searchProps[ idx ] === 'ReportingSections/Title' ) { 
                 result += ` || Reporting/Title=${item[ propArray[0] ][ propArray[1] ] .join(';')}`; }
               return result;
 
             } else if ( Array.isArray( item[ propArray[0] ] )  ) {
               /**
-               * NEED TO ADD LOOP HERE TO CHECK FOR MULTI-SELECT Lookups like Sections/Titles.
+               * NEED TO ADD LOOP HERE TO CHECK FOR MULTI-SELECT Lookups like ReportingSections/Titles.
                * They don't get caught in the above one because the logic does not work that way
                */
 
@@ -356,8 +356,8 @@ export function createEmptySearchBucket () {
 
 
 
-              let result = `${searchProps[ idx ]}=${item[ propArray[0] ][ propArray[1] ] }`;
-              if ( searchProps[ idx ] === 'Sections/Title' ) { 
+              let result = `${sourceProps.searchProps[ idx ]}=${item[ propArray[0] ][ propArray[1] ] }`;
+              if ( sourceProps.searchProps[ idx ] === 'ReportingSections/Title' ) { 
                 result += ` || Reporting/Title=${item[ propArray[0] ][ propArray[1] ] }`; }
 
               return result;
@@ -366,12 +366,15 @@ export function createEmptySearchBucket () {
 
         }
 
-        
       }).join(' || ');
-  
-      meta = searchText.split(' || ' );
+
+      //Get rid of any empty strings
+      searchText.split(' || ' ).map( text => {
+        if ( text ) { meta.push( text ); }
+      });
+
       //searchTextLC is used for actual search function - removes Column Titles from searchable text
-      let searchTextLC : string = searchProps.map( prop => {
+      let searchTextLC : string = sourceProps.searchProps.map( prop => {
         if ( Array.isArray( item[ prop ] )) {
           return `${item[ prop ].join(';')}`;
 
@@ -432,11 +435,13 @@ export function createEmptySearchBucket () {
         }
 
       } else {
-        item.type = defType;
+        item.type = sourceProps.defType;
         searchTitle = item.Title;
         searchDesc = 'Other Type Search Desc';
 
       }
+
+      item.format = sourceProps.key;
 
       if ( item.Tab && item.LinkColumn ) {
 
@@ -457,6 +462,7 @@ export function createEmptySearchBucket () {
 
       //This if was added for the Standards Wiki Library where the title column is actually Title0
       if ( !searchTitle && item.Title0 ) { searchTitle = item.Title0 ; } 
+      if ( !searchTitle && item.FileLeafRef ) { searchTitle = item.FileLeafRef.substr(0, item.FileLeafRef.lastIndexOf('.') ) ; } //Added for Std #139 which does not have a Title value.
       if ( !searchDesc ) { searchDesc = '' ; } 
 
       if ( !searchHref ) { 

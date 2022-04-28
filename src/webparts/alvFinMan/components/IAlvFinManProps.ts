@@ -124,7 +124,7 @@ export type IAppFormat = 'accounts' | 'docs' | 'stds' | 'sups' | 'appLinks' | 'n
 
 
 export interface IAnyContent extends Partial<any> {
-  format: IAppFormat;
+  format: IAppFormat; //This represents the key of the SourceType
   searchText: string;
   searchTextLC: string;
   leftSearch: string[]; //For easy display of casing
@@ -133,7 +133,6 @@ export interface IAnyContent extends Partial<any> {
   topSearchLC: string[]; //For easy string compare
   type: string;
   typeIdx: number;
-
 
   searchTitle: any;
   searchDesc: any;

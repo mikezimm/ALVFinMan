@@ -24,6 +24,8 @@ export interface ILayout2PageState {
 
   showItemPanel: boolean;
   selectedItem: IAnyContent;
+  showPanelJSON: boolean;
+  
   filteredItems: IAnyContent[];
   sort: {
     prop: string;
