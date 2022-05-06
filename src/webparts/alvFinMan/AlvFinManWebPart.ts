@@ -394,14 +394,17 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
         urlVars: getUrlVars(),
         displayMode: this.displayMode,
 
-        defaultPivotKey: this.properties.defaultPivotKey,
-
-        search: search,
-        
         //Banner related props
         errMessage: 'any',
         bannerProps: this.bannerProps,
         webpartHistory: this.properties.webpartHistory,
+
+        //ALVFM props
+        defaultPivotKey: this.properties.defaultPivotKey,
+
+        search: search,
+        
+
 
       }
     );
@@ -745,7 +748,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
 
               FPSOptionsGroupBasic( false, true, true, true, this.properties.allSectionMaxWidthEnable, true, this.properties.allSectionMarginEnable, true ), // this group
               FPSOptionsExpando( this.properties.enableExpandoramic, this.properties.enableExpandoramic,null, null ),
-  
+
             { groupName: 'Import Props',
             isCollapsed: true ,
             groupFields: [

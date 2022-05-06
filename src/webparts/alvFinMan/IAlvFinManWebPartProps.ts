@@ -119,6 +119,9 @@ export interface IAlvFinManWebPartProps {
 
     showTricks: boolean;
 
+    
+  fpsImportProps: string;
+
   // }
 
   //Section 16 - FPS Options group
@@ -155,6 +158,5 @@ export interface IAlvFinManWebPartProps {
 
   loadPerformance: ILoadPerformanceALVFM;
 
-  fpsImportProps: string;
 
 }
