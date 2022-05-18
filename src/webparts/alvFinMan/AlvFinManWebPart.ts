@@ -20,7 +20,15 @@ import { PropertyFieldPeoplePicker, PrincipalType } from '@pnp/spfx-property-con
 
 import { sp, Views, IViews, ISite } from "@pnp/sp/presets/all";
 
+import { setPageFormatting, } from '@mikezimm/npmfunctions/dist/Services/DOM/FPSFormatFunctions';
+
+import { IFPSPage, } from '@mikezimm/npmfunctions/dist/Services/DOM/FPSInterfaces';
 import { createFPSWindowProps, initializeFPSSection, initializeFPSPage, webpartInstance, initializeMinimalStyle } from '@mikezimm/npmfunctions/dist/Services/DOM/FPSDocument';
+import { IFPSWindowProps, IFPSSection, IFPSSectionStyle } from '@mikezimm/npmfunctions/dist/Services/DOM/FPSInterfaces';
+import { setSectionStyles } from '@mikezimm/npmfunctions/dist/Services/DOM/setAllSectionStyles';
+import { minimizeHeader } from '@mikezimm/npmfunctions/dist/Services/DOM/minimzeHeader';
+import { minimizeToolbar } from '@mikezimm/npmfunctions/dist/Services/DOM/minimzeToolbar';
+import { minimizeQuickLaunch } from '@mikezimm/npmfunctions/dist/Services/DOM/quickLaunch';
 
 // import { FPSOptionsGroupBasic, FPSBanner2Group, FPSOptionsGroupAdvanced } from '@mikezimm/npmfunctions/dist/Services/PropPane/FPSOptionsGroup2';
 import { FPSOptionsGroupBasic, FPSBanner3Group, FPSOptionsGroupAdvanced } from '@mikezimm/npmfunctions/dist/Services/PropPane/FPSOptionsGroup3';
@@ -39,7 +47,7 @@ import { importProps, } from '@mikezimm/npmfunctions/dist/Services/PropPane/Impo
 import { sortStringArray, sortObjectArrayByStringKey, sortNumberArray, sortObjectArrayByNumberKey, sortKeysByOtherKey 
 } from '@mikezimm/npmfunctions/dist/Services/Arrays/sorting';
 
-import { IBuildBannerSettings , buildBannerProps, IMinWPBannerProps } from '@mikezimm/npmfunctions/dist/HelpPanel/onNpm/BannerSetup';
+import { IBuildBannerSettings , buildBannerProps, IMinWPBannerProps } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/BannerSetup';
 
 import { buildExportProps } from './BuildExportProps';
 
@@ -51,7 +59,7 @@ import { encodeDecodeString, } from "@mikezimm/npmfunctions/dist/Services/String
 
 import { verifyAudienceVsUser } from '@mikezimm/npmfunctions/dist/Services/Users/CheckPermissions';
 
-import { bannerThemes, bannerThemeKeys, makeCSSPropPaneString, createBannerStyleStr, createBannerStyleObj } from '@mikezimm/npmfunctions/dist/HelpPanel/onNpm/defaults';
+import { bannerThemes, bannerThemeKeys, makeCSSPropPaneString, createBannerStyleStr, createBannerStyleObj } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/defaults';
 
 import { IRepoLinks } from '@mikezimm/npmfunctions/dist/Links/CreateLinks';
 import { visitorPanelInfo } from './components/VisitorPanel/ALVFMVisitorPanel';
@@ -67,9 +75,13 @@ import { getFPSUser } from '@mikezimm/npmfunctions/dist/Services/Users/FPSUser';
 
 import { startPerformInit, startPerformOp, updatePerformanceEnd } from './components/Performance/functions';
 import { IPerformanceOp, ILoadPerformanceALVFM, IHistoryPerformance } from './components/Performance/IPerformance';
-import { IWebpartBannerProps } from '@mikezimm/npmfunctions/dist/HelpPanel/onNpm/bannerProps';
+import { IWebpartBannerProps } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/bannerProps';
 
-require('../../services/propPane/GrayPropPaneAccordions.css');
+import { PreConfiguredProps } from './PreConfiguredSettings';
+import { getThisSitesPreConfigProps, IConfigurationProp, ISitePreConfigProps, IPreConfigSettings, IAllPreConfigSettings } from '@mikezimm/npmfunctions/dist/PropPaneHelp/PreConfigFunctions';
+
+require('@mikezimm/npmfunctions/dist/Services/PropPane/GrayPropPaneAccordions.css');
+require('@mikezimm/npmfunctions/dist/PropPaneHelp/PropPanelHelp.css');
 
 export const repoLink: IRepoLinks = links.gitRepoALVFinManSmall;
 
@@ -89,16 +101,14 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
    private DefaultPivotChoices =  allPivots.map( ( pivot, idx ) => {
      return { index: idx, key: pivot, text: pivot };
    });
-//   private DefaultPivotChoices =  [
-//     { index: 0, key: 'Site Admins', text: "Site Admins" },
-//     { index: 1, key: 'Site Owners', text: "Site Owners" },
-//     { index: 2, key: 'Page Editors', text: "Page Editors" },
-//     { index: 3, key: 'Item Editors', text: "Item Editors" },
-//     { index: 4, key: 'Everyone', text: "Everyone" },
-// ];
+
   //Added in v1.14
   private _isDarkTheme: boolean = false;
   private _environmentMessage: string = '';
+
+  //Common FPS variables
+
+  private sitePresets : ISitePreConfigProps = null;
 
   //Common FPS variables
   private _unqiueId;
@@ -110,6 +120,12 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
   private FPSUser: IFPSUser = null;
 
   private urlParameters: any = {};
+
+  //For FPS options
+  private fpsPageDone: boolean = false;
+  private fpsPageArray: any[] = null;
+  private minQuickLaunch: boolean = false;
+  private minHideToolbar: boolean = false;
 
     //For FPS Banner
     private forceBanner = true ;
@@ -138,6 +154,17 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
   private beAReader: boolean = false; //2022-04-07:  Intent of this is a one-time per instance to 'become a reader' level user.  aka, hide banner buttons that reader won't see
 
 
+  /***
+ *     .d88b.  d8b   db      d888888b d8b   db d888888b d888888b 
+ *    .8P  Y8. 888o  88        `88'   888o  88   `88'   `~~88~~' 
+ *    88    88 88V8o 88         88    88V8o 88    88       88    
+ *    88    88 88 V8o88         88    88 V8o88    88       88    
+ *    `8b  d8' 88  V888        .88.   88  V888   .88.      88    
+ *     `Y88P'  VP   V8P      Y888888P VP   V8P Y888888P    YP    
+ *                                                               
+ *                                                               
+ */
+
   protected onInit(): Promise<void> {
     this._environmentMessage = this._getEnvironmentMessage();
 
@@ -161,6 +188,21 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
       sp.setup({
         spfxContext: this.context
       });
+
+      
+      /***
+     *     .d88b.  d8b   db      d888888b d8b   db d888888b d888888b      d8888b. db   db  .d8b.  .d8888. d88888b      .d888b. 
+     *    .8P  Y8. 888o  88        `88'   888o  88   `88'   `~~88~~'      88  `8D 88   88 d8' `8b 88'  YP 88'          VP  `8D 
+     *    88    88 88V8o 88         88    88V8o 88    88       88         88oodD' 88ooo88 88ooo88 `8bo.   88ooooo         odD' 
+     *    88    88 88 V8o88         88    88 V8o88    88       88         88~~~   88~~~88 88~~~88   `Y8b. 88~~~~~       .88'   
+     *    `8b  d8' 88  V888        .88.   88  V888   .88.      88         88      88   88 88   88 db   8D 88.          j88.    
+     *     `Y88P'  VP   V8P      Y888888P VP   V8P Y888888P    YP         88      YP   YP YP   YP `8888Y' Y88888P      888888D 
+     *                                                                                                                         
+     *                                                                                                                         
+     */
+
+      //NEED TO APPLY THIS HERE as well as follow-up in render for it to not visibly change
+      this.presetCollectionDefaults();
 
       this.properties.pageLayout =  this.context['_pageLayoutType']?this.context['_pageLayoutType'] : this.context['_pageLayoutType'];
       this.urlParameters = getUrlVars();
@@ -236,6 +278,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
       if ( !this.properties.defaultPivotKey ) { this.properties.defaultPivotKey = 'General' ; }
       if ( allPivots.indexOf( this.properties.defaultPivotKey ) < 0 ) { this.properties.defaultPivotKey = allPivots[0] ; }
 
+      this.renderCustomStyles( false );
       this.resetAllSearch();
 
     });
@@ -315,7 +358,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
 
     console.log('mainWebPart: verifyAudienceVsUser ~ 297',   );
     this.properties.showBannerGear = verifyAudienceVsUser( this.FPSUser , showTricks, this.properties.homeParentGearAudience, null, renderAsReader );
-    let bannerSetup = buildBannerProps( this.properties , this.FPSUser, buildBannerSettings, showTricks, renderAsReader );
+    let bannerSetup = buildBannerProps( this.properties , this.FPSUser, buildBannerSettings, showTricks, renderAsReader, this.displayMode );
     errMessage = bannerSetup.errMessage;
     this.bannerProps = bannerSetup.bannerProps;
     let expandoErrorObj = bannerSetup.errorObjArray;
@@ -398,6 +441,8 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
         errMessage: 'any',
         bannerProps: this.bannerProps,
         webpartHistory: this.properties.webpartHistory,
+
+        sitePresets: this.sitePresets,
 
         //ALVFM props
         defaultPivotKey: this.properties.defaultPivotKey,
@@ -627,7 +672,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
               groupName: 'ALV Financial Manual - Basic',
               groupFields: [
                 PropertyPaneDropdown('defaultPivotKey', <IPropertyPaneDropdownProps>{
-                  label: 'Full Help Panel Audience',
+                  label: 'Default Finance Manual Tab',
                   options: this.DefaultPivotChoices,
                 }),
 
@@ -764,4 +809,123 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
       ]
     };
   }
+
+  /***
+ *    .d8888. d888888b d888888b d88888b      d8888b. d8888b. d88888b .d8888. d88888b d888888b .d8888. 
+ *    88'  YP   `88'   `~~88~~' 88'          88  `8D 88  `8D 88'     88'  YP 88'     `~~88~~' 88'  YP 
+ *    `8bo.      88       88    88ooooo      88oodD' 88oobY' 88ooooo `8bo.   88ooooo    88    `8bo.   
+ *      `Y8b.    88       88    88~~~~~      88~~~   88`8b   88~~~~~   `Y8b. 88~~~~~    88      `Y8b. 
+ *    db   8D   .88.      88    88.          88      88 `88. 88.     db   8D 88.        88    db   8D 
+ *    `8888Y' Y888888P    YP    Y88888P      88      88   YD Y88888P `8888Y' Y88888P    YP    `8888Y' 
+ *                                                                                                    
+ *                                                                                                    
+ */
+  
+  private presetCollectionDefaults() {
+    
+    this.sitePresets = getThisSitesPreConfigProps( PreConfiguredProps, this.properties, this.context.pageContext.web.serverRelativeUrl );
+
+    this.sitePresets.presets.map( setting => {
+      if ( this.properties[setting.prop] === setting.value ) { 
+        setting.status = 'valid';
+
+      } else if ( !this.properties[setting.prop] ) { 
+        this.properties[setting.prop] = setting.value ;
+        setting.status = 'preset';
+
+      }
+    });
+
+    this.sitePresets.forces.map( setting => {
+      if ( this.properties[setting.prop] === setting.value ) { 
+        setting.status = 'valid';
+
+      } else if ( !this.properties[setting.prop] ) { 
+        this.properties[setting.prop] = setting.value ;
+        setting.status = 'preset';
+
+      } else if ( this.properties[setting.prop] !== setting.value ) { 
+        this.properties[setting.prop] = setting.value ;
+        setting.status = 'changed';
+
+      }
+
+    });
+
+    console.log('Preset props used:', this.sitePresets );
+
+  }
+
+  
+
+  /***
+ *    d88888b d8888b. .d8888.       .d88b.  d8888b. d888888b d888888b  .d88b.  d8b   db .d8888. 
+ *    88'     88  `8D 88'  YP      .8P  Y8. 88  `8D `~~88~~'   `88'   .8P  Y8. 888o  88 88'  YP 
+ *    88ooo   88oodD' `8bo.        88    88 88oodD'    88       88    88    88 88V8o 88 `8bo.   
+ *    88~~~   88~~~     `Y8b.      88    88 88~~~      88       88    88    88 88 V8o88   `Y8b. 
+ *    88      88      db   8D      `8b  d8' 88         88      .88.   `8b  d8' 88  V888 db   8D 
+ *    YP      88      `8888Y'       `Y88P'  88         YP    Y888888P  `Y88P'  VP   V8P `8888Y' 
+ *                                                                                              
+ *                                                                                              
+ */
+
+   private renderCustomStyles( doHeadings: boolean = true ) {
+
+    //Used with FPS Options Functions
+    this.setQuickLaunch( this.properties.quickLaunchHide );
+    this.setThisPageFormatting( this.properties.fpsPageStyle );
+    this.setToolbar( this.properties.toolBarHide );
+    this.updateSectionStyles( );
+  }
+
+  /**
+   * Used with FPS Options Functions
+   * @param quickLaunchHide 
+   */
+   private setQuickLaunch( quickLaunchHide: boolean ) {
+    if ( quickLaunchHide === true && this.minQuickLaunch === false ) {
+      minimizeQuickLaunch( document , quickLaunchHide );
+      this.minQuickLaunch = true;
+    }
+  }
+
+  /**
+   * Used with FPS Options Functions
+   * @param quickLaunchHide 
+   */
+  private setToolbar( hideToolbar: boolean ) {
+
+      if(this.displayMode == DisplayMode.Read && this.urlParameters.tool !== 'true' ){
+        let value = hideToolbar === true ? 'none' : null;
+        let toolBarStyle: IFPSSectionStyle = initializeMinimalStyle( 'Miminze Toolbar', this.wpInstanceID, 'display', value );
+        minimizeToolbar( document, toolBarStyle, false, true );
+        this.minHideToolbar = true;
+      }
+
+  }
+
+  /**
+   * Used with FPS Options Functions
+   * @param fpsPageStyle 
+   */
+  private setThisPageFormatting( fpsPageStyle: string ) {
+
+    let fpsPage: IFPSPage = initializeFPSPage( this.wpInstanceID, this.fpsPageDone, fpsPageStyle, this.fpsPageArray  );
+    fpsPage = setPageFormatting( this.domElement, fpsPage );
+    this.fpsPageArray = fpsPage.Array;
+    this.fpsPageDone = fpsPage.do;
+
+  }
+
+
+  private updateSectionStyles( ) {
+
+    let allSectionMaxWidth = this.properties.allSectionMaxWidthEnable !== true ? null : this.properties.allSectionMaxWidth;
+    let allSectionMargin = this.properties.allSectionMarginEnable !== true ? null : this.properties.allSectionMargin;
+    let sectionStyles = initializeFPSSection( this.wpInstanceID, allSectionMaxWidth, allSectionMargin,  );
+
+    setSectionStyles( document, sectionStyles, true, true );
+
+  }
+
 }

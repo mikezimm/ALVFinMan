@@ -53,10 +53,6 @@ export const importBlockPropsThis = [ ];
 
 export const importBlockProps = [ ...importBlockPropsFPS, ...importBlockPropsThis ];
 
-//This will be in npmFunctions > Services/PropPane/FPSOptionsExpando in next release.
-//  export type IExpandAudiences = 'Site Admins' | 'Site Owners' | 'Page Editors' | 'WWWone';
-
-
 export interface IAlvFinManWebPartProps {
   description: string;
 
@@ -86,7 +82,8 @@ export interface IAlvFinManWebPartProps {
 
     infoElementChoice: string;
     infoElementText: string;
-    
+    feedbackEmail: string;
+
     showGoToHome: boolean;  //defaults to true
     showGoToParent: boolean;  //defaults to true
     homeParentGearAudience: IExpandAudiences;

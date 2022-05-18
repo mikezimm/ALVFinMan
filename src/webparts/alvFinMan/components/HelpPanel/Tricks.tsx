@@ -3,7 +3,7 @@ import * as React from 'react';
 import { IRepoLinks } from '@mikezimm/npmfunctions/dist/Links/CreateLinks';
 
 //import { IHelpTableRow, IHelpTable, IPageContent, ISinglePageProps } from '../Component/ISinglePageProps';
-import { IHelpTableRow, IHelpTable, IPageContent, ISinglePageProps } from '../banner/SinglePage/ISinglePageProps';
+import { IHelpTableRow, IHelpTable, IPageContent, ISinglePageProps } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/banner/SinglePage/ISinglePageProps';
 
 export function tricksTable( repoLinks: IRepoLinks ) {
 

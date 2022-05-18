@@ -25,9 +25,12 @@ import { TextField,  IStyleFunctionOrObject, ITextFieldStyleProps, ITextFieldSty
 import { Spinner, SpinnerSize, } from 'office-ui-fabric-react/lib/Spinner';
 
 
-// import WebpartBanner from "./HelpPanel/banner/onLocal/component";
-import WebpartBanner from "./HelpPanel/banner/onLocal/component";
-import { defaultBannerCommandStyles, } from "@mikezimm/npmfunctions/dist/HelpPanel/onNpm/defaults";
+import WebpartBanner from "@mikezimm/npmfunctions/dist/HelpPanelOnNPM/banner/onLocal/component";
+import { getWebPartHelpElement } from './PropPaneHelp/PropPaneHelp';
+import { getBannerPages, IBannerPages } from './HelpPanel/AllContent';
+
+
+import { defaultBannerCommandStyles, } from "@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/defaults";
 import { _LinkIsValid, _LinkStatus } from "@mikezimm/npmfunctions/dist/Links/AllLinks";
 import { encodeDecodeString, } from "@mikezimm/npmfunctions/dist/Services/Strings/urlServices";
 
@@ -35,8 +38,6 @@ import { IMyBigDialogProps, buildConfirmDialogBig } from "@mikezimm/npmfunctions
 
 //Added for Prop Panel Help
 import stylesP from './PropPaneHelp/PropPanelHelp.module.scss';
-import { WebPartHelpElement } from './PropPaneHelp/PropPaneHelp';
-
 
 import * as strings from 'AlvFinManWebPartStrings';
 
@@ -135,7 +136,12 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
   }
 
+  private WebPartHelpElement = getWebPartHelpElement( this.props.sitePresets );
+  private contentPages : IBannerPages = getBannerPages( this.props.bannerProps );
+
   private mainHelp = MainHelpPage( gitRepoALVFinManSmall );
+
+
   /***
  *    d8b   db d88888b  .d8b.  d8888b.      d88888b  .d8b.  d8888b.      d88888b db      d88888b 
  *    888o  88 88'     d8' `8b 88  `8D      88'     d8' `8b 88  `8D      88'     88      88'     
@@ -345,11 +351,6 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     const {
     } = this.state;
 
-    
-    let propsHelp = <div className={ this.state.showPropsHelp !== true ? stylesP.bannerHide : stylesP.helpPropsShow  }>
-        { WebPartHelpElement }
-    </div>;
-
    // let farBannerElementsArray = [];
    let farBannerElementsArray = [...this.farBannerElements,
     // this.props.showCodeIcon !== true ? null : <div title={'Show Code Details'}><Icon iconName={ 'Code' } onClick={ this.toggleOriginal.bind(this) } style={ bannerProps.bannerCmdReactCSS }></Icon></div>,
@@ -472,6 +473,12 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
       let Banner = <WebpartBanner 
 
+      displayMode={ this.props.bannerProps.displayMode }
+      WebPartHelpElement={ this.WebPartHelpElement }
+      forceNarrowStyles= { false }
+      contentPages= { this.contentPages }
+      feedbackEmail= { this.props.bannerProps.feedbackEmail }
+
       FPSUser={ bannerProps.FPSUser }
       exportProps={ bannerProps.exportProps }
       showBanner={ bannerProps.showBanner }
@@ -529,7 +536,6 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
             {/* <div className={ styles.column }> */}
             { devHeader }
             { Banner }
-            { propsHelp }
             { componentPivot }
             { showPage }
             { showPage2 }

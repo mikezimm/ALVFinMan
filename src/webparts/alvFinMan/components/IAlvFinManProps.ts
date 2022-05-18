@@ -1,7 +1,8 @@
 import { PageContext } from '@microsoft/sp-page-context';
 import { WebPartContext } from "@microsoft/sp-webpart-base";
 
-import { IWebpartBannerProps, } from '@mikezimm/npmfunctions/dist/HelpPanel/onNpm/bannerProps';
+import { IWebpartBannerProps, } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/bannerProps';
+import { ISitePreConfigProps, } from '@mikezimm/npmfunctions/dist/PropPaneHelp/PreConfigFunctions';
 
 import { DisplayMode, Version } from '@microsoft/sp-core-library';
 
@@ -15,6 +16,9 @@ export interface IAlvFinManProps {
   environmentMessage: string;
   hasTeamsContext: boolean;
   userDisplayName: string;
+
+  //For PropPaneHelp
+  sitePresets : ISitePreConfigProps;
 
   //FPS Banner and Options props
   displayMode: DisplayMode;
