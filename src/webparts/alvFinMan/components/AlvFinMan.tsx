@@ -235,6 +235,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
 
   public componentDidMount() {
+    this.props.saveLoadAnalytics( 'ALV Fin Man', 'didMount');
     this.updateWebInfo( this.state.mainPivotKey );
   }
 

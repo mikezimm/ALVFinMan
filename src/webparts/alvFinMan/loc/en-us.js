@@ -8,8 +8,9 @@ define([], function() {
     "AppSharePointEnvironment": "The app is running on SharePoint page",
     "AppTeamsTabEnvironment": "The app is running in Microsoft Teams",
     
-    "FinManSite":"/sites/ALVFMTest/",
-    "StandardsLib": "",
-    "SupportingLib": "",
+    "analyticsViewsList": "ALVFMViews",
+    "analyticsDeepLinksList": "ALVFMDeepLinks",
+    "analyticsWeb": "/sites/Templates/Analytics/",
+
   }
 });

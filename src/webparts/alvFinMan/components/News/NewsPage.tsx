@@ -31,7 +31,7 @@ import { ILabelColor, ICSSChartTypes, CSSChartTypes, ISeriesSort, ICSSChartSerie
 import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfunctions/dist/Lists/getFunctions';
 
 import AlvAccounts from '../Accounts/Accounts';
-import { FinManSite, LookupColumns, sitePagesColumns, SourceInfo } from '../DataInterface';
+import { LookupColumns, SourceInfo } from '../DataInterface';
 import { divide } from 'lodash';
 import { makeToggleJSONCmd } from '../Elements/CmdButton';
 

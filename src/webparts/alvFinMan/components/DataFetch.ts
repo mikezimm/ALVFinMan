@@ -425,6 +425,14 @@ export function createEmptySearchBucket () {
           searchTitle = item.Title;
           searchDesc = item.Description;
         }
+        
+      } else if ( extIdx > -1 ) {
+        item.type = item.FileRef.substring( extIdx + 1 );
+        if ( item.type === 'aspx' ) { 
+          item.type = 'page';
+          searchTitle = item.Title;
+          searchDesc = item.Description;
+        }
 
       } else if ( extIdx > -1 ) {
         item.type = item.FileRef.substring( extIdx + 1 );

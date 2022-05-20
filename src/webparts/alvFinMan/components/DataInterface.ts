@@ -7,8 +7,13 @@ import { IAppFormat } from "./IAlvFinManProps";
 // //Constants
 // import { SourceInfo, thisSelect, SearchTypes } from './DataInterface';
 
-export const FinManSitePieces = ['/sites','/au','tol','iv','finan','cialmanual/']; //Just so this is not searchable easily
-export const FinManSite: string =`${FinManSitePieces.join('')}`;
+//Classic Financial manual
+export const FinManSitePieces1 = ['/sites','/au','tol','iv','finan','cialmanual/']; //Just so this is not searchable easily 
+
+//Modern Financial Manual
+export const FinManSitePieces2 = ['/sites','/finan','cemanual/']; //Just so this is not searchable easily
+export const FinManSite: string =`${FinManSitePieces2.join('')}`;
+
 // export const ModernSitePagesColumns: string[] = ['ID','Title','Description','Author/Title','Editor/Title','File/ServerRelativeUrl','BannerImageUrl/Url','FileSystemObjectType','FirstPublishedDate','PromotedState','FileSizeDisplay','OData__UIVersion','OData__UIVersionString','DocIcon'];
 export const ModernSitePagesColumns: string[] = ['ID','Title','Description','Author/Title','Editor/Title','File/ServerRelativeUrl','BannerImageUrl', 
     'FileSystemObjectType','Modified','Created','FirstPublishedDate','PromotedState','FileSizeDisplay','OData__UIVersion','OData__UIVersionString','DocIcon',
@@ -16,16 +21,18 @@ export const ModernSitePagesColumns: string[] = ['ID','Title','Description','Aut
 
 export const ModernSitePagesSearc: string[] = ['Title','Description','Author/Title','Editor/Title','FirstPublishedDate','PromotedState',];
 
-export const sitePagesColumns: string[] = [ "ID", "Title0", "Author/Title", "Editor/Title", "File/ServerRelativeUrl", "FileRef","FileLeafRef", "Created", "Modified" ]; //Do not exist on old SitePages library:   "Descritpion","BannerImageUrl.Url", "ServerRelativeUrl"
+//sitePagesColumns was used for the classic pages.
+// export const sitePagesColumns: string[] = [ "ID", "Title0", "Author/Title", "Editor/Title", "File/ServerRelativeUrl", "FileRef","FileLeafRef", "Created", "Modified" ]; //Do not exist on old SitePages library:   "Descritpion","BannerImageUrl.Url", "ServerRelativeUrl"
 export const libraryColumns: string[] = [ 'ID','FileRef','FileLeafRef','ServerRedirectedEmbedUrl','Author/Title','Editor/Title','Author/Name','Editor/Name','Modified','Created','CheckoutUserId','HasUniqueRoleAssignments','Title','FileSystemObjectType','FileSizeDisplay','File_x0020_Type','FileLeafRef','LinkFilename','OData__UIVersion','OData__UIVersionString','DocIcon'];
 export const LookupColumns: string[] = ['Functions/Title', 'Topics/Title', 'ALGroup/Title', 'ReportingSections/Title','Processes/Title' ]; // removed 'Sections/Title', for now since it should be ReportingSections
 
-export const ClassicSitePageColumns: string [] = [ ...sitePagesColumns, ...LookupColumns, ...[ 'DocumentType/Title' ] ];
+//ClassicSitePageColumns was used for the classic pages.
+// export const ClassicSitePageColumns: string [] = [ ...sitePagesColumns, ...LookupColumns, ...[ 'DocumentType/Title' ] ];
 
 export const ExtraFetchClassicWiki = ['WikiField'];
 export const ExtraFetchModernPage = ['WikiField','CanvasContent1','LayoutsWebpartsContent'];
 
-export type IDefSourceType = 'link' | 'news' | 'help' | 'account' | 'StandardDocuments' | 'SupportDocuments';
+export type IDefSourceType = 'link' | 'news' | 'help' | 'account' | 'std' | 'SupportDocuments';
 
 export interface ISourceProps {
     key: IAppFormat;
@@ -45,6 +52,7 @@ export interface ISourceProps {
 
 }
 export interface ISourceInfo {
+    manual: ISourceProps;
     news: ISourceProps;
     help: ISourceProps;
     appLinks: ISourceProps;
@@ -56,6 +64,18 @@ export interface ISourceInfo {
 }
 
 export const SourceInfo: ISourceInfo = {
+
+    manual: {
+        key: 'news',
+        defType: 'news',
+        webUrl: `${FinManSite}Manual/`,
+        listTitle: "Site Pages",
+        webRelativeLink: "SitePages",
+        columns: ModernSitePagesColumns,
+        searchProps: ModernSitePagesSearc,
+        itemFetchCol: ExtraFetchModernPage,
+        restFilter: "Id ne 'X' and ContentTypeId ne '0x012000F6C75276DBE501468CA3CC575AD8E159' and Title ne 'Home'",
+    },
 
     news: {
         key: 'news',
@@ -84,18 +104,18 @@ export const SourceInfo: ISourceInfo = {
     appLinks: {
         key: 'appLinks',
         defType: 'link',
-        webUrl: `${FinManSite}`,
+        webUrl: `${FinManSite}Manual/`,
         webRelativeLink: "lists/ALVFMAppLinks",
         listTitle: "ALVFMAppLinks",
-        columns: [ '*','ID','Title','Tab', 'SortOrder', 'LinkColumn', 'Active', 'SearchWords','RichTextPanel','Author/Title','Editor/Title','Author/Name','Editor/Name','StandardDocuments/ID','StandardDocuments/Title0','Modified','Created','HasUniqueRoleAssignments','OData__UIVersion','OData__UIVersionString'], //,'StandardDocuments/Title'
-        searchProps: [ 'Title', 'LinkColumn','RichTextPanel', 'SearchWords','StandardDocuments/Title0' ], //'StandardDocuments/Title'
+        columns: [ '*','ID','Title','Tab', 'SortOrder', 'LinkColumn', 'Active', 'SearchWords','RichTextPanel','Author/Title','Editor/Title','Author/Name','Editor/Name','StandardDocuments/ID','StandardDocuments/Title','Modified','Created','HasUniqueRoleAssignments','OData__UIVersion','OData__UIVersionString'], //,'StandardDocuments/Title'
+        searchProps: [ 'Title', 'LinkColumn','RichTextPanel', 'SearchWords','StandardDocuments/Title' ], //'StandardDocuments/Title'
         orderBy: { prop: 'Title', asc: false }
     },
 
     accounts: {
         key: 'accounts',
         defType: 'account',
-        webUrl: `${FinManSite}`,
+        webUrl: `${FinManSite}Manual/`,
         webRelativeLink: "lists/HFMAccounts",
         listTitle: "HFMAccounts",
         columns: [ 'ID','ALGroup','Description','Name1','RCM','SubCategory'],
@@ -108,14 +128,15 @@ export const SourceInfo: ISourceInfo = {
 
     stds: {
         key: 'stds',
-        defType: 'StandardDocuments',
-        webUrl: `${FinManSite}`,
+        defType: 'std',
+        webUrl: `${FinManSite}Manual/`,
         webRelativeLink: "StandardDocuments",
         listTitle: "StandardDocuments",
-        columns: ClassicSitePageColumns,
-        itemFetchCol: ExtraFetchClassicWiki,
-        searchProps: ClassicSitePageColumns,
-        selectThese: ClassicSitePageColumns,
+        columns: [ ...ModernSitePagesColumns, ...LookupColumns ],
+        itemFetchCol: ExtraFetchModernPage,
+        searchProps: [ ...ModernSitePagesColumns, ...LookupColumns ],
+        selectThese: [ ...['*'], ...ModernSitePagesColumns, ...LookupColumns ],
+
     },
 
     //Do not get * columns when using standards so you don't pull WikiFields
@@ -123,14 +144,15 @@ export const SourceInfo: ISourceInfo = {
 
     docs: {
         key: 'docs',
-        defType: 'StandardDocuments',
-        webUrl: `${FinManSite}`,
-        webRelativeLink: "StandardDocuments",
-        listTitle: "StandardDocuments",
-        columns: ClassicSitePageColumns,
-        itemFetchCol: ExtraFetchClassicWiki,
-        searchProps: ClassicSitePageColumns,
-        selectThese: ClassicSitePageColumns,
+        defType: 'std',
+        webUrl: `${FinManSite}Manual/`,
+        webRelativeLink: "SitePages",
+        listTitle: "Site Pages",
+        columns: [ ...ModernSitePagesColumns, ...LookupColumns ],
+        itemFetchCol: ExtraFetchModernPage,
+        searchProps: [ ...ModernSitePagesColumns, ...LookupColumns ],
+        selectThese: [ ...['*'], ...ModernSitePagesColumns, ...LookupColumns ],
+
     },
 
     //Do not get * columns when using standards so you don't pull WikiFields
@@ -139,7 +161,7 @@ export const SourceInfo: ISourceInfo = {
     sups: {
         key: 'sups',
         defType: 'SupportDocuments',
-        webUrl: `${FinManSite}`,
+        webUrl: `${FinManSite}Manual/`,
         webRelativeLink: "SupportDocuments",
         listTitle: "SupportDocuments",
         columns: [ ...libraryColumns, ...LookupColumns ],
@@ -171,6 +193,7 @@ export const SearchTypes:IFMSearchTypes  = {
         "page",
         "pdf",    "ppt",    "pptx",
         "rtf",
+        "std",
         "xls", "xlsm",  "xlsx",
         "news", "help",
         "unknown" ],
@@ -191,6 +214,7 @@ export const SearchTypes:IFMSearchTypes  = {
         { key: "pptx", title: "ppt", icon: "PowerPointDocument", style: "", count: 0, adjust: -1 }, 
 
         { key: "rtf", title: "rtf", icon: "AlignLeft", style: "", count: 0 }, 
+        { key: "std", title: "std", icon: "Info", style: "", count: 0 }, 
 
         { key: "xls", title: "xls", icon: "ExcelDocument", style: "", count: 0 }, 
         { key: "xlsm", title: "xls", icon: "ExcelDocument", style: "", count: 0, adjust: -1 }, 

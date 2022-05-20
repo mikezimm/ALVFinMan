@@ -39,6 +39,8 @@ export interface IAlvFinManProps {
 
   search: IFinManSearch ;
 
+  saveLoadAnalytics: any;
+
 }
 
 export interface ISearchObject {

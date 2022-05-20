@@ -28,7 +28,7 @@ import ReactJson from "react-json-view";
 import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfunctions/dist/Lists/getFunctions';
 
 import AlvAccounts from '../Accounts/Accounts';
-import { FinManSite, ISourceInfo, ISourceProps, LookupColumns, sitePagesColumns, SourceInfo } from '../DataInterface';
+import { ISourceInfo, ISourceProps, LookupColumns, SourceInfo } from '../DataInterface';
 import { IFMSearchType, SearchTypes } from '../DataInterface';
 import { getSearchTypeIcon } from '../Elements/FileTypeIcon';
 import { makeToggleJSONCmd } from '../Elements/CmdButton';
@@ -335,7 +335,7 @@ public async updateWebInfo ( webUrl: string, listChangeOnly : boolean ) {
     
     let sourceInfo: ISourceProps = SourceInfo.stds;
 
-    let web = await Web( `${window.location.origin}${FinManSite}` );
+    let web = await Web( `${window.location.origin}${sourceInfo.webUrl}` );
     
     const columns = sourceInfo.columns;
 

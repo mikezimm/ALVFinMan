@@ -32,7 +32,7 @@ import { ILabelColor, ICSSChartTypes, CSSChartTypes, ISeriesSort, ICSSChartSerie
 import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfunctions/dist/Lists/getFunctions';
 
 import AlvAccounts from '../Accounts/Accounts';
-import { FinManSite, ISourceProps, LookupColumns, sitePagesColumns, SourceInfo } from '../DataInterface';
+import { ISourceProps, LookupColumns, SourceInfo } from '../DataInterface';
 import { filter } from 'lodash';
 import { makeToggleJSONCmd } from '../Elements/CmdButton';
 
@@ -272,11 +272,11 @@ export default class Layout2Page extends React.Component<ILayout2PageProps, ILay
 
     return;
 
-    let web = await Web( `${window.location.origin}${FinManSite}` );
+    let web = await Web( `${window.location.origin}${sourceInfo.webUrl}` );
     
     //followUpLink was intended to be able to show content from the LinkColumn as well but that's a little to much 
     let followUpLink = item.LinkColumn ? item.LinkColumn.Url : '';
-    if ( followUpLink.indexOf( FinManSite ) > -1 ) {
+    if ( followUpLink.indexOf( sourceInfo.webUrl ) > -1 ) {
 
     }
 
