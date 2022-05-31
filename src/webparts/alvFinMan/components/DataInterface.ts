@@ -19,7 +19,7 @@ export const ModernSitePagesColumns: string[] = ['ID','Title','Description','Aut
     'FileSystemObjectType','Modified','Created','FirstPublishedDate','PromotedState','FileSizeDisplay','OData__UIVersion','OData__UIVersionString','DocIcon',
     'OData__OriginalSourceUrl' ]; //Added this for news links
 
-export const ModernSitePagesSearc: string[] = ['Title','Description','Author/Title','Editor/Title','FirstPublishedDate','PromotedState',];
+export const ModernSitePagesSearch: string[] = ['Title','Description','Author/Title','Editor/Title','FirstPublishedDate','PromotedState',];
 
 //sitePagesColumns was used for the classic pages.
 // export const sitePagesColumns: string[] = [ "ID", "Title0", "Author/Title", "Editor/Title", "File/ServerRelativeUrl", "FileRef","FileLeafRef", "Created", "Modified" ]; //Do not exist on old SitePages library:   "Descritpion","BannerImageUrl.Url", "ServerRelativeUrl"
@@ -78,9 +78,10 @@ export const SourceInfo: ISourceInfo = {
         webRelativeLink: "SitePages",
         searchSource: 'Manual',
         searchSourceDesc:  'Site Pages library in Manual Subsite',
-        columns: ModernSitePagesColumns,
-        searchProps: ModernSitePagesSearc,
+        columns: [ ...ModernSitePagesColumns, ...LookupColumns ],
         itemFetchCol: ExtraFetchModernPage,
+        searchProps: [ ...ModernSitePagesSearch, ...LookupColumns ],
+        selectThese: [ ...['*'], ...ModernSitePagesColumns, ...LookupColumns ],
         isModern: true,
         restFilter: "Id ne 'X' and ContentTypeId ne '0x012000F6C75276DBE501468CA3CC575AD8E159' and Title ne 'Home'",
     },
@@ -94,7 +95,7 @@ export const SourceInfo: ISourceInfo = {
         searchSource: 'News',
         searchSourceDesc:  'Site Pages library in News Subsite',
         columns: ModernSitePagesColumns,
-        searchProps: ModernSitePagesSearc,
+        searchProps: ModernSitePagesSearch,
         itemFetchCol: ExtraFetchModernPage,
         isModern: true,
         restFilter: "Id ne 'X' and ContentTypeId ne '0x012000F6C75276DBE501468CA3CC575AD8E159' and Title ne 'Home'",
@@ -109,7 +110,7 @@ export const SourceInfo: ISourceInfo = {
         searchSource: 'Help',
         searchSourceDesc:  'Site Pages library in Help Subsite',
         columns: ModernSitePagesColumns,
-        searchProps: ModernSitePagesSearc,
+        searchProps: ModernSitePagesSearch,
         itemFetchCol: ExtraFetchModernPage,
         isModern: true,
         restFilter: "Id ne 'X' and ContentTypeId ne '0x012000F6C75276DBE501468CA3CC575AD8E159' and Title ne 'Home'",
