@@ -248,7 +248,8 @@ public async updateWebInfo ( webUrl: string, listChangeOnly : boolean ) {
 
       }
 
-      const docsPage = !showPanelItem || !showPanelItem.WikiField ? null : <div dangerouslySetInnerHTML={{ __html: showPanelItem.WikiField }} />;
+      let contentField = !showPanelItem ? null : showPanelItem.CanvasContent1 ? showPanelItem.CanvasContent1 : showPanelItem.WikiField;
+      const docsPage = !showPanelItem || !contentField ? null : <div dangerouslySetInnerHTML={{ __html: contentField }} />;
       const fileEmbed = !showPanelItem || !showPanelItem.ServerRedirectedEmbedUrl ? null : <iframe src={ showPanelItem.ServerRedirectedEmbedUrl } height='350px' width='100%' style={{paddingTop: '20px' }}></iframe>;
       const panelContent = this.state.showPanelJSON !== true ? null : <div>
         <ReactJson src={ showPanelItem } name={ 'Summary' } collapsed={ false } displayDataTypes={ true } displayObjectSize={ true } enableClipboard={ true } style={{ padding: '20px 0px' }}/>
@@ -343,7 +344,8 @@ public async updateWebInfo ( webUrl: string, listChangeOnly : boolean ) {
     let selColumns = getSelectColumns( columns );
     
     const expandThese = expColumns.join(",");
-    let selectThese = '*,WikiField,FileRef,FileLeafRef,' + selColumns.join(",");
+    let contentField = sourceInfo.isModern === true ? 'CanvasContent1,LayoutsWebpartsContent,BannerImageUrl' : 'WikiField';
+    let selectThese = `*,${contentField},FileRef,FileLeafRef,` + selColumns.join(",");
 
     // Why an await does not work here is beyond me.  It should work :(
     // let fullItem = await web.lists.getByTitle( StandardsLib ).items.select(selectThese).expand(expandThese).getById( item.ID );

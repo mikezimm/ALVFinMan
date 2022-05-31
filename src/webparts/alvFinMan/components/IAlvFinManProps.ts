@@ -115,7 +115,7 @@ export type ILayoutQPage = 'Search';
 export type ILayoutHPage = 'Help';
 export type ILayoutAll = ILayoutNPage | ILayoutLPage | ILayoutGPage | ILayout1Page | ILayoutSPage | ILayoutAPage | ILayoutQPage | ILayoutHPage;
 
-export type IAppFormat = 'accounts' | 'docs' | 'stds' | 'sups' | 'appLinks' | 'news' | 'help';
+export type IAppFormat = 'accounts' | 'manual' | 'docs' | 'stds' | 'sups' | 'appLinks' | 'news' | 'help';
 
 
 // leftSearchFixed: boolean; //Locks the search options
@@ -137,6 +137,8 @@ export interface IAnyContent extends Partial<any> {
   leftSearchLC: string[]; //For easy string compare
   topSearch: string[]; //For easy display of casing
   topSearchLC: string[]; //For easy string compare
+  searchSource: string; //For easy display of casing
+  searchSourceLC: string; //For easy string compare
   type: string;
   typeIdx: number;
 

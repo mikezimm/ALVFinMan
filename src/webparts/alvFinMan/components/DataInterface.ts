@@ -32,7 +32,9 @@ export const LookupColumns: string[] = ['Functions/Title', 'Topics/Title', 'ALGr
 export const ExtraFetchClassicWiki = ['WikiField'];
 export const ExtraFetchModernPage = ['WikiField','CanvasContent1','LayoutsWebpartsContent'];
 
-export type IDefSourceType = 'link' | 'news' | 'help' | 'account' | 'std' | 'SupportDocuments';
+export type IDefSourceType = 'link' | 'news' | 'help' | 'account' | 'std' | 'manual' | 'SupportDocuments';
+
+export type ISearchSource = 'AppLinks' | 'News' | 'Help' | 'Accounts' | 'SupportDocs' | 'Manual' | 'Standards' | 'Policies' | 'Instructions';
 
 export interface ISourceProps {
     key: IAppFormat;
@@ -44,7 +46,10 @@ export interface ISourceProps {
     searchProps: string[];
     selectThese?: string[];
     restFilter?: string;
+    searchSource: ISearchSource;
+    searchSourceDesc: string;
     itemFetchCol?: string[]; //higher cost columns to fetch on opening panel
+    isModern: boolean;
     orderBy?: {
         prop: string;
         asc: boolean;
@@ -66,14 +71,17 @@ export interface ISourceInfo {
 export const SourceInfo: ISourceInfo = {
 
     manual: {
-        key: 'news',
-        defType: 'news',
+        key: 'manual',
+        defType: 'manual',
         webUrl: `${FinManSite}Manual/`,
         listTitle: "Site Pages",
         webRelativeLink: "SitePages",
+        searchSource: 'Manual',
+        searchSourceDesc:  'Site Pages library in Manual Subsite',
         columns: ModernSitePagesColumns,
         searchProps: ModernSitePagesSearc,
         itemFetchCol: ExtraFetchModernPage,
+        isModern: true,
         restFilter: "Id ne 'X' and ContentTypeId ne '0x012000F6C75276DBE501468CA3CC575AD8E159' and Title ne 'Home'",
     },
 
@@ -83,9 +91,12 @@ export const SourceInfo: ISourceInfo = {
         webUrl: `${FinManSite}News/`,
         listTitle: "Site Pages",
         webRelativeLink: "SitePages",
+        searchSource: 'News',
+        searchSourceDesc:  'Site Pages library in News Subsite',
         columns: ModernSitePagesColumns,
         searchProps: ModernSitePagesSearc,
         itemFetchCol: ExtraFetchModernPage,
+        isModern: true,
         restFilter: "Id ne 'X' and ContentTypeId ne '0x012000F6C75276DBE501468CA3CC575AD8E159' and Title ne 'Home'",
     },
 
@@ -95,9 +106,12 @@ export const SourceInfo: ISourceInfo = {
         webUrl: `${FinManSite}Help/`,
         listTitle: "Site Pages",
         webRelativeLink: "SitePages",
+        searchSource: 'Help',
+        searchSourceDesc:  'Site Pages library in Help Subsite',
         columns: ModernSitePagesColumns,
         searchProps: ModernSitePagesSearc,
         itemFetchCol: ExtraFetchModernPage,
+        isModern: true,
         restFilter: "Id ne 'X' and ContentTypeId ne '0x012000F6C75276DBE501468CA3CC575AD8E159' and Title ne 'Home'",
     },
 
@@ -106,10 +120,13 @@ export const SourceInfo: ISourceInfo = {
         defType: 'link',
         webUrl: `${FinManSite}Manual/`,
         webRelativeLink: "lists/ALVFMAppLinks",
+        searchSource: 'AppLinks',
+        searchSourceDesc:  'ALVFMAppLinks list in Manual Subsite',
         listTitle: "ALVFMAppLinks",
         columns: [ '*','ID','Title','Tab', 'SortOrder', 'LinkColumn', 'Active', 'SearchWords','RichTextPanel','Author/Title','Editor/Title','Author/Name','Editor/Name','StandardDocuments/ID','StandardDocuments/Title','Modified','Created','HasUniqueRoleAssignments','OData__UIVersion','OData__UIVersionString'], //,'StandardDocuments/Title'
         searchProps: [ 'Title', 'LinkColumn','RichTextPanel', 'SearchWords','StandardDocuments/Title' ], //'StandardDocuments/Title'
-        orderBy: { prop: 'Title', asc: false }
+        orderBy: { prop: 'Title', asc: false },
+        isModern: true,
     },
 
     accounts: {
@@ -117,10 +134,13 @@ export const SourceInfo: ISourceInfo = {
         defType: 'account',
         webUrl: `${FinManSite}Manual/`,
         webRelativeLink: "lists/HFMAccounts",
+        searchSource: 'Accounts',
+        searchSourceDesc:  'Accounts list in Manual Subsite',
         listTitle: "HFMAccounts",
         columns: [ 'ID','ALGroup','Description','Name1','RCM','SubCategory'],
         searchProps: [ 'Title', 'Description', 'ALGroup', 'Name1','RCM','SubCategory' ],
         selectThese: [ '*', 'ID','ALGroup','Description','Name1','RCM','SubCategory' ],
+        isModern: true,
     },
 
     //Do not get * columns when using standards so you don't pull WikiFields
@@ -130,12 +150,15 @@ export const SourceInfo: ISourceInfo = {
         key: 'stds',
         defType: 'std',
         webUrl: `${FinManSite}Manual/`,
-        webRelativeLink: "StandardDocuments",
-        listTitle: "StandardDocuments",
+        webRelativeLink: "SitePages",
+        searchSource: 'Manual',
+        searchSourceDesc:  'Site Pages library in Manual Subsite',
+        listTitle: "Site Pages",
         columns: [ ...ModernSitePagesColumns, ...LookupColumns ],
         itemFetchCol: ExtraFetchModernPage,
         searchProps: [ ...ModernSitePagesColumns, ...LookupColumns ],
         selectThese: [ ...['*'], ...ModernSitePagesColumns, ...LookupColumns ],
+        isModern: true,
 
     },
 
@@ -147,11 +170,14 @@ export const SourceInfo: ISourceInfo = {
         defType: 'std',
         webUrl: `${FinManSite}Manual/`,
         webRelativeLink: "SitePages",
+        searchSource: 'Manual',
+        searchSourceDesc:  'Site Pages library in Manual Subsite',
         listTitle: "Site Pages",
         columns: [ ...ModernSitePagesColumns, ...LookupColumns ],
         itemFetchCol: ExtraFetchModernPage,
         searchProps: [ ...ModernSitePagesColumns, ...LookupColumns ],
         selectThese: [ ...['*'], ...ModernSitePagesColumns, ...LookupColumns ],
+        isModern: true,
 
     },
 
@@ -163,10 +189,13 @@ export const SourceInfo: ISourceInfo = {
         defType: 'SupportDocuments',
         webUrl: `${FinManSite}Manual/`,
         webRelativeLink: "SupportDocuments",
+        searchSource: 'SupportDocs',
+        searchSourceDesc:  'SupportDocuments library in Manual Subsite',
         listTitle: "SupportDocuments",
         columns: [ ...libraryColumns, ...LookupColumns ],
         searchProps: [ ...libraryColumns, ...LookupColumns ],
         selectThese: [ ...['*'], ...libraryColumns, ...LookupColumns ],
+        isModern: true,
     },
 };
 
