@@ -101,7 +101,7 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
       {/* <div className={ styles.titleList }> <ul>{ pagesList }</ul></div> */}
       <div className={ stylesN.titleList }>
         <h3>{this.props.source.searchSource}</h3>
-        <div>{this.props.source.searchSourceDesc}</div>
+        <div className= { stylesN.pageDescription }>{this.props.source.searchSourceDesc}</div>
          { pagesList } </div>
       <div className={ stylesN.article }>
         { image }
