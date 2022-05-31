@@ -61,8 +61,8 @@ export interface ISourceInfo {
     news: ISourceProps;
     help: ISourceProps;
     appLinks: ISourceProps;
-    docs: ISourceProps;
-    stds: ISourceProps;
+    // docs: ISourceProps;
+    // stds: ISourceProps;
     sups: ISourceProps;
     accounts: ISourceProps;
 
@@ -147,40 +147,40 @@ export const SourceInfo: ISourceInfo = {
     //Do not get * columns when using standards so you don't pull WikiFields
     // let selectThese = library === StandardsLib ? [ ...columns, ...selColumns].join(",") : '*,' + [ ...columns, ...selColumns].join(",");
 
-    stds: {
-        key: 'stds',
-        defType: 'std',
-        webUrl: `${FinManSite}Manual/`,
-        webRelativeLink: "SitePages",
-        searchSource: 'Manual',
-        searchSourceDesc:  'Site Pages library in Manual Subsite',
-        listTitle: "Site Pages",
-        columns: [ ...ModernSitePagesColumns, ...LookupColumns ],
-        itemFetchCol: ExtraFetchModernPage,
-        searchProps: [ ...ModernSitePagesColumns, ...LookupColumns ],
-        selectThese: [ ...['*'], ...ModernSitePagesColumns, ...LookupColumns ],
-        isModern: true,
+    // stds: {
+    //     key: 'stds',
+    //     defType: 'std',
+    //     webUrl: `${FinManSite}Manual/`,
+    //     webRelativeLink: "SitePages",
+    //     searchSource: 'Manual',
+    //     searchSourceDesc:  'Site Pages library in Manual Subsite',
+    //     listTitle: "Site Pages",
+    //     columns: [ ...ModernSitePagesColumns, ...LookupColumns ],
+    //     itemFetchCol: ExtraFetchModernPage,
+    //     searchProps: [ ...ModernSitePagesColumns, ...LookupColumns ],
+    //     selectThese: [ ...['*'], ...ModernSitePagesColumns, ...LookupColumns ],
+    //     isModern: true,
 
-    },
+    // },
 
     //Do not get * columns when using standards so you don't pull WikiFields
     // let selectThese = library === StandardsLib ? [ ...columns, ...selColumns].join(",") : '*,' + [ ...columns, ...selColumns].join(",");
 
-    docs: {
-        key: 'docs',
-        defType: 'std',
-        webUrl: `${FinManSite}Manual/`,
-        webRelativeLink: "SitePages",
-        searchSource: 'Manual',
-        searchSourceDesc:  'Site Pages library in Manual Subsite',
-        listTitle: "Site Pages",
-        columns: [ ...ModernSitePagesColumns, ...LookupColumns ],
-        itemFetchCol: ExtraFetchModernPage,
-        searchProps: [ ...ModernSitePagesColumns, ...LookupColumns ],
-        selectThese: [ ...['*'], ...ModernSitePagesColumns, ...LookupColumns ],
-        isModern: true,
+    // docs: {
+    //     key: 'docs',
+    //     defType: 'std',
+    //     webUrl: `${FinManSite}Manual/`,
+    //     webRelativeLink: "SitePages",
+    //     searchSource: 'Manual',
+    //     searchSourceDesc:  'Site Pages library in Manual Subsite',
+    //     listTitle: "Site Pages",
+    //     columns: [ ...ModernSitePagesColumns, ...LookupColumns ],
+    //     itemFetchCol: ExtraFetchModernPage,
+    //     searchProps: [ ...ModernSitePagesColumns, ...LookupColumns ],
+    //     selectThese: [ ...['*'], ...ModernSitePagesColumns, ...LookupColumns ],
+    //     isModern: true,
 
-    },
+    // },
 
     //Do not get * columns when using standards so you don't pull WikiFields
     // let selectThese = library === StandardsLib ? [ ...columns, ...selColumns].join(",") : '*,' + [ ...columns, ...selColumns].join(",");
@@ -223,7 +223,7 @@ export const SearchTypes:IFMSearchTypes  = {
         "page",
         "pdf",    "ppt",    "pptx",
         "rtf",
-        "std",
+        "manual",
         "xls", "xlsm",  "xlsx",
         "news", "help",
         "unknown" ],
@@ -244,7 +244,7 @@ export const SearchTypes:IFMSearchTypes  = {
         { key: "pptx", title: "ppt", icon: "PowerPointDocument", style: "", count: 0, adjust: -1 }, 
 
         { key: "rtf", title: "rtf", icon: "AlignLeft", style: "", count: 0 }, 
-        { key: "std", title: "std", icon: "Info", style: "", count: 0 }, 
+        { key: "manual", title: "manual", icon: "Info", style: "", count: 0 }, 
 
         { key: "xls", title: "xls", icon: "ExcelDocument", style: "", count: 0 }, 
         { key: "xlsm", title: "xls", icon: "ExcelDocument", style: "", count: 0, adjust: -1 }, 

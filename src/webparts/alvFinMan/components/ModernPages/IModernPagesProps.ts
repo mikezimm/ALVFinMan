@@ -5,9 +5,9 @@ import { ILabelColor, ICSSChartTypes, CSSChartTypes, ISeriesSort, ICSSChartSerie
 import { IFMBuckets, IFMBucketItems, IAnyContent, IPagesContent, ILayoutAll } from "../IAlvFinManProps";
 import { ISourceProps } from "../DataInterface";
 
-export interface INewsPageProps {
+export interface IModernPagesProps {
 
-  news: IPagesContent[];
+  pages: IPagesContent[];
 
   sort: {
     prop: string;
@@ -24,7 +24,7 @@ export interface INewsPageProps {
 
 }
 
-export interface INewsPageState {
+export interface IModernPagesState {
   // description: string;
 
   showItemPanel: boolean;

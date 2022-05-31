@@ -39,9 +39,9 @@ export function createEmptySearchBucket () {
     items: [],
     appLinks: [],
     accounts: [],
-    stds: [],
+    manual: [],
     sups: [],
-    docs: [],
+    // docs: [],
 
     news: [],
     help: [],
@@ -305,6 +305,8 @@ export function createEmptySearchBucket () {
         item.publishedLoc = item.publishedMS.toLocaleString();
       }
 
+      if ( item.File && item.File.ServerRelativeUrl ) { item['File/ServerRelativeUrl'] = item.File.ServerRelativeUrl ; }
+
       if ( item.ReportingSections ) { item.Reporting = item.ReportingSections ; }
 
       let meta: string[] = [];
@@ -481,6 +483,9 @@ export function createEmptySearchBucket () {
       }
 
       let searchTypeIdx = SearchTypes.keys.indexOf( item.type ) ;
+      if ( searchTypeIdx === -1 ) {
+        console.log('Invalid searchTypeIdx not found:', item.type, SearchTypes.keys );
+      }
       let adjustIdx = SearchTypes.objs[ searchTypeIdx ].adjust ? SearchTypes.objs[ searchTypeIdx ].adjust : 0;
       searchTypeIdx = searchTypeIdx + adjustIdx;
 

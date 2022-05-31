@@ -1,8 +1,8 @@
 import * as React from 'react';
 import styles from '../AlvFinMan.module.scss';
-import stylesN from './News.module.scss';
+import stylesN from './ModernPages.module.scss';
 import { ILayoutGPage, ILayoutSPage, ILayoutAll, ILayoutAPage, IFMBuckets, IPagesContent,   } from '../IAlvFinManProps';
-import { INewsPageProps, INewsPageState, } from './INewsProps';
+import { IModernPagesProps, IModernPagesState, } from './IModernPagesProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 
 import { Web, ISite } from '@pnp/sp/presets/all';
@@ -40,29 +40,29 @@ export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
 const consoleLineItemBuild: boolean = false;
 
 
-export default class NewsPage extends React.Component<INewsPageProps, INewsPageState> {
+export default class ModernPages extends React.Component<IModernPagesProps, IModernPagesState> {
 
   private ToggleJSONCmd = makeToggleJSONCmd( this._toggleJSON.bind( this ) );
 
-  private buildNewsList( News: IPagesContent[], sortProp: ISeriesSort, order: ISeriesSort, showItem: IPagesContent, showCanvasContent1: boolean ) {
-    console.log('buildNewsList:', News );
+  private buildPagesList( News: IPagesContent[], sortProp: ISeriesSort, order: ISeriesSort, showItem: IPagesContent, showCanvasContent1: boolean ) {
+    console.log('buildPagesList:', News );
 
-    let newsList : any[] = [];
+    let pagesList : any[] = [];
 
     // debugger;
 
-    let SortedNews: IPagesContent[] = sortObjectArrayByNumberKey( News, order, sortProp );
+    let SortedPages: IPagesContent[] = sortObjectArrayByNumberKey( News, order, sortProp );
 
-    SortedNews.map( item => {
+    SortedPages.map( item => {
       let classNames = [ stylesN.titleListItem, styles.leftFilter ];
       if ( showItem && ( item.ID === showItem.ID ) ) { classNames.push( stylesN.isSelected ) ; }
-      newsList.push( <li className={ classNames.join( ' ' ) } onClick= { this.clickNewsItem.bind( this, item.ID, 'news', item  )} style={ null }>
+      pagesList.push( <li className={ classNames.join( ' ' ) } onClick= { this.clickNewsItem.bind( this, item.ID, 'pages', item  )} style={ null }>
         { item.Title } </li>  );
     });
 
     let showArticle: IPagesContent = showItem ? showItem : null;
 
-    const articleTitle = showArticle ? showArticle.Title : 'Select news to show...';
+    const articleTitle = showArticle ? showArticle.Title : 'Select pages to show...';
     let articleDesc: any  = showArticle ? showArticle.Description : '';
 
     const imageUrl = showArticle ? showArticle.BannerImageUrl : null;
@@ -93,13 +93,16 @@ export default class NewsPage extends React.Component<INewsPageProps, INewsPageS
       </div>;
     }
 
-    if ( !showItem && SortedNews.length > 0 ) { showArticle = SortedNews[0]; }
+    if ( !showItem && SortedPages.length > 0 ) { showArticle = SortedPages[0]; }
     const image = !showItem || !imageUrl ? null : 
     <img src={ imageUrl.Url } height="100px" width="100%" style={{ objectFit: "cover" }} title={ imageUrl.Url }></img>;
 
-    let page = <div className={ stylesN.newsPage } >
-      {/* <div className={ styles.titleList }> <ul>{ newsList }</ul></div> */}
-      <div className={ stylesN.titleList }><h3>Financial News</h3> { newsList } </div>
+    let page = <div className={ stylesN.modernPage } >
+      {/* <div className={ styles.titleList }> <ul>{ pagesList }</ul></div> */}
+      <div className={ stylesN.titleList }>
+        <h3>{this.props.source.searchSource}</h3>
+        <div>{this.props.source.searchSourceDesc}</div>
+         { pagesList } </div>
       <div className={ stylesN.article }>
         { image }
         <h3>{ articleTitle }</h3>
@@ -112,14 +115,14 @@ export default class NewsPage extends React.Component<INewsPageProps, INewsPageS
 
   }
 
-  public constructor(props:INewsPageProps){
+  public constructor(props:IModernPagesProps){
     super(props);
     console.log('constructor:',   );
     this.state = {
       showItemPanel: false,
       showCanvasContent1: false,
       showPanelJSON: false,
-      showThisItem: this.props.news.length > 0 ? this.props.news[ 0 ] : null,
+      showThisItem: this.props.pages.length > 0 ? this.props.pages[ 0 ] : null,
       refreshId: `${this.props.refreshId}`,
       sort: {
         prop: this.props.sort.prop,
@@ -156,20 +159,20 @@ export default class NewsPage extends React.Component<INewsPageProps, INewsPageS
     if ( this.props.refreshId !== prevProps.refreshId ) {
       console.log('componentDidUpdate: refreshId', prevProps.refreshId, this.props.refreshId  );
       let showThisItem: IPagesContent = this.state.showThisItem;
-      if ( !showThisItem && this.props.news.length > 0 ) showThisItem = this.props.news[0];
+      if ( !showThisItem && this.props.pages.length > 0 ) showThisItem = this.props.pages[0];
       this.setState({ refreshId: this.props.refreshId, showThisItem: showThisItem });
     }
   }
 
-  public render(): React.ReactElement<INewsPageProps> {
+  public render(): React.ReactElement<IModernPagesProps> {
 
-    if ( this.props.mainPivotKey !== 'News' ) {
+    if ( this.props.mainPivotKey !== 'News' && this.props.mainPivotKey !== 'Help' ) {
       return ( null );
 
     } else {
-      console.log('NewsPage: ReactElement', this.props.refreshId  );
+      console.log('ModernPages: ReactElement', this.props.refreshId  );
 
-      const showPage = <div> { this.buildNewsList( this.props.news, this.state.sort.prop, this.state.sort.order, this.state.showThisItem, this.state.showCanvasContent1 ) } </div>; 
+      const showPage = <div> { this.buildPagesList( this.props.pages, this.state.sort.prop, this.state.sort.order, this.state.showThisItem, this.state.showCanvasContent1 ) } </div>; 
   
       if ( this.state.showThisItem && this.state.showThisItem.WikiField ) {
         // const replaceString = '<a onClick=\"console.log(\'Going to\',this.href);window.open(this.href,\'_blank\')\" style="pointer-events:none" href=';
@@ -213,7 +216,7 @@ export default class NewsPage extends React.Component<INewsPageProps, INewsPageS
       return (
         // <div className={ styles.alvFinMan }>
         <div className={ null }>
-          {/* <div className={ stylesN.newsPage }> */}
+          {/* <div className={ stylesN.pagesPage }> */}
           <div className={ null }>
             {/* <div className={ styles.row }> */}
               {/* <div className={ styles.column }> */}
@@ -237,7 +240,7 @@ export default class NewsPage extends React.Component<INewsPageProps, INewsPageS
     window.open( link , '_blank' );
   }
 
-  private clickNewsItem( ID: number, category: string, item: IPagesContent, e: any ) {  //this, item.ID, 'news', item
+  private clickNewsItem( ID: number, category: string, item: IPagesContent, e: any ) {  //this, item.ID, 'pages', item
     console.log('clickNewsItem:', ID, item );
     // debugger;
 
@@ -259,9 +262,9 @@ export default class NewsPage extends React.Component<INewsPageProps, INewsPageS
   //Standards are really site pages, supporting docs are files
   private async getDocWiki( item: IPagesContent, showCanvasContent1: boolean ) {
 
-    let web = await Web( `${window.location.origin}${SourceInfo.news.webUrl}` );
+    let web = await Web( `${window.location.origin}${this.props.source.webUrl}` );
     
-    const columns = SourceInfo.news.columns;
+    const columns = this.props.source.columns;
 
     let expColumns = getExpandColumns( columns );
     let selColumns = getSelectColumns( columns );
@@ -271,7 +274,7 @@ export default class NewsPage extends React.Component<INewsPageProps, INewsPageS
 
     // Why an await does not work here is beyond me.  It should work :(
     // let fullItem = await web.lists.getByTitle( StandardsLib ).items.select(selectThese).expand(expandThese).getById( item.ID );
-    web.lists.getByTitle( SourceInfo.news.listTitle ).items.select(selectThese).expand(expandThese).getById( parseInt( item.ID ) ).fieldValuesAsHTML().then( result => {
+    web.lists.getByTitle( this.props.source.listTitle ).items.select(selectThese).expand(expandThese).getById( parseInt( item.ID ) ).fieldValuesAsHTML().then( result => {
       console.log( 'ALVFinManDocs', result );
 
     //Added this to fit images into the current width or else the image is full size

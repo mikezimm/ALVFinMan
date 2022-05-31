@@ -85,7 +85,7 @@ export default class Layout1Page extends React.Component<ILayout1PageProps, ILay
 
   private ToggleJSONCmd = makeToggleJSONCmd( this._toggleJSON.bind( this ) );
 
-  private buildLay1Page( pivot: string, bucketClickKey: string, buckets: IFMBuckets, docs: IAnyContent[] , sups: any[] ) {
+  private buildLay1Page( pivot: string, bucketClickKey: string, buckets: IFMBuckets, manual: IAnyContent[] , sups: any[] ) {
     console.log('buildLay1Page:', pivot,bucketClickKey  );
     const key = pivot.split('|')[1] ? pivot.split('|')[1] : pivot.split('|')[0] ;
 
@@ -101,18 +101,18 @@ export default class Layout1Page extends React.Component<ILayout1PageProps, ILay
 
     let showDocs : any[] = [];
     let checkBucketKey = !bucketClickKey ? firstTitle : bucketClickKey;
-    docs.map( item => {
+    manual.map( item => {
       let showTitle = item.Title0 ? item.Title0 : item.Title? item.Title: item.searchTitle + '*';
       if ( Array.isArray( item [key] ) === true ) {
         item [key].map( value => {
           if ( consoleLineItemBuild === true ) console.log( 'key value - item', key, value, item ) ;
           if ( value.Title === checkBucketKey ) { showDocs.push( 
-          <li onClick= { this.clickDocumentItem.bind( this, key, 'docs', item  )}> 
+          <li onClick= { this.clickDocumentItem.bind( this, key, 'manual', item  )}> 
             { showTitle } </li> ) ; }
         });
       } else { //This is not a multi-select key
           if ( item [key] && item [key].Title === checkBucketKey ) { showDocs.push(  
-          <li onClick= { this.clickDocumentItem.bind( this, key, 'docs', item  )}>
+          <li onClick= { this.clickDocumentItem.bind( this, key, 'manual', item  )}>
             { showTitle } </li>  ) ; }
       }
     });
@@ -141,7 +141,7 @@ export default class Layout1Page extends React.Component<ILayout1PageProps, ILay
 
     let page = <div className={ styles.layout1 } >
       <div className={ styles.titleList }><h3>{ this.props.mainPivotKey}</h3> { titles } </div>
-      <div className={ styles.docsList }><h3 onClick={ this.clickLibrary.bind( this, SourceInfo.docs , )}>Standards</h3> { showDocs } </div>
+      <div className={ styles.docsList }><h3 onClick={ this.clickLibrary.bind( this, SourceInfo.manual , )}>Standards Manual</h3> { showDocs } </div>
       <div className={ styles.docsList }><h3 onClick={ this.clickLibrary.bind( this, SourceInfo.sups , )}>Supporting Docs</h3> { showSups } </div>
     </div>;
     return page;
@@ -211,7 +211,7 @@ public async updateWebInfo ( webUrl: string, listChangeOnly : boolean ) {
       console.log('Layout1Page: ReactElement', this.props.refreshId  );
       const layout1 = Layout1PageValues.indexOf( this.props.mainPivotKey as any) > -1 ? this.props.mainPivotKey :null;
       const showPage = !layout1 ? null :
-      <div> { this.buildLay1Page( layout1 , this.state.bucketClickKey, this.props.buckets, this.props.docs , this.props.sups ) } </div>; 
+      <div> { this.buildLay1Page( layout1 , this.state.bucketClickKey, this.props.buckets, this.props.manual , this.props.sups ) } </div>; 
   
       if ( showPanelItem && showPanelItem.WikiField ) {
         // const replaceString = '<a onClick=\"console.log(\'Going to\',this.href);window.open(this.href,\'_blank\')\" style="pointer-events:none" href=';
@@ -304,7 +304,7 @@ public async updateWebInfo ( webUrl: string, listChangeOnly : boolean ) {
   }
 
   
-  private async clickDocumentItem( pivot, supDoc, item, e ) {
+  private async clickDocumentItem( pivot, supDoc: 'sups' | 'manual', item, e ) {
     console.log('clickDocumentItem:', pivot, supDoc, item );
     if ( e.ctrlKey === true && item.FileRef ) {
       window.open( item.FileRef, '_blank' );
@@ -312,7 +312,7 @@ public async updateWebInfo ( webUrl: string, listChangeOnly : boolean ) {
     }  else if ( e.ctrlKey === true && item.ServerRedirectedEmbedUrl ) {
       window.open( item.ServerRedirectedEmbedUrl, '_blank' );
 
-    }  else if ( supDoc === 'docs' ) {
+    }  else if ( supDoc === 'manual' ) {
       await this.getDocWiki( item );
 
     } else {
@@ -334,7 +334,7 @@ public async updateWebInfo ( webUrl: string, listChangeOnly : boolean ) {
    //Standards are really site pages, supporting docs are files
   private async getDocWiki( item: any, ) {
     
-    let sourceInfo: ISourceProps = SourceInfo.stds;
+    let sourceInfo: ISourceProps = SourceInfo.manual;
 
     let web = await Web( `${window.location.origin}${sourceInfo.webUrl}` );
     

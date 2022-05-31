@@ -62,8 +62,9 @@ export interface ISearchBucket {
 
   items: IAllContentType[];
   appLinks: IAnyContent[];
-  docs: IAnyContent[];
-  stds: IAnyContent[]; //This is currently not used.... Originally considered it as Standards since the library was 'Standard Docs'.  Maybe could be list of relavant standards in the future?
+  manual: IAnyContent[];
+  // docs: IAnyContent[];
+  // stds: IAnyContent[]; //This is currently not used.... Originally considered it as Standards since the library was 'Standard Docs'.  Maybe could be list of relavant standards in the future?
   sups: IAnyContent[];
   accounts: IAnyContent[];
   news: IPagesContent[];
@@ -115,7 +116,7 @@ export type ILayoutQPage = 'Search';
 export type ILayoutHPage = 'Help';
 export type ILayoutAll = ILayoutNPage | ILayoutLPage | ILayoutGPage | ILayout1Page | ILayoutSPage | ILayoutAPage | ILayoutQPage | ILayoutHPage;
 
-export type IAppFormat = 'accounts' | 'manual' | 'docs' | 'stds' | 'sups' | 'appLinks' | 'news' | 'help';
+export type IAppFormat = 'accounts' | 'manual' | 'sups' | 'appLinks' | 'news' | 'help';
 
 
 // leftSearchFixed: boolean; //Locks the search options
@@ -188,8 +189,8 @@ export interface IAlvFinManState {
   search: IFinManSearch ;
 
   appLinks: IAnyContent[];
-  docs: IAnyContent[];
-  stds: IAnyContent[]; //This is currently not used.... Originally considered it as Standards since the library was 'Standard Docs'.  Maybe could be list of relavant standards in the future?
+  manual: IAnyContent[];
+  // stds: IAnyContent[]; //This is currently not used.... Originally considered it as Standards since the library was 'Standard Docs'.  Maybe could be list of relavant standards in the future?
   sups: IAnyContent[];
   accounts: IAnyContent[];
 

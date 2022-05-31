@@ -10,8 +10,8 @@ export interface ISearchPageProps {
 
   appLinks: IAnyContent[];
   mainPivotKey: ILayoutAll;
-  docs: IAnyContent[];
-  stds: IAnyContent[]; //This is currently not used.... Originally considered it as Standards since the library was 'Standard Docs'.  Maybe could be list of relavant standards in the future?
+  manual: IAnyContent[];
+  // stds: IAnyContent[]; //This is currently not used.... Originally considered it as Standards since the library was 'Standard Docs'.  Maybe could be list of relavant standards in the future?
   sups: IAnyContent[];
   accounts: IAnyContent[];
 

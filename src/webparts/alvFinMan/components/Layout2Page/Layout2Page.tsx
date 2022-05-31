@@ -96,7 +96,7 @@ export default class Layout2Page extends React.Component<ILayout2PageProps, ILay
     else if ( pageTitle ==='General' ) { pageTitle = 'General Information' ; }
     else if ( pageTitle ==='Links' ) { pageTitle = 'Links to other systems' ; }
 
-    let page = <div className={ styles2.newsPage } >
+    let page = <div className={ styles2.modernPage } >
       {/* <div className={ styles.titleList }> <ul>{ newsList }</ul></div> */}
       <div className={ styles2.titleList }>
         <h3>{ pageTitle }</h3> 
@@ -213,7 +213,7 @@ export default class Layout2Page extends React.Component<ILayout2PageProps, ILay
       return (
         // <div className={ styles.alvFinMan }>
         <div className={ null }>
-          {/* <div className={ stylesN.newsPage }> */}
+          {/* <div className={ stylesN.modernPage }> */}
           <div className={ null }>
             <div className={ styles.row }>
               {/* <div className={ styles.column }> */}
@@ -252,9 +252,9 @@ export default class Layout2Page extends React.Component<ILayout2PageProps, ILay
   }
 
   
-  private async clickDocumentItem( pivot, supDoc, item, title ) {
+  private async clickDocumentItem( pivot, supDoc: 'sups' | 'manual', item, title ) {
     console.log('clickDocumentItem:', pivot, supDoc, item );
-    if ( supDoc === 'docs' ) {
+    if ( supDoc === 'manual' ) {
       await this.getDocWiki( item );
     } else {
       this.setState({ showItemPanel: true, selectedItem: item });

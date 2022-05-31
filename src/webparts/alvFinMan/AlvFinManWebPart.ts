@@ -393,9 +393,9 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
         items: [],
         appLinks: [],
         accounts: [],
-        stds: [],
+        manual: [],
         sups: [],
-        docs: [],
+        // docs: [],
 
         news: [],
         help: [],
@@ -412,9 +412,9 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
         items: [],
         appLinks: [],
         accounts: [],
-        stds: [],
+        manual: [],
         sups: [],
-        docs: [],
+        // docs: [],
         
         news: [],
         help: [],

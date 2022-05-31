@@ -37,7 +37,6 @@ import { encodeDecodeString, } from "@mikezimm/npmfunctions/dist/Services/String
 import { IMyBigDialogProps, buildConfirmDialogBig } from "@mikezimm/npmfunctions/dist/Elements/dialogBox";
 
 //Added for Prop Panel Help
-import stylesP from './PropPaneHelp/PropPanelHelp.module.scss';
 
 import * as strings from 'AlvFinManWebPartStrings';
 
@@ -55,7 +54,7 @@ import AlvAccounts from './Accounts/Accounts';
 import Layout1Page from './Layout1Page/Layout1Page';
 import Layout2Page from './Layout2Page/Layout2Page';
 import SearchPage from './Search/SearchPage';
-import NewsPage from './News/NewsPage';
+import ModernPages from './ModernPages/ModernPages';
 
 import { MainHelpPage } from './AlvFMHelp';
 
@@ -213,8 +212,8 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
       search: JSON.parse(JSON.stringify( this.props.search )),
       appLinks: [],
-      docs: [],
-      stds: [],
+      manual: [],
+      // stds: [],
       sups: [],
       accounts: [],
 
@@ -272,7 +271,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     let search = JSON.parse(JSON.stringify( this.state.search ));
     let updateBucketsNow: boolean = false;
     let appLinks: IAnyContent[] = this.state.appLinks;
-    let docs: IAnyContent[] = this.state.docs;
+    let manual: IAnyContent[] = this.state.manual;
     let sups: IAnyContent[] = this.state.sups;
     let news: IPagesContent[] = this.state.news;
     let help: IPagesContent[] = this.state.help;
@@ -293,8 +292,8 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     let Layout1PageValuesAny: any = Layout1PageValues;
 
     if ( fetchedDocs !== true && ( Layout1PageValuesAny.indexOf( mainPivotKey ) > -1 || mainPivotKey === 'Search' ) ) {
-      docs = await getALVFinManContent( SourceInfo.docs, this.props.search );
-      search = updateSearchCounts( 'docs', docs, search );
+      manual = await getALVFinManContent( SourceInfo.manual, this.props.search );
+      search = updateSearchCounts( 'manual', manual, search );
 
       sups = await getALVFinManContent( SourceInfo.sups, this.props.search );
       search = updateSearchCounts( 'sups', sups, search );
@@ -307,9 +306,15 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
    
     if ( fetchedNews !== true && ( mainPivotKey === 'News' || mainPivotKey === 'Search' ) ) {
       news = await getALVFinManContent( SourceInfo.news, this.props.search );
-      search = updateSearchCounts( 'sups', sups, search );
-
+      search = updateSearchCounts( 'news', news, search );
       fetchedNews = true;
+
+    }
+   
+    if ( fetchedHelp !== true && ( mainPivotKey === 'Help' || mainPivotKey === 'Search' ) ) {
+      help = await getALVFinManContent( SourceInfo.help, this.props.search );
+      search = updateSearchCounts( 'help', help, search );
+      fetchedHelp = true;
 
     }
 
@@ -321,14 +326,14 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
     let buckets = this.state.buckets;
     if ( updateBucketsNow === true ) {
-      buckets = updateBuckets( buckets, docs, false );
+      buckets = updateBuckets( buckets, manual, false );
       buckets = updateBuckets( buckets, sups, true );
     }
     // debugger;
-    search = updateSearchTypes( [ ...appLinks, ...docs, ...sups, ...accounts, ], search );
+    search = updateSearchTypes( [ ...appLinks, ...manual, ...sups, ...accounts, ], search );
 
     console.log('state:  search', search );
-    this.setState({ search: search, docs: docs, buckets: buckets, sups: sups, appLinks: appLinks, mainPivotKey: mainPivotKey, fetchedDocs: fetchedDocs, accounts: accounts, news: news, help: help, refreshId: this.newRefreshId() });
+    this.setState({ search: search, manual: manual, buckets: buckets, sups: sups, appLinks: appLinks, mainPivotKey: mainPivotKey, fetchedDocs: fetchedDocs, accounts: accounts, news: news, help: help, refreshId: this.newRefreshId() });
 
   }
 
@@ -402,8 +407,8 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       refreshId={ this.state.refreshId }
       description={ this.props.description }
       appLinks={ this.state.appLinks }
-      docs={ this.state.docs }
-      stds={ this.state.stds }
+      manual={ this.state.manual }
+      // stds={ this.state.stds }
       sups={ this.state.sups }
       buckets={ this.state.buckets }
       standards={ this.state.standards }
@@ -413,7 +418,6 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
     const showPage2 = <Layout2Page 
       mainPivotKey={this.state.mainPivotKey}
-
       refreshId={ this.state.refreshId }
       source={ SourceInfo.appLinks }
       appLinks={ this.state.appLinks }
@@ -424,8 +428,8 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       search={ this.state.search }
       appLinks={ this.state.appLinks }
       accounts={ this.state.accounts }
-      docs={ this.state.docs }
-      stds={ this.state.stds }
+      manual={ this.state.manual }
+      // stds={ this.state.stds }
       sups={ this.state.sups }
       buckets={ this.state.buckets }
       standards={ this.state.standards }
@@ -447,18 +451,27 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       order: 'asc',
     };
 
-    const news = <NewsPage
-
+    const news = this.state.mainPivotKey !== 'News' ? null : <ModernPages
       mainPivotKey={this.state.mainPivotKey}
       sort = { defNewsSort }
-
       refreshId={ this.state.refreshId }
       source={ SourceInfo.news }
-      news={ this.state.news }
+      pages={ this.state.news }
 
-    ></NewsPage>;
+    ></ModernPages>;
 
-    const help = this.state.mainPivotKey === 'Help' ? this.mainHelp : null;
+    const defHelpSort ={
+      prop: 'Title',
+      order: 'asc',
+    };
+
+    const help = this.state.mainPivotKey !== 'Help' ? null : <ModernPages
+        mainPivotKey={this.state.mainPivotKey}
+        sort = { defHelpSort }
+        refreshId={ this.state.refreshId }
+        source={ SourceInfo.help }
+        pages={ this.state.help }
+      ></ModernPages>;
         
 
       /***
