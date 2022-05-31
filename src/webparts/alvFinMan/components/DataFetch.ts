@@ -305,6 +305,7 @@ export function createEmptySearchBucket () {
         item.publishedLoc = item.publishedMS.toLocaleString();
       }
 
+      //Added this to flatten file url for easier use
       if ( item.File && item.File.ServerRelativeUrl ) { item['File/ServerRelativeUrl'] = item.File.ServerRelativeUrl ; }
 
       if ( item.ReportingSections ) { item.Reporting = item.ReportingSections ; }
