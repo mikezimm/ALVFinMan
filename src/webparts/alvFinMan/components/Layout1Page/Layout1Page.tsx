@@ -141,8 +141,8 @@ export default class Layout1Page extends React.Component<ILayout1PageProps, ILay
 
     let page = <div className={ styles.layout1 } >
       <div className={ styles.titleList }><h3>{ this.props.mainPivotKey}</h3> { titles } </div>
-      <div className={ styles.docsList }><h3 onClick={ this.clickLibrary.bind( this, SourceInfo.manual , )}>Standards Manual</h3> { showDocs } </div>
-      <div className={ styles.docsList }><h3 onClick={ this.clickLibrary.bind( this, SourceInfo.sups , )}>Supporting Docs</h3> { showSups } </div>
+      <div className={ styles.docsList }><h3 onClick={ this.clickLibrary.bind( this, SourceInfo.manual , )}>Standards Manual ({ showDocs.length })</h3> { showDocs } </div>
+      <div className={ styles.docsList }><h3 onClick={ this.clickLibrary.bind( this, SourceInfo.sups , )}>Supporting Docs ({ showSups.length })</h3> { showSups } </div>
     </div>;
     return page;
 
@@ -174,7 +174,7 @@ public async updateWebInfo ( webUrl: string, listChangeOnly : boolean ) {
 
 }
 
-//        
+//
   /***
  *         d8888b. d888888b d8888b.      db    db d8888b. d8888b.  .d8b.  d888888b d88888b 
  *         88  `8D   `88'   88  `8D      88    88 88  `8D 88  `8D d8' `8b `~~88~~' 88'     
