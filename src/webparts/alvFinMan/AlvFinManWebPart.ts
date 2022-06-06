@@ -674,6 +674,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
           },
           displayGroupsAsAccordion: true, //DONT FORGET THIS IF PROP PANE GROUPS DO NOT EXPAND
           groups: [
+            WebPartInfoGroup( links.gitRepoALVFinManSmall, 'Modern ALV Finance Manual' ),
             {
               groupName: 'ALV Financial Manual - Basic',
               groupFields: [
