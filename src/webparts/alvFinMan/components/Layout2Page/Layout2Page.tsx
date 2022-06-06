@@ -213,7 +213,7 @@ export default class Layout2Page extends React.Component<ILayout2PageProps, ILay
       return (
         // <div className={ styles.alvFinMan }>
         <div className={ null }>
-          {/* <div className={ stylesN.modernPage }> */}
+          {/* <div className={ stylesM.modernPage }> */}
           <div className={ null }>
             <div className={ styles.row }>
               {/* <div className={ styles.column }> */}

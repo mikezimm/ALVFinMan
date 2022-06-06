@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styles from '../AlvFinMan.module.scss';
-import stylesN from './ModernPages.module.scss';
+import stylesM from './ModernPages.module.scss';
 import { ILayoutGPage, ILayoutSPage, ILayoutAll, ILayoutAPage, IFMBuckets, IPagesContent,   } from '../IAlvFinManProps';
 import { IModernPagesProps, IModernPagesState, } from './IModernPagesProps';
 import { escape } from '@microsoft/sp-lodash-subset';
@@ -54,8 +54,8 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
     let SortedPages: IPagesContent[] = sortObjectArrayByNumberKey( News, order, sortProp );
 
     SortedPages.map( item => {
-      let classNames = [ stylesN.titleListItem, styles.leftFilter ];
-      if ( showItem && ( item.ID === showItem.ID ) ) { classNames.push( stylesN.isSelected ) ; }
+      let classNames = [ stylesM.titleListItem, styles.leftFilter ];
+      if ( showItem && ( item.ID === showItem.ID ) ) { classNames.push( stylesM.isSelected ) ; }
       pagesList.push( <li className={ classNames.join( ' ' ) } onClick= { this.clickNewsItem.bind( this, item.ID, 'pages', item  )} style={ null }>
         { item.Title } </li>  );
     });
@@ -97,13 +97,13 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
     const image = !showItem || !imageUrl ? null : 
     <img src={ imageUrl.Url } height="100px" width="100%" style={{ objectFit: "cover" }} title={ imageUrl.Url }></img>;
 
-    let page = <div className={ stylesN.modernPage } >
+    let page = <div className={ stylesM.modernPage } >
       {/* <div className={ styles.titleList }> <ul>{ pagesList }</ul></div> */}
-      <div className={ stylesN.titleList }>
+      <div className={ stylesM.titleList }>
         <h3>{this.props.source.searchSource}</h3>
-        <div className= { stylesN.pageDescription }>{this.props.source.searchSourceDesc}</div>
+        <div className= { stylesM.pageDescription }>{this.props.source.searchSourceDesc}</div>
          { pagesList } </div>
-      <div className={ stylesN.article }>
+      <div className={ stylesM.article }>
         { image }
         <h3>{ articleTitle }</h3>
          { articleDesc }
@@ -216,7 +216,7 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
       return (
         // <div className={ styles.alvFinMan }>
         <div className={ null }>
-          {/* <div className={ stylesN.pagesPage }> */}
+          {/* <div className={ stylesM.pagesPage }> */}
           <div className={ null }>
             {/* <div className={ styles.row }> */}
               {/* <div className={ styles.column }> */}

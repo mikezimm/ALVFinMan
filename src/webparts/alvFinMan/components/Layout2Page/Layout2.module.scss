@@ -71,14 +71,14 @@ $screen-xl-min: 1200px;
 
   .article {
 
-    min-width: 100%;
-    max-width: 100%;
+    min-width: 400px;
+    max-width: 1200px;
     padding-left: 0px;
 
     @include md {
       padding-left: 30px;
-      min-width: 40%;
-      max-width: 50%;
+      min-width: 400px;
+      max-width: 1200px;
     }
   }
 
@@ -114,8 +114,8 @@ $screen-xl-min: 1200px;
     @include md {
       // width: 280px;
       padding-bottom: 0px; 
-      min-width: 40%;
-      max-width: 50%;
+      min-width: 250px;
+      max-width: 350px;
       .titleListItem {
 
       }

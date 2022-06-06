@@ -50,6 +50,11 @@ $screen-xl-min: 1200px;
     font-family: $ms-font-family-fallbacks;
   }
 
+  
+  h3 {
+    cursor: default;
+  }
+
   .layout1 {
     display: flex;
     flex-wrap: wrap;
@@ -61,7 +66,6 @@ $screen-xl-min: 1200px;
 
     h3 {
       margin-top: 0px;
-      cursor: default;
     }
 
     // Indented list item:  https://silvawebdesigns.com/css-indenting-second-line-li-list-items/
@@ -73,7 +77,7 @@ $screen-xl-min: 1200px;
 
     .titleList{
       min-width: 200px;
-      max-width: 300px;
+      max-width: 350px;
       padding: 0px 30px;
 
       li {
@@ -94,7 +98,7 @@ $screen-xl-min: 1200px;
 
     .docsList{
       min-width: 300px;
-      max-width: 550px;
+      max-width: 500px;
       margin: 0px 30px;
       
       li {

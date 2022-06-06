@@ -72,18 +72,22 @@ $screen-xl-min: 1200px;
 
   .pageDescription {
     padding-bottom: 15px;
+    cursor: default;
   }
 
   .article {
 
-    min-width: 100%;
-    max-width: 100%;
+
+    min-width: 400px;
+    max-width: 1200px;
+
     padding-left: 0px;
 
     @include md {
       padding-left: 30px;
-      min-width: 40%;
-      max-width: 50%;
+      // At some point, maybe have different widths based on overall width (md)
+      min-width: 400px;
+      max-width: 1200px;
     }
   }
 
@@ -114,15 +118,14 @@ $screen-xl-min: 1200px;
       // padding: 0px;
       width: 100%;
 
-
     }
 
     //Added for narrow screens where article is to the right
     @include md {
       // width: 280px;
       padding-bottom: 0px; 
-      min-width: 40%;
-      max-width: 50%;
+      min-width: 250px;
+      max-width: 350px;
       .titleListItem {
 
       }
