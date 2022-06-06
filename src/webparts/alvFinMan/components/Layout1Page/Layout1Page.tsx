@@ -102,7 +102,8 @@ export default class Layout1Page extends React.Component<ILayout1PageProps, ILay
     let showDocs : any[] = [];
     let checkBucketKey = !bucketClickKey ? firstTitle : bucketClickKey;
     manual.map( item => {
-      let showTitle = item.Title0 ? item.Title0 : item.Title? item.Title: item.searchTitle + '*';
+      let showTitleText = item.Title0 ? item.Title0 : item.Title? item.Title: item.searchTitle + '*';
+      let showTitle = <div className={ styles.textEllipse }>{ showTitleText }</div>;
       if ( Array.isArray( item [key] ) === true ) {
         item [key].map( value => {
           if ( consoleLineItemBuild === true ) console.log( 'key value - item', key, value, item ) ;
@@ -121,7 +122,8 @@ export default class Layout1Page extends React.Component<ILayout1PageProps, ILay
     let showSups : any[] = [];
     sups.map( item => {
       // let showTitle = item.FileLeafRef ? item.FileLeafRef: item.Title0 ? item.Title0 : item.Title? item.Title: item.searchTitle + '*';
-      let showTitle = item.fileDisplayName ? item.fileDisplayName : item.FileLeafRef ? item.FileLeafRef: item.Title0 ? item.Title0 : item.Title? item.Title: item.searchTitle + '*';
+      let showTitleText = item.fileDisplayName ? item.fileDisplayName : item.FileLeafRef ? item.FileLeafRef: item.Title0 ? item.Title0 : item.Title? item.Title: item.searchTitle + '*';
+      let showTitle = <div className={ styles.textEllipse }>{ showTitleText }</div>;
       if ( Array.isArray( item [key] ) === true ) {
         item [key].map( value => {
           if ( consoleLineItemBuild === true ) console.log( 'key value - item', key, value, item ) ;
