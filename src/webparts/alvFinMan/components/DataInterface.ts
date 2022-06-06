@@ -244,7 +244,7 @@ export const SearchTypes:IFMSearchTypes  = {
         { key: "pptx", title: "ppt", icon: "PowerPointDocument", style: "", count: 0, adjust: -1 }, 
 
         { key: "rtf", title: "rtf", icon: "AlignLeft", style: "", count: 0 }, 
-        { key: "manual", title: "manual", icon: "Info", style: "", count: 0 }, 
+        { key: "manual", title: "manual", icon: "BookAnswers", style: "", count: 0 }, 
 
         { key: "xls", title: "xls", icon: "ExcelDocument", style: "", count: 0 }, 
         { key: "xlsm", title: "xls", icon: "ExcelDocument", style: "", count: 0, adjust: -1 }, 

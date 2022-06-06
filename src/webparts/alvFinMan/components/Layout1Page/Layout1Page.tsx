@@ -107,12 +107,14 @@ export default class Layout1Page extends React.Component<ILayout1PageProps, ILay
         item [key].map( value => {
           if ( consoleLineItemBuild === true ) console.log( 'key value - item', key, value, item ) ;
           if ( value.Title === checkBucketKey ) { showDocs.push( 
-          <li onClick= { this.clickDocumentItem.bind( this, key, 'manual', item  )}> 
+          <li className={ styles.supsLI } onClick= { this.clickDocumentItem.bind( this, key, 'manual', item  )} title={ showTitle }> 
+            { getSearchTypeIcon( SearchTypes.objs[item.typeIdx] ) }
             { showTitle } </li> ) ; }
         });
       } else { //This is not a multi-select key
           if ( item [key] && item [key].Title === checkBucketKey ) { showDocs.push(  
           <li onClick= { this.clickDocumentItem.bind( this, key, 'manual', item  )}>
+            { getSearchTypeIcon( SearchTypes.objs[item.typeIdx] ) }
             { showTitle } </li>  ) ; }
       }
     });
@@ -126,13 +128,13 @@ export default class Layout1Page extends React.Component<ILayout1PageProps, ILay
         item [key].map( value => {
           if ( consoleLineItemBuild === true ) console.log( 'key value - item', key, value, item ) ;
           if ( value.Title === checkBucketKey ) { showSups.push( 
-          <li  className={ styles.supsLI } onClick= { this.clickDocumentItem.bind( this, key, 'sups', item  )}>
+          <li className={ styles.supsLI } onClick= { this.clickDocumentItem.bind( this, key, 'sups', item  )} title={ item.FileLeafRef }>
             { getSearchTypeIcon( SearchTypes.objs[item.typeIdx] ) }
             { showTitle } </li> ) ; }
         });
       } else { //This is not a multi-select key
           if ( item [key] && item [key].Title === checkBucketKey ) { showSups.push(  
-          <li  onClick= { this.clickDocumentItem.bind( this, key, 'sups', item  )}>
+          <li onClick= { this.clickDocumentItem.bind( this, key, 'sups', item  )} title={ item.FileLeafRef }>
             { getSearchTypeIcon( SearchTypes.objs[item.typeIdx] ) }
             { item.FileLeafRef ? item.FileLeafRef : showTitle } </li>  ) ; }
       }
@@ -142,8 +144,8 @@ export default class Layout1Page extends React.Component<ILayout1PageProps, ILay
 
     let page = <div className={ styles.layout1 } >
       <div className={ styles.titleList }><h3>{ this.props.mainPivotKey}</h3> { titles } </div>
-      <div className={ styles.docsList }><h3 onClick={ this.clickLibrary.bind( this, SourceInfo.manual , )}>Standards Manual ({ showDocs.length })</h3> { showDocs } </div>
-      <div className={ styles.docsList }><h3 onClick={ this.clickLibrary.bind( this, SourceInfo.sups , )}>Supporting Docs ({ showSups.length })</h3> { showSups } </div>
+      <div className={ styles.docsList }><h3 onClick={ this.clickLibrary.bind( this, SourceInfo.manual , )}>Standards Manual ({ showDocs.length })</h3> { <ul>{ showDocs }</ul> } </div>
+      <div className={ styles.docsList }><h3 onClick={ this.clickLibrary.bind( this, SourceInfo.sups , )}>Supporting Docs ({ showSups.length })</h3> { <ul>{ showSups }</ul> } </div>
     </div>;
     return page;
 
