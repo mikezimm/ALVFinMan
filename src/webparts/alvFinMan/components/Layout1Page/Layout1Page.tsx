@@ -120,7 +120,8 @@ export default class Layout1Page extends React.Component<ILayout1PageProps, ILay
 
     let showSups : any[] = [];
     sups.map( item => {
-      let showTitle = item.Title0 ? item.Title0 : item.Title? item.Title: item.searchTitle + '*';
+      // let showTitle = item.FileLeafRef ? item.FileLeafRef: item.Title0 ? item.Title0 : item.Title? item.Title: item.searchTitle + '*';
+      let showTitle = item.fileDisplayName ? item.fileDisplayName : item.FileLeafRef ? item.FileLeafRef: item.Title0 ? item.Title0 : item.Title? item.Title: item.searchTitle + '*';
       if ( Array.isArray( item [key] ) === true ) {
         item [key].map( value => {
           if ( consoleLineItemBuild === true ) console.log( 'key value - item', key, value, item ) ;

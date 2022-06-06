@@ -142,6 +142,7 @@ export interface IAnyContent extends Partial<any> {
   searchSourceLC: string; //For easy string compare
   type: string;
   typeIdx: number;
+  fileDisplayName: string;
 
   searchTitle: any;
   searchDesc: any;
