@@ -42,6 +42,7 @@ const consoleLineItemBuild: boolean = false;
 
 export default class ModernPages extends React.Component<IModernPagesProps, IModernPagesState> {
 
+  private cke_editable = this.props.addCkeEditToDiv !== false ? 'cke_editable' : '';
   private ToggleJSONCmd = makeToggleJSONCmd( this._toggleJSON.bind( this ) );
 
   private buildPagesList( News: IPagesContent[], sortProp: ISeriesSort, order: ISeriesSort, showItem: IPagesContent, showCanvasContent1: boolean ) {
@@ -68,7 +69,7 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
     const imageUrl = showArticle ? showArticle.BannerImageUrl : null;
 
     const CanvasContent1 = showCanvasContent1 !== true ? null :
-      <div>
+      <div className={ ['', this.cke_editable].join(' ') }>
         {/* <h2>CanvasContent1</h2> */}
         <div dangerouslySetInnerHTML={{ __html: showArticle.CanvasContent1Str }} />
       </div>;
@@ -97,13 +98,13 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
     const image = !showItem || !imageUrl ? null : 
     <img src={ imageUrl.Url } height="100px" width="100%" style={{ objectFit: "cover" }} title={ imageUrl.Url }></img>;
 
-    let page = <div className={ stylesM.modernPage } >
+    let page = <div className={ stylesM.modernPage } style={{ }} >
       {/* <div className={ styles.titleList }> <ul>{ pagesList }</ul></div> */}
       <div className={ stylesM.titleList }>
         <h3>{this.props.source.searchSource}</h3>
         <div className= { stylesM.pageDescription }>{this.props.source.searchSourceDesc}</div>
          { pagesList } </div>
-      <div className={ stylesM.article }>
+      <div className={ [stylesM.article, '' ].join(' ') }>
         { image }
         <h3>{ articleTitle }</h3>
          { articleDesc }
