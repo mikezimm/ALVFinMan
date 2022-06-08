@@ -14,7 +14,7 @@ export interface IModernImageSettings {
   objectFit: string; //cover, contain, etc...
   style: string; //gets embedded directly into all image tags as:  <img style="Your style string here" - height: 150px; object-fit: "cover"; width: 100%;
   autoFix?: boolean; //Maybe eventually I could try to auto-fix but have this optional.
-
+  lightBox?: boolean; //Option to add lightbox on click to show image full size
 }
 
 export interface ICanvasContentOptions {
