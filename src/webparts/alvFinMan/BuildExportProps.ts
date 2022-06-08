@@ -55,7 +55,7 @@
 //    exportIgnoreProps, importBlockPropsDev, importBlockPropsTeam, importBlockPropsCorp,
 //    } from './IPivottiles7WebPartProps';
 
-import { IAlvFinManWebPartProps, exportIgnoreProps, importBlockProps, } from './IAlvFinManWebPartProps';
+import { IAlvFinManWebPartProps, exportIgnoreProps, importBlockProps, changeCanvasImages, changeCanvasOptions, changeCanvasNoAnalytics, } from './IAlvFinManWebPartProps';
 import { changeBannerBasics, changeBannerNav, changeBannerTheme, changeBannerOther, } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/ImportProps';
 
 
@@ -108,6 +108,9 @@ import { ILoadPerformanceALVFM, IPerformanceOp } from './components/Performance/
     exportStructure.wpInstanceID = wpInstanceID;
     exportStructure.currentWeb = currentWeb;
 
+    exportStructure.changeCanvasImages = changeCanvasImages;
+    exportStructure.changeCanvasNoAnalytics = changeCanvasNoAnalytics;
+    exportStructure.changeCanvasOptions = changeCanvasOptions;
 
     // exportStructure.Script = changeScript;
 
@@ -134,6 +137,9 @@ import { ILoadPerformanceALVFM, IPerformanceOp } from './components/Performance/
 
     exportStructure.wpInstanceID = wpInstanceID;
     exportStructure.currentWeb = currentWeb;
+
+    exportStructure.changeCanvasImages = changeCanvasImages;
+    exportStructure.changeCanvasOptions = changeCanvasOptions;
 
     exportStructure.Visitor = changeVisitor;
 

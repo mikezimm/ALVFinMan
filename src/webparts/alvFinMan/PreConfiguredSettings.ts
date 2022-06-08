@@ -4,6 +4,18 @@ import { IPreConfigSettings, IAllPreConfigSettings } from '@mikezimm/npmfunction
 import { encrptMeOriginalTest } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/logTest';
 import { ContALVFMContent, ContALVFMWebP } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/constants';
 
+const imgHeight:number = 150; //Converted to px
+const imgWidth:number = 100; //Converted to %
+const imgObjectFit: string = 'contain'; //cover; contain; etc...
+const imgStyle: string =  ''; //gets embedded directly into all image tags as:  <img style="Your style string here" - height: 150px; object-fit: "cover"; width: 100%;
+const imgAutoFix: boolean = false; //Maybe eventually I could try to auto-fix but have this optional.
+
+const canAddCkeEditToDiv: boolean = true;  //Will add class="cke_editable" to the styles.article div so that Tables have some formatting when shown in app.
+
+const canh1Styles: string = '';  //Use similar to FPSPageOptions styling
+const canh2Styles: string = '';  //Use similar to FPSPageOptions styling
+const canh3Styles: string = ''; //Use similar to FPSPageOptions styling
+
 const FinancialManualContacts: IPropertyFieldGroupOrPerson = {
     id: '1',
     description: '',
@@ -18,6 +30,18 @@ const FinancialManualContacts: IPropertyFieldGroupOrPerson = {
 export const ForceFinancialManual : IPreConfigSettings = {
     location: '/sites/financemanual/',
     props: {
+
+        imgHeight: imgHeight, //Converted to px
+        imgWidth: imgWidth, //Converted to %
+        imgObjectFit: imgObjectFit, //cover, contain, etc...
+        imgStyle: imgStyle, //gets embedded directly into all image tags as:  <img style="Your style string here" - height: 150px; object-fit: "cover"; width: 100%;
+        imgAutoFix: imgAutoFix, //Maybe eventually I could try to auto-fix but have this optional.
+
+        canAddCkeEditToDiv: canAddCkeEditToDiv,  //Will add class="cke_editable" to the styles.article div so that Tables have some formatting when shown in app.
+
+        canh1Styles: canh1Styles,  //Use similar to FPSPageOptions styling
+        canh2Styles: canh2Styles,  //Use similar to FPSPageOptions styling
+        canh3Styles: canh3Styles, //Use similar to FPSPageOptions styling
 
         // Visitor Panel props that are not preset in manifest.json
         fullPanelAudience: 'Page Editors',
@@ -54,17 +78,31 @@ export const PresetFinancialManual : IPreConfigSettings = {
     location: '/sites/financemanual/',
     props: {
         homeParentGearAudience: 'Everyone',
+
     }
 };
 
 export const PresetSomeRandomSite : IPreConfigSettings = {
-    location: '/sites/SomeRandomSite/',
+    location: '*',
     props: {
         homeParentGearAudience: 'Some Test Value',
+
+        imgHeight: imgHeight, //Converted to px
+        imgWidth: imgWidth, //Converted to %
+        imgObjectFit: imgObjectFit, //cover, contain, etc...
+        imgStyle: imgStyle, //gets embedded directly into all image tags as:  <img style="Your style string here" - height: 150px; object-fit: "cover"; width: 100%;
+        imgAutoFix: imgAutoFix, //Maybe eventually I could try to auto-fix but have this optional.
+
+        canAddCkeEditToDiv: canAddCkeEditToDiv,  //Will add class="cke_editable" to the styles.article div so that Tables have some formatting when shown in app.
+
+        canh1Styles: canh1Styles,  //Use similar to FPSPageOptions styling
+        canh2Styles: canh2Styles,  //Use similar to FPSPageOptions styling
+        canh3Styles: canh3Styles, //Use similar to FPSPageOptions styling
+
     }
 };
 
 export const PreConfiguredProps : IAllPreConfigSettings = {
-    forced: [ ForceFinancialManual ],
+    forced: [ ForceFinancialManual,  ],
     preset: [ PresetFinancialManual, PresetSomeRandomSite ],
 };

@@ -42,7 +42,9 @@ const consoleLineItemBuild: boolean = false;
 
 export default class ModernPages extends React.Component<IModernPagesProps, IModernPagesState> {
 
-  private cke_editable = this.props.addCkeEditToDiv !== false ? 'cke_editable' : '';
+  private cke_editable = this.props.canvasOptions.addCkeEditToDiv !== false ? 'cke_editable' : '';
+  private imageStyle = '';
+
   private ToggleJSONCmd = makeToggleJSONCmd( this._toggleJSON.bind( this ) );
 
   private buildPagesList( News: IPagesContent[], sortProp: ISeriesSort, order: ISeriesSort, showItem: IPagesContent, showCanvasContent1: boolean ) {
@@ -162,6 +164,9 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
       let showThisItem: IPagesContent = this.state.showThisItem;
       if ( !showThisItem && this.props.pages.length > 0 ) showThisItem = this.props.pages[0];
       this.setState({ refreshId: this.props.refreshId, showThisItem: showThisItem });
+    } else if ( JSON.stringify( this.props.canvasOptions) !== JSON.stringify( prevProps.canvasOptions ) ) {
+      console.log('ModernPages style update: ', this.imageStyle );
+      this.setState({ refreshId: this.props.refreshId, });
     }
   }
 
@@ -180,10 +185,10 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
         const replaceString = '<a onClick=\"window.open(this.href,\'_blank\')\" href=';
         this.state.showThisItem.WikiField = this.state.showThisItem.WikiField.replace(linkNoLeadingTarget,replaceString);
       }
-      
+
       //CanvasContent1,LayoutsWebpartsContent'
       const CanvasContent1 = !this.state.showThisItem || !this.state.showThisItem.CanvasContent1Str ? null : 
-      <div>
+      <div className={ ['', this.cke_editable].join(' ') }>
         <h2>CanvasContent1</h2>
         <div dangerouslySetInnerHTML={{ __html: this.state.showThisItem.CanvasContent1Str }} />
       </div>;
@@ -197,7 +202,7 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
       const panelContent = this.state.showPanelJSON !== true ? null : <div>
         <ReactJson src={ this.state.showThisItem } name={ 'Summary' } collapsed={ false } displayDataTypes={ true } displayObjectSize={ true } enableClipboard={ true } style={{ padding: '20px 0px' }}/>
       </div>;
-  
+
       const userPanel = <div><Panel
         isOpen={ this.state.showItemPanel === true ? true : false }
         // this prop makes the panel non-modal
@@ -279,7 +284,7 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
       console.log( 'ALVFinManDocs', result );
 
     //Added this to fit images into the current width or else the image is full size
-    if ( result.CanvasContent1 ) { result.CanvasContent1Str = result.CanvasContent1.replace( /<img\s*/ig , '<img width="100%" ' ) ; }
+    if ( result.CanvasContent1 ) { result.CanvasContent1Str = result.CanvasContent1.replace( /<img\s*/ig , `<img ${this.props.canvasOptions.imageOptions.style} ` ) ; }
 
       //Need to manually update the BannerImageUrl property from original item because it comes across as an attribute link as text
       result.BannerImageUrl = item.BannerImageUrl;

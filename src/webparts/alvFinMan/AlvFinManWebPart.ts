@@ -88,7 +88,7 @@ export const repoLink: IRepoLinks = links.gitRepoALVFinManSmall;
 import * as strings from 'AlvFinManWebPartStrings';
 import AlvFinMan from './components/AlvFinMan';
 import { allPivots } from './components/AlvFinMan';
-import { IAlvFinManProps, IFinManSearch, ILayoutAll, ISearchBucket } from './components/IAlvFinManProps';
+import { IAlvFinManProps, ICanvasContentOptions, IFinManSearch, ILayoutAll, IModernImageSettings, ISearchBucket } from './components/IAlvFinManProps';
 import { IAlvFinManWebPartProps, exportIgnoreProps, importBlockProps, } from './IAlvFinManWebPartProps';
 import { baseFetchInfo, IFetchInfo } from './components/IFetchInfo';
 import { createEmptySearchBucket, } from './components/DataFetch';
@@ -106,6 +106,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
   private _isDarkTheme: boolean = false;
   private _environmentMessage: string = '';
 
+   private imageStyle: string = '';
 
   //Common FPS variables
 
@@ -208,6 +209,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
       //NEED TO APPLY THIS HERE as well as follow-up in render for it to not visibly change
       this.presetCollectionDefaults();
 
+      this.imageStyle = this.updateImageStyleString();
       this.properties.pageLayout =  this.context['_pageLayoutType']?this.context['_pageLayoutType'] : this.context['_pageLayoutType'];
       this.urlParameters = getUrlVars();
 
@@ -418,11 +420,28 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
         
         news: [],
         help: [],
-        
+
       },
       type: createEmptySearchBucket(),
       searchPlural: this.properties.searchPlural,
       searchType: this.properties.searchType,
+    };
+
+    let canvasOptions: ICanvasContentOptions = {
+
+      addCkeEditToDiv: this.properties.canAddCkeEditToDiv,  //Will add class="cke_editable" to the styles.article div so that Tables have some formatting when shown in app.
+      imageOptions: {
+        height: this.properties.imgHeight,
+        width: this.properties.imgWidth,
+        objectFit: this.properties.imgObjectFit,
+        style: this.updateImageStyleString(), //gets embedded directly into all image tags as:  <img style="Your style string here" - height: 150px; object-fit: "cover"; width: 100%;
+        autoFix: this.properties.imgAutoFix, //Maybe eventually I could try to auto-fix but have this optional.
+      },
+
+      h1Styles: this.properties.canh1Styles, //Use similar to FPSPageOptions styling 
+      h2Styles: this.properties.canh2Styles, //Use similar to FPSPageOptions styling 
+      h3Styles: this.properties.canh3Styles, //Use similar to FPSPageOptions styling 
+
     };
 
     const element: React.ReactElement<IAlvFinManProps> = React.createElement(
@@ -453,8 +472,9 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
         //ALVFM props
         defaultPivotKey: this.properties.defaultPivotKey,
 
+        canvasOptions: canvasOptions,
+
         search: search,
-        
 
 
       }
@@ -804,6 +824,27 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
         }
       ]
     };
+  }
+
+
+  private updateImageStyleString() {
+    let imageStyle = '';
+    if ( this.properties.imgHeight && this.properties.imgHeight > 0 ) {
+      imageStyle += ` height: ${this.properties.imgHeight}px;`;
+    }
+    if ( this.properties.imgWidth && this.properties.imgWidth > 0 ) {
+      imageStyle += ` width: ${this.properties.imgWidth}%;`;
+    }
+    if ( this.properties.imgObjectFit ) {
+      imageStyle += ` object-fit: ${this.properties.imgObjectFit};`;
+    }
+    if ( this.properties.imgStyle ) {
+      imageStyle += ` ${this.properties.imgStyle }`;
+    }
+    imageStyle = ` style="${imageStyle}"`;
+
+    return imageStyle;
+
   }
 
   /***

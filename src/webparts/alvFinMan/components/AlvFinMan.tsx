@@ -414,6 +414,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       standards={ this.state.standards }
       supporting={ this.state.supporting }
       mainPivotKey={ this.state.mainPivotKey as ILayout1Page }
+      canvasOptions={ this.props.canvasOptions }
     ></Layout1Page>;
 
     const showPage2 = <Layout2Page 
@@ -421,6 +422,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       refreshId={ this.state.refreshId }
       source={ SourceInfo.appLinks }
       appLinks={ this.state.appLinks }
+      canvasOptions={ this.props.canvasOptions }
     ></Layout2Page>;
 
     const SearchContent = <SearchPage
@@ -436,6 +438,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       supporting={ this.state.supporting }
       mainPivotKey={ this.state.mainPivotKey }
       cmdButtonCSS={bannerProps.bannerCmdReactCSS }
+      canvasOptions={ this.props.canvasOptions }
     ></SearchPage>;
 
     const accounts = this.state.mainPivotKey !== 'Accounts' ? null : <AlvAccounts
@@ -457,6 +460,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       refreshId={ this.state.refreshId }
       source={ SourceInfo.news }
       pages={ this.state.news }
+      canvasOptions={ this.props.canvasOptions }
 
     ></ModernPages>;
 
@@ -471,6 +475,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
         refreshId={ this.state.refreshId }
         source={ SourceInfo.help }
         pages={ this.state.help }
+        canvasOptions={ this.props.canvasOptions }
       ></ModernPages>;
         
 

@@ -1,4 +1,4 @@
-import { IAnyContent, IFMBuckets,IFMBucketItems, IFinManSearch } from "../IAlvFinManProps";
+import { IAnyContent, IFMBuckets,IFMBucketItems, IFinManSearch, ICanvasContentOptions } from "../IAlvFinManProps";
 import { ILayout1Page,  } from "../Layout1Page/ILayout1PageProps";
 import { ILayoutAll,  } from "../IAlvFinManProps";
 import * as React from "react";
@@ -22,6 +22,8 @@ export interface ISearchPageProps {
   supporting: IFMBucketItems;
 
   cmdButtonCSS: React.CSSProperties;
+
+  canvasOptions: ICanvasContentOptions;
 
 }
 

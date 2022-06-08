@@ -12,6 +12,28 @@ import { IPropertyFieldGroupOrPerson } from "@pnp/spfx-property-controls/lib/Pro
 import { IPerformanceOp, ILoadPerformanceALVFM, IHistoryPerformance } from './components/Performance/IPerformance';
 import { ILayoutAll } from "./components/IAlvFinManProps";
 
+  // // export interface IModernImageSettings {
+  //   imgHeight: number | string;
+  //   imgWidth: number | string;
+  //   imgObjectFit: string; //cover, contain, etc...
+  //   imgStyle: string; //gets embedded directly into all image tags as:  <img style="Your style string here" - height: 150px; object-fit: "cover"; width: 100%;
+  //   imgAutoFix?: boolean; //Maybe eventually I could try to auto-fix but have this optional.
+  
+  // //}
+  
+  // // export interface ICanvasContentOptions {
+    
+  //   canAddCkeEditToDiv?: boolean;  //Will add class="cke_editable" to the styles.article div so that Tables have some formatting when shown in app.
+  //   // imageOptions?: IModernImageSettings;
+  
+  //   canh1Styles?: string; //Use similar to FPSPageOptions styling 
+  //   canh2Styles?: string; //Use similar to FPSPageOptions styling 
+  //   canh3Styles?: string; //Use similar to FPSPageOptions styling 
+
+export const changeCanvasImages = [ 'imgHeight', 'imgWidth', 'imgObjectFit', 'imgAutoFix', ];
+export const changeCanvasNoAnalytics = [ 'imgStyle',  ];
+export const changeCanvasOptions = [ 'canAddCkeEditToDiv', 'canh1Styles', 'canh2Styles', 'canh3Styles', ];
+
 export const changeExpando = [ 
   'enableExpandoramic','expandoDefault','expandoStyle', 'expandoPadding', 'expandoAudience',
   ];
@@ -154,6 +176,28 @@ export interface IAlvFinManWebPartProps {
   searchDefault:  boolean; //Resets all values to default and locks them.  Turning on and off resets all values
 
   loadPerformance: ILoadPerformanceALVFM;
+
+
+
+  // export interface IModernImageSettings {
+    imgHeight: number | string;
+    imgWidth: number | string;
+    imgObjectFit: string; //cover, contain, etc...
+    imgStyle: string; //gets embedded directly into all image tags as:  <img style="Your style string here" - height: 150px; object-fit: "cover"; width: 100%;
+    imgAutoFix?: boolean; //Maybe eventually I could try to auto-fix but have this optional.
+  
+  //}
+  
+  // export interface ICanvasContentOptions {
+    
+    canAddCkeEditToDiv?: boolean;  //Will add class="cke_editable" to the styles.article div so that Tables have some formatting when shown in app.
+    // imageOptions?: IModernImageSettings;
+  
+    canh1Styles?: string; //Use similar to FPSPageOptions styling 
+    canh2Styles?: string; //Use similar to FPSPageOptions styling 
+    canh3Styles?: string; //Use similar to FPSPageOptions styling 
+    
+  // }
 
 
 }
