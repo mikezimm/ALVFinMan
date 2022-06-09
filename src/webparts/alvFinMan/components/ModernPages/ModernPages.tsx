@@ -33,13 +33,25 @@ import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfu
 
 import AlvAccounts from '../Accounts/Accounts';
 import { LookupColumns, SourceInfo } from '../DataInterface';
-import { divide } from 'lodash';
+import { divide, stubFalse } from 'lodash';
 import { makeToggleJSONCmd } from '../Elements/CmdButton';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
 
 const consoleLineItemBuild: boolean = false;
 
+
+/**
+ *
+  Need to do special parsing on custom webparts:
+*/
+const specialWebPartIDs: string[] = [
+  '37b649bc-f846-4718-863d-9487d8fffb23', // FPS Page Info - TOC & Props
+  '92b4cb98-3aa1-4ece-9149-a591a572aced', // Pivot Tiles-TEAM
+  '2762fd19-106f-4fcc-9949-0c58c512be4e', // ALVFinMan
+  '44f426eb-86a2-41d0-bf5d-3db469b93ab6', // FPS Easy Contents Webpart
+
+];
 
 export default class ModernPages extends React.Component<IModernPagesProps, IModernPagesState> {
 
@@ -301,6 +313,47 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
 
   }
 
+
+  /**
+   * Looks for strings like this:  
+   * "pageInfoStyle":""paddingBottom":"20px","backgroundColor":"#dcdcdc";"borderLeft":"solid 3px #c4c4c4"","bannerStyleChoice":
+   * 
+   * and converts to strings like this:
+   * "pageInfoStyle":"'paddingBottom':'20px','backgroundColor':'#dcdcdc';'borderLeft':'solid 3px #c4c4c4'","bannerStyleChoice":
+   * @param str 
+   * @returns 
+   */
+  private reverseStylesStringQuotes( str: string ) {
+
+    let newString = '';
+    // part = part.replace(/:\"\"(?!,)/g, ':\"\''); //Replace instances of :"" that do not have a comma after it
+    // part = part.replace(/(?<!:)\"\",/g, '\'\",'); //Replace instances of "", that do not have a colon in front it
+
+    let styleColons = str.split(/:\"\"(?!,)/g); // Split by :"" strings
+    let newParts: string[] = [];
+    styleColons.map( ( part, idx1 ) => {   
+      if ( idx1 === 0 ) {
+        newParts.push( part ); //The first one never has to be fixed.
+
+      } else { //All other items need to be fixed
+
+        //Step 1:  Find where to stop ....  250px"",  --- basically where you find /(?<!:)\"\",/g
+        let portions = part.split(/(?<!:)\"\",/g); // Split by "", strings
+        if ( portions.length > 2 ) alert('Whoa, wasnt expecting this.ToggleJSONCmd.key.toLocaleString.~ 342' );
+        portions[0] = portions[0].replace(/\"/g, "'" ); //Replace all double quotes with single quotes
+        newParts.push( portions.join( `'",`) );
+        //Step 2:  From start to stop, replace double quotes " with single quotes '
+
+        //Step 3:  Push to newParts
+      }
+
+    });
+
+    newString = newParts.join(':\"\''  );
+    return newString;
+
+  }
+
   private _toggleJSON( ) {
     let newState = this.state.showPanelJSON === true ? false : true;
     
@@ -335,14 +388,6 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
                 doubleQuotes.map( ( doubleQt, idx2 ) => {
                   // if ( idx2 < doubleQuotes.length -1 ) { //Add to string as long as it's not the last one.
 
-                  /**
-                   * 
-                    Need to do special parsing on custom webparts:
-                    FPS Easy Contents Webpart | 44f426eb-86a2-41d0-bf5d-3db469b93ab6
-                    FPS Page Info - TOC & Props | 37b649bc-f846-4718-863d-9487d8fffb23
-                    Pivot Tiles-TEAM | 92b4cb98-3aa1-4ece-9149-a591a572aced
-                    ALVFinMan | 2762fd19-106f-4fcc-9949-0c58c512be4e
-                  */
 
                   if ( doubleQuotes.length === 0 ) {
                     //Do nothing, this is the first element that does not have quotes
@@ -376,6 +421,15 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
                 cleanParseMe = newDoubleQuotes.join('');
                 console.log('cleanParseMe', cleanParseMe );
                 parseMe = cleanParseMe;
+                let isSpecial: any = false;
+                specialWebPartIDs.map( id => {
+                  if ( parseMe.indexOf( id ) > -1 ) {
+                    isSpecial = true;
+                  }
+                });
+                if ( isSpecial === true ) {
+                  parseMe = this.reverseStylesStringQuotes( parseMe );
+                }
               }
               let parseThisObject = JSON.parse( parseMe );
               parseThisObject.content = part.substring(part.indexOf( '"><' ) + 2, part.lastIndexOf('</div>') );
