@@ -335,31 +335,39 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
                 doubleQuotes.map( ( doubleQt, idx2 ) => {
                   // if ( idx2 < doubleQuotes.length -1 ) { //Add to string as long as it's not the last one.
 
+                  /**
+                   * 
+                    Need to do special parsing on custom webparts:
+                    FPS Easy Contents Webpart | 44f426eb-86a2-41d0-bf5d-3db469b93ab6
+                    FPS Page Info - TOC & Props | 37b649bc-f846-4718-863d-9487d8fffb23
+                    Pivot Tiles-TEAM | 92b4cb98-3aa1-4ece-9149-a591a572aced
+                    ALVFinMan | 2762fd19-106f-4fcc-9949-0c58c512be4e
+                  */
 
-                    if ( doubleQuotes.length === 0 ) {
-                      //Do nothing, this is the first element that does not have quotes
+                  if ( doubleQuotes.length === 0 ) {
+                    //Do nothing, this is the first element that does not have quotes
 
-                    } else if ( idx2 === 0 ) {
-                      // cleanParseMe += doubleQt;
-                      console.log(' doubleQuotes1:' , doubleQt );
+                  } else if ( idx2 === 0 ) {
+                    // cleanParseMe += doubleQt;
+                    console.log(' doubleQuotes1:' , doubleQt );
 
-                    } else if ( idx2 !== doubleQuotes.length -1 ) {//This is the last item so this should not need to change quotes 
+                  } else if ( idx2 !== doubleQuotes.length -1 ) {//This is the last item so this should not need to change quotes 
 
-                      // if ( precedes === true ) {
-                        doubleQt = `"'${doubleQt.replace(/\"/g, "'" )}'"`;
-                        console.log(' doubleQuotes2:' , doubleQt );
-                        precedes = false;
-                      // cleanParseMe += doubleQt.replace(/\"/g, "'" );
-                      // } else {
-                      //   console.log(' doubleQuotes3:' , doubleQt );
-                      //   // cleanParseMe += '"' + doubleQt;
-                      //   precedes = true;
-                      // }
+                    // if ( precedes === true ) {
+                      doubleQt = `"'${doubleQt.replace(/\"/g, "'" )}'"`;
+                      console.log(' doubleQuotes2:' , doubleQt );
+                      precedes = false;
+                    // cleanParseMe += doubleQt.replace(/\"/g, "'" );
+                    // } else {
+                    //   console.log(' doubleQuotes3:' , doubleQt );
+                    //   // cleanParseMe += '"' + doubleQt;
+                    //   precedes = true;
+                    // }
 
-                    }
-                    // doubleQt = doubleQt.replace(/:\"{\"/g, ':{\"');
-                    // doubleQt = doubleQt.replace(/\"}\"/g, '\"}');
-                    newDoubleQuotes.push( doubleQt );
+                  }
+                  // doubleQt = doubleQt.replace(/:\"{\"/g, ':{\"');
+                  // doubleQt = doubleQt.replace(/\"}\"/g, '\"}');
+                  newDoubleQuotes.push( doubleQt );
 
                   // } else {
 
