@@ -311,12 +311,29 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
     const errCanvasWebParts = 'Unable to parse HumanJSON_ContentWebparts';
     if ( result.HumanReadable_Canvas1 ) {  //Look for any web part properties and add to JSON object
       const CanvasWebPartsTag = '<div data-sp-canvascontrol="" data-sp-canvasdataversion="1.0" data-sp-controldata="';
+      const WebPartDataTag = 'data-sp-webpartdata="';
+      
       let webparts = result.HumanReadable_Canvas1.split(CanvasWebPartsTag);
+
       if ( webparts.length > 0 ) {
         webparts.map ( ( part: string, idx1: number ) => {
           if ( idx1 > 0 ) {
             if ( idx1 === 1 ) result.HumanJSON_ContentWebparts = [];
-            let parseMe = part.substring(0, part.indexOf( '"><' ) );
+
+
+
+            part = part.replace(/:\"\"(?!,)/g, ':\'\"'); //Replace instances of :"" that do not have a comma after it
+            part = part.replace(/:\"\"(?!,)/g, ':\'\"'); //Replace instances of :"" that do not have a comma after it
+
+
+            part = part.replace(/(?<!:)\"\",/g, '\'\",'); //Replace instances of "", that do not have a colon in front it
+
+            part = part.replace(/:\"{\"/g, ':{\"');
+            part = part.replace(/\"}\"/g, '\"\'}');
+
+            let startWebPartData = part.indexOf( WebPartDataTag );
+            let parseThisPart = startWebPartData < 0 ? part : part.substring( startWebPartData ).replace( WebPartDataTag,'');
+            let parseMe = parseThisPart.substring(0, parseThisPart.indexOf( '"><' ) );
             try {
               let doubleQuotes = parseMe.split('\"\"');
               if ( doubleQuotes.length > 0 ) {
@@ -325,6 +342,7 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
                 let newDoubleQuotes: string[] = [];
                 doubleQuotes.map( ( doubleQt, idx2 ) => {
                   // if ( idx2 < doubleQuotes.length -1 ) { //Add to string as long as it's not the last one.
+
 
                     if ( doubleQuotes.length === 0 ) {
                       //Do nothing, this is the first element that does not have quotes
@@ -347,8 +365,8 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
                       // }
 
                     }
-                    doubleQt = doubleQt.replace(/:\"{\"/g, ':{\"');
-                    doubleQt = doubleQt.replace(/\"}\"/g, '\"}');
+                    // doubleQt = doubleQt.replace(/:\"{\"/g, ':{\"');
+                    // doubleQt = doubleQt.replace(/\"}\"/g, '\"}');
                     newDoubleQuotes.push( doubleQt );
 
                   // } else {
