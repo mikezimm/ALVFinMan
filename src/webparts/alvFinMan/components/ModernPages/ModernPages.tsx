@@ -24,6 +24,7 @@ import * as strings from 'AlvFinManWebPartStrings';
 
 import ReactJson from "react-json-view";
 
+import { replaceHTMLEntities } from '@mikezimm/npmfunctions/dist/Services/Strings/html';
 import { sortStringArray, sortObjectArrayByStringKey, sortNumberArray, sortObjectArrayByNumberKey, sortKeysByOtherKey } from '@mikezimm/npmfunctions/dist/Services/Arrays/sorting';
 import { ILabelColor, ICSSChartTypes, CSSChartTypes, ISeriesSort, ICSSChartSeries, IChartSeries, ICharNote, } 
     from '@mikezimm/npmfunctions/dist/CSSCharts/ICSSCharts';
@@ -285,7 +286,7 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
 
     //Added this to fit images into the current width or else the image is full size
     if ( result.CanvasContent1 ) { result.CanvasContent1Str = result.CanvasContent1.replace( /<img\s*/ig , `<img ${this.props.canvasOptions.imageOptions.style} ` ) ; }
-
+    
       //Need to manually update the BannerImageUrl property from original item because it comes across as an attribute link as text
       result.BannerImageUrl = item.BannerImageUrl;
 
@@ -302,7 +303,88 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
 
   private _toggleJSON( ) {
     let newState = this.state.showPanelJSON === true ? false : true;
-    this.setState( { showPanelJSON: newState });
+    
+    let result = this.state.showThisItem;
+    
+    //Added this for debug option to be able to read CanvasContent1 better
+    if ( !result.HumanReadable_Canvas1 ) result.HumanReadable_Canvas1 = result.CanvasContent1 ? replaceHTMLEntities( result.CanvasContent1 ) : '';
+    const errCanvasWebParts = 'Unable to parse HumanJSON_ContentWebparts';
+    if ( result.HumanReadable_Canvas1 ) {  //Look for any web part properties and add to JSON object
+      const CanvasWebPartsTag = '<div data-sp-canvascontrol="" data-sp-canvasdataversion="1.0" data-sp-controldata="';
+      let webparts = result.HumanReadable_Canvas1.split(CanvasWebPartsTag);
+      if ( webparts.length > 0 ) {
+        webparts.map ( ( part: string, idx1: number ) => {
+          if ( idx1 > 0 ) {
+            if ( idx1 === 1 ) result.HumanJSON_ContentWebparts = [];
+            let parseMe = part.substring(0, part.indexOf( '"><' ) );
+            try {
+              let doubleQuotes = parseMe.split('\"\"');
+              if ( doubleQuotes.length > 0 ) {
+                let cleanParseMe = '';
+                let precedes = true;
+                let newDoubleQuotes: string[] = [];
+                doubleQuotes.map( ( doubleQt, idx2 ) => {
+                  // if ( idx2 < doubleQuotes.length -1 ) { //Add to string as long as it's not the last one.
+
+                    if ( doubleQuotes.length === 0 ) {
+                      //Do nothing, this is the first element that does not have quotes
+
+                    } else if ( idx2 === 0 ) {
+                      // cleanParseMe += doubleQt;
+                      console.log(' doubleQuotes1:' , doubleQt );
+
+                    } else if ( idx2 !== doubleQuotes.length -1 ) {//This is the last item so this should not need to change quotes 
+
+                      // if ( precedes === true ) {
+                        doubleQt = `"'${doubleQt.replace(/\"/g, "'" )}'"`;
+                        console.log(' doubleQuotes2:' , doubleQt );
+                        precedes = false;
+                      // cleanParseMe += doubleQt.replace(/\"/g, "'" );
+                      // } else {
+                      //   console.log(' doubleQuotes3:' , doubleQt );
+                      //   // cleanParseMe += '"' + doubleQt;
+                      //   precedes = true;
+                      // }
+
+                    }
+                    doubleQt = doubleQt.replace(/:\"{\"/g, ':{\"');
+                    doubleQt = doubleQt.replace(/\"}\"/g, '\"}');
+                    newDoubleQuotes.push( doubleQt );
+
+                  // } else {
+
+                  // }
+                });
+                cleanParseMe = newDoubleQuotes.join('');
+                console.log('cleanParseMe', cleanParseMe );
+                parseMe = cleanParseMe;
+              }
+              let parseThisObject = JSON.parse( parseMe );
+              parseThisObject.content = part.substring(part.indexOf( '"><' ) + 2, part.lastIndexOf('</div>') );
+              result.HumanJSON_ContentWebparts.push( { parseMe:  parseThisObject } ) ;
+            } catch (e) {
+              result.HumanJSON_ContentWebparts.push( { part: part, errorText: errCanvasWebParts, parseMe: parseMe, error: e } );
+            }
+          }
+        });
+      }
+    }
+    if ( !result.HumanReadable_LayoutWebpartsContent ) result.HumanReadable_LayoutWebpartsContent = result['LayoutWebpartsContent'] ? replaceHTMLEntities( result['LayoutWebpartsContent'] ) : '';
+    const LayoutWebpartsTag = '<div><div data-sp-canvascontrol="" data-sp-canvasdataversion="1.4" data-sp-controldata="';
+    if ( result.HumanReadable_LayoutWebpartsContent.indexOf( LayoutWebpartsTag ) === 0 ) {
+      try {
+        result.HumanJSON_LayoutWebpartsContent = JSON.parse(result.HumanReadable_LayoutWebpartsContent.replace(LayoutWebpartsTag,'').replace('"></div></div>',''));
+      } catch (e) {
+        result.HumanJSON_LayoutWebpartsContent = 'Unable to parse LayoutWebpartsContent' + JSON.stringify(e);
+      }
+    }
+
+
+
+    if ( !result.HumanReadableOData_Author ) result.HumanReadableOData_Author = result['Author'] ? replaceHTMLEntities( result['Author'] ) : '';
+    if ( !result.HumanReadableOData_Editor ) result.HumanReadableOData_Editor = result['Editor'] ? replaceHTMLEntities( result['Editor'] ) : '';
+
+    this.setState( { showThisItem: result , showPanelJSON: newState });
   }
 
   private _onClosePanel( ) {
