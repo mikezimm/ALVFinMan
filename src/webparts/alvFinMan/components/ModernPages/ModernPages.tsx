@@ -329,9 +329,9 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
     // part = part.replace(/:\"\"(?!,)/g, ':\"\''); //Replace instances of :"" that do not have a comma after it
     // part = part.replace(/(?<!:)\"\",/g, '\'\",'); //Replace instances of "", that do not have a colon in front it
 
-    // doubleQt = doubleQt.replace(/:\"{\"/g, ':{\"');
-    // doubleQt = doubleQt.replace(/\"}\"/g, '\"}');
-    
+    str = str.replace(/:\"{\"/g, ':{\"');
+    str = str.replace(/\"}\"/g, '\"}');
+
     let styleColons = str.split(/:\"\"(?!,)/g); // Split by :"" strings
     let newParts: string[] = [];
     console.log('reversStyle: styleColons', styleColons );
@@ -358,6 +358,13 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
     });
     console.log('reversStyle: newPartsz', newParts );
     newString = newParts.join(':\"\''  );
+
+    // let typeDivs = newString.split('{"type":"div"');
+
+    // let result = typeDivs[0];
+    // if ( typeDivs.length > 0 ) {
+    //   newString = result + '""';
+    // }
     return newString;
 
   }
@@ -366,6 +373,8 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
     let newState = this.state.showPanelJSON === true ? false : true;
     
     let result = this.state.showThisItem;
+
+    let startParsing = new Date();
     
     //Added this for debug option to be able to read CanvasContent1 better
     if ( !result.HumanReadable_Canvas1 ) result.HumanReadable_Canvas1 = result.CanvasContent1 ? replaceHTMLEntities( result.CanvasContent1 ) : '';
@@ -437,10 +446,29 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
                 });
                 if ( isSpecial === true ) {
                   parseMe = this.reverseStylesStringQuotes( parseMe );
+                  
+                  //This hopefully cleans up all the replaceHTML part that causes issues
+                  let typeDivs = parseMe.split('{"type":"div"');
+                  parseMe = typeDivs[0];
+                  if ( typeDivs.length > 1 ) {
+                    parseMe += '""}}';
+                  }
                 }
               }
               let parseThisObject = JSON.parse( parseMe );
-              parseThisObject.content = part.substring(part.indexOf( '"><' ) + 2, part.lastIndexOf('</div>') );
+              let partLength = part.length;
+              let startContent = part.indexOf( '"><' ) + 2;
+              let startContentHere = part.substring( startContent , startContent + 30 );
+              let endContent = part.lastIndexOf('</div>');
+              let endContentHere = part.substring( endContent , endContent + 30 );
+              let thisContent = part.substring(startContent,endContent);
+              if ( thisContent.indexOf('<div data-sp-rte="">') > -1 ) {
+                //This is common Text WebPart
+                parseThisObject.title = 'OOTB Text Web Part';
+              } else {
+                thisContent = thisContent.substring( thisContent.indexOf( '"><' ) + 2) ;
+              }
+              parseThisObject.content = thisContent;
               result.HumanJSON_ContentWebparts.push( { parseMe:  parseThisObject } ) ;
             } catch (e) {
               result.HumanJSON_ContentWebparts.push( { part: part, errorText: errCanvasWebParts, parseMe: parseMe, error: e } );
@@ -463,6 +491,10 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
 
     if ( !result.HumanReadableOData_Author ) result.HumanReadableOData_Author = result['Author'] ? replaceHTMLEntities( result['Author'] ) : '';
     if ( !result.HumanReadableOData_Editor ) result.HumanReadableOData_Editor = result['Editor'] ? replaceHTMLEntities( result['Editor'] ) : '';
+
+    let endParsing = new Date();
+
+    console.log('parse time: ', ( endParsing.getTime() - startParsing.getTime() ) );
 
     this.setState( { showThisItem: result , showPanelJSON: newState });
   }
