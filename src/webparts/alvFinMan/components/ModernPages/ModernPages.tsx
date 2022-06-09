@@ -320,8 +320,6 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
           if ( idx1 > 0 ) {
             if ( idx1 === 1 ) result.HumanJSON_ContentWebparts = [];
 
-
-
             part = part.replace(/:\"\"(?!,)/g, '\'\"}'); //Replace instances of :"" that do not have a comma after it
             part = part.replace(/(?<!:)\"\",/g, '\'\",'); //Replace instances of "", that do not have a colon in front it
 
@@ -329,7 +327,7 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
             let parseThisPart = startWebPartData < 0 ? part : part.substring( startWebPartData ).replace( WebPartDataTag,'');
             let parseMe = parseThisPart.substring(0, parseThisPart.indexOf( '"><' ) );
             try {
-              let doubleQuotes = parseMe.split('\"\"');
+              let doubleQuotes = parseMe.split(/(?<!:)\"\"(?!,)/);
               if ( doubleQuotes.length > 0 ) {
                 let cleanParseMe = '';
                 let precedes = true;
