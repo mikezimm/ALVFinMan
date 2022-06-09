@@ -329,8 +329,12 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
     // part = part.replace(/:\"\"(?!,)/g, ':\"\''); //Replace instances of :"" that do not have a comma after it
     // part = part.replace(/(?<!:)\"\",/g, '\'\",'); //Replace instances of "", that do not have a colon in front it
 
+    // doubleQt = doubleQt.replace(/:\"{\"/g, ':{\"');
+    // doubleQt = doubleQt.replace(/\"}\"/g, '\"}');
+    
     let styleColons = str.split(/:\"\"(?!,)/g); // Split by :"" strings
     let newParts: string[] = [];
+    console.log('reversStyle: styleColons', styleColons );
     styleColons.map( ( part, idx1 ) => {   
       if ( idx1 === 0 ) {
         newParts.push( part ); //The first one never has to be fixed.
@@ -339,16 +343,20 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
 
         //Step 1:  Find where to stop ....  250px"",  --- basically where you find /(?<!:)\"\",/g
         let portions = part.split(/(?<!:)\"\",/g); // Split by "", strings
+        console.log(`reversStyle: portions1 /(?<!:)\"\",/g`, portions );
         if ( portions.length > 2 ) alert('Whoa, wasnt expecting this.ToggleJSONCmd.key.toLocaleString.~ 342' );
-        portions[0] = portions[0].replace(/\"/g, "'" ); //Replace all double quotes with single quotes
+        if ( portions.length > 1 ) portions[0] = portions[0].replace(/\"/g, "'" ); //Replace all double quotes with single quotes only if there is a second half
+        if ( portions.length > 1 ) portions[1] = this.reverseStylesStringQuotes(portions[1]); //Replace all double quotes with single quotes only if there is a second half
+        console.log('reversStyle: portions2', portions );
         newParts.push( portions.join( `'",`) );
+        console.log('reversStyle: newParts1', newParts );
         //Step 2:  From start to stop, replace double quotes " with single quotes '
 
         //Step 3:  Push to newParts
       }
 
     });
-
+    console.log('reversStyle: newPartsz', newParts );
     newString = newParts.join(':\"\''  );
     return newString;
 
@@ -380,7 +388,7 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
             let parseThisPart = startWebPartData < 0 ? part : part.substring( startWebPartData ).replace( WebPartDataTag,'');
             let parseMe = parseThisPart.substring(0, parseThisPart.indexOf( '"><' ) );
             try {
-              let doubleQuotes = parseMe.split(/(?<!:)\"\"(?!,)/);
+              let doubleQuotes = parseMe.split(/(?<!:)\"\"(?!,)/g);
               if ( doubleQuotes.length > 0 ) {
                 let cleanParseMe = '';
                 let precedes = true;
