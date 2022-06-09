@@ -40,7 +40,6 @@ export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
 
 const consoleLineItemBuild: boolean = false;
 
-
 /**
  *
   Need to do special parsing on custom webparts:
@@ -51,6 +50,15 @@ const specialWebPartIDs: string[] = [
   '2762fd19-106f-4fcc-9949-0c58c512be4e', // ALVFinMan
   '44f426eb-86a2-41d0-bf5d-3db469b93ab6', // FPS Easy Contents Webpart
 
+];
+
+/**
+ *
+  Never list these page titles in the list of pages:
+*/
+const ignoreThesePages: string[] = [
+  'Easy Contnets', // 
+  'EasyContents', // 
 ];
 
 export default class ModernPages extends React.Component<IModernPagesProps, IModernPagesState> {
@@ -72,8 +80,11 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
     SortedPages.map( item => {
       let classNames = [ stylesM.titleListItem, styles.leftFilter ];
       if ( showItem && ( item.ID === showItem.ID ) ) { classNames.push( stylesM.isSelected ) ; }
-      pagesList.push( <li className={ classNames.join( ' ' ) } onClick= { this.clickNewsItem.bind( this, item.ID, 'pages', item  )} style={ null }>
+      //Make sure page has Title and is not a dud, also check it's not a common page that does not belong in this component
+      if ( item.Title && ignoreThesePages.indexOf( item.Title ) < 0 ) {
+        pagesList.push( <li className={ classNames.join( ' ' ) } onClick= { this.clickNewsItem.bind( this, item.ID, 'pages', item  )} style={ null }>
         { item.Title } </li>  );
+      }
     });
 
     let showArticle: IPagesContent = showItem ? showItem : null;
@@ -390,9 +401,6 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
           if ( idx1 > 0 ) {
             if ( idx1 === 1 ) result.HumanJSON_ContentWebparts = [];
 
-            // part = part.replace(/:\"\"(?!,)/g, ':\"\''); //Replace instances of :"" that do not have a comma after it
-            // part = part.replace(/(?<!:)\"\",/g, '\'\",'); //Replace instances of "", that do not have a colon in front it
-
             let startWebPartData = part.indexOf( WebPartDataTag );
             let parseThisPart = startWebPartData < 0 ? part : part.substring( startWebPartData ).replace( WebPartDataTag,'');
             let parseMe = parseThisPart.substring(0, parseThisPart.indexOf( '"><' ) );
@@ -400,43 +408,25 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
               let doubleQuotes = parseMe.split(/(?<!:)\"\"(?!,)/g);
               if ( doubleQuotes.length > 0 ) {
                 let cleanParseMe = '';
-                let precedes = true;
                 let newDoubleQuotes: string[] = [];
                 doubleQuotes.map( ( doubleQt, idx2 ) => {
-                  // if ( idx2 < doubleQuotes.length -1 ) { //Add to string as long as it's not the last one.
-
 
                   if ( doubleQuotes.length === 0 ) {
-                    //Do nothing, this is the first element that does not have quotes
+                    //Do nothing, there are no elements with double quotes
 
                   } else if ( idx2 === 0 ) {
-                    // cleanParseMe += doubleQt;
-                    console.log(' doubleQuotes1:' , doubleQt );
+                    //Do nothing, this is the first element that does not have quotes
+                    // console.log(' doubleQuotes1:' , doubleQt );
 
                   } else if ( idx2 !== doubleQuotes.length -1 ) {//This is the last item so this should not need to change quotes 
-
-                    // if ( precedes === true ) {
                       doubleQt = `"'${doubleQt.replace(/\"/g, "'" )}'"`;
-                      console.log(' doubleQuotes2:' , doubleQt );
-                      precedes = false;
-                    // cleanParseMe += doubleQt.replace(/\"/g, "'" );
-                    // } else {
-                    //   console.log(' doubleQuotes3:' , doubleQt );
-                    //   // cleanParseMe += '"' + doubleQt;
-                    //   precedes = true;
-                    // }
-
+                      // console.log(' doubleQuotes2:' , doubleQt );
                   }
-                  // doubleQt = doubleQt.replace(/:\"{\"/g, ':{\"');
-                  // doubleQt = doubleQt.replace(/\"}\"/g, '\"}');
                   newDoubleQuotes.push( doubleQt );
-
-                  // } else {
-
-                  // }
                 });
+
                 cleanParseMe = newDoubleQuotes.join('');
-                console.log('cleanParseMe', cleanParseMe );
+                // console.log('cleanParseMe', cleanParseMe );
                 parseMe = cleanParseMe;
                 let isSpecial: any = false;
                 specialWebPartIDs.map( id => {
@@ -444,10 +434,9 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
                     isSpecial = true;
                   }
                 });
-                if ( isSpecial === true ) {
+                if ( isSpecial === true ) { //This is a web part with known complex props that need special code
                   parseMe = this.reverseStylesStringQuotes( parseMe );
-                  
-                  //This hopefully cleans up all the replaceHTML part that causes issues
+
                   let typeDivs = parseMe.split('{"type":"div"');
                   parseMe = typeDivs[0];
                   if ( typeDivs.length > 1 ) {
@@ -456,16 +445,14 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
                 }
               }
               let parseThisObject = JSON.parse( parseMe );
-              let partLength = part.length;
               let startContent = part.indexOf( '"><' ) + 2;
-              let startContentHere = part.substring( startContent , startContent + 30 );
               let endContent = part.lastIndexOf('</div>');
-              let endContentHere = part.substring( endContent , endContent + 30 );
               let thisContent = part.substring(startContent,endContent);
               if ( thisContent.indexOf('<div data-sp-rte="">') > -1 ) {
                 //This is common Text WebPart
                 parseThisObject.title = 'OOTB Text Web Part';
               } else {
+                //This is not OOTB Text Web Part so trim props from beginning of string
                 thisContent = thisContent.substring( thisContent.indexOf( '"><' ) + 2) ;
               }
               parseThisObject.content = thisContent;
@@ -486,8 +473,6 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
         result.HumanJSON_LayoutWebpartsContent = 'Unable to parse LayoutWebpartsContent' + JSON.stringify(e);
       }
     }
-
-
 
     if ( !result.HumanReadableOData_Author ) result.HumanReadableOData_Author = result['Author'] ? replaceHTMLEntities( result['Author'] ) : '';
     if ( !result.HumanReadableOData_Editor ) result.HumanReadableOData_Editor = result['Editor'] ? replaceHTMLEntities( result['Editor'] ) : '';

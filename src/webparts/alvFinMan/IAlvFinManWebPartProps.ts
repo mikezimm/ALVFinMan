@@ -10,7 +10,7 @@ import { ISupportedHost } from "@mikezimm/npmfunctions/dist/Services/PropPane/FP
 import { IPropertyFieldGroupOrPerson } from "@pnp/spfx-property-controls/lib/PropertyFieldPeoplePicker";
 
 import { IPerformanceOp, ILoadPerformanceALVFM, IHistoryPerformance } from './components/Performance/IPerformance';
-import { ILayoutAll } from "./components/IAlvFinManProps";
+import { ILayoutAll, IPageLoadPref } from "./components/IAlvFinManProps";
 
   // // export interface IModernImageSettings {
   //   imgHeight: number | string;
@@ -32,7 +32,7 @@ import { ILayoutAll } from "./components/IAlvFinManProps";
 
 export const changeCanvasImages = [ 'imgHeight', 'imgWidth', 'imgObjectFit', 'imgAutoFix', ];
 export const changeCanvasNoAnalytics = [ 'imgStyle',  ];
-export const changeCanvasOptions = [ 'canAddCkeEditToDiv', 'canh1Styles', 'canh2Styles', 'canh3Styles', ];
+export const changeCanvasOptions = [ 'canPagePreference', 'canAddCkeEditToDiv', 'canh1Styles', 'canh2Styles', 'canh3Styles', ];
 
 export const changeExpando = [ 
   'enableExpandoramic','expandoDefault','expandoStyle', 'expandoPadding', 'expandoAudience',
@@ -189,7 +189,7 @@ export interface IAlvFinManWebPartProps {
   //}
   
   // export interface ICanvasContentOptions {
-    
+    canPagePreference: IPageLoadPref;
     canAddCkeEditToDiv?: boolean;  //Will add class="cke_editable" to the styles.article div so that Tables have some formatting when shown in app.
     // imageOptions?: IModernImageSettings;
   

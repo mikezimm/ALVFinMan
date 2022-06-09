@@ -88,7 +88,7 @@ export const repoLink: IRepoLinks = links.gitRepoALVFinManSmall;
 import * as strings from 'AlvFinManWebPartStrings';
 import AlvFinMan from './components/AlvFinMan';
 import { allPivots } from './components/AlvFinMan';
-import { IAlvFinManProps, ICanvasContentOptions, IFinManSearch, ILayoutAll, IModernImageSettings, ISearchBucket } from './components/IAlvFinManProps';
+import { IAlvFinManProps, ICanvasContentOptions, IFinManSearch, ILayoutAll, ImageFitPrefs, IModernImageSettings, ISearchBucket, PageLoadPefs } from './components/IAlvFinManProps';
 import { IAlvFinManWebPartProps, exportIgnoreProps, importBlockProps, } from './IAlvFinManWebPartProps';
 import { baseFetchInfo, IFetchInfo } from './components/IFetchInfo';
 import { createEmptySearchBucket, } from './components/DataFetch';
@@ -101,6 +101,15 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
    private DefaultPivotChoices =  allPivots.map( ( pivot, idx ) => {
      return { index: idx, key: pivot, text: pivot };
    });
+
+   private PageLoadPrefsChoices =  PageLoadPefs.map( ( choice, idx ) => {
+    return { index: idx, key: choice.key, text: choice.text };
+  });
+  
+   private ImageFitPrefsChoices =  ImageFitPrefs.map( ( choice, idx ) => {
+    return { index: idx, key: choice.key, text: choice.text };
+  });
+  
 
   //Added in v1.14
   private _isDarkTheme: boolean = false;
@@ -429,6 +438,8 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
 
     let canvasOptions: ICanvasContentOptions = {
 
+      pagePreference: this.properties.canPagePreference,
+
       addCkeEditToDiv: this.properties.canAddCkeEditToDiv,  //Will add class="cke_editable" to the styles.article div so that Tables have some formatting when shown in app.
       imageOptions: {
         height: this.properties.imgHeight,
@@ -739,6 +750,35 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
                   disabled: true,
                 }),
 
+              ]
+            }, // this group
+
+            // imgHeight: imgHeight, //Converted to px
+            // imgWidth: imgWidth, //Converted to %
+            // imgObjectFit: imgObjectFit, //cover, contain, etc...
+            // imgStyle: imgStyle, //gets embedded directly into all image tags as:  <img style="Your style string here" - height: 150px; object-fit: "cover"; width: 100%;
+            // imgAutoFix: imgAutoFix, //Maybe eventually I could try to auto-fix but have this optional.
+    
+            // canPagePreference: canPagePreference, //Determines what default page load level
+            
+            // canAddCkeEditToDiv: canAddCkeEditToDiv,  //Will add class="cke_editable" to the styles.article div so that Tables have some formatting when shown in app.
+    
+            // canh1Styles: canh1Styles,  //Use similar to FPSPageOptions styling
+            // canh2Styles: canh2Styles,  //Use similar to FPSPageOptions styling
+            // canh3Styles: canh3Styles, //Use similar to FPSPageOptions styling
+
+            {
+              groupName: 'Page preferences',
+              groupFields: [
+                PropertyPaneDropdown('canPagePreference', <IPropertyPaneDropdownProps>{
+                  label: 'News and Help page load',
+                  options: this.PageLoadPrefsChoices,
+                }),
+                
+                PropertyPaneDropdown('canPagePreference', <IPropertyPaneDropdownProps>{
+                  label: 'News and Help page load',
+                  options: this.PageLoadPrefsChoices,
+                }),
               ]
             }, // this group
 

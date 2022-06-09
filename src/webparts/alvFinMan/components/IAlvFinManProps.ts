@@ -8,6 +8,30 @@ import { DisplayMode, Version } from '@microsoft/sp-core-library';
 
 import { IWebpartHistory, IWebpartHistoryItem2, } from '@mikezimm/npmfunctions/dist/Services/PropPane/WebPartHistoryInterface';
 
+export type IPageLoadPref = 'description' | 'canvasContent1' | 'tab';
+
+export interface IPageLoadPrefChoices {
+  key: IPageLoadPref | IObjectFit;
+  text: string;
+}
+export const PageLoadPefs : IPageLoadPrefChoices[] = [ 
+  { key: 'description' ,text: 'Just short description' }, 
+  { key: 'canvasContent1',text: 'Full page' }, 
+  { key: 'tab',text: 'Open full page in new tab' },
+ ];
+
+
+ export type IObjectFit = 'center' | 'contain' | 'cover' | 'none' | 'center-cover' | 'center-contain';
+
+ export const ImageFitPrefs : IPageLoadPrefChoices[] = [ 
+  { key: 'center' ,text: 'center' }, 
+  { key: 'contain',text: 'contain' }, 
+  { key: 'cover',text: 'cover' },
+  { key: 'center-cover',text: 'center-cover' },
+  { key: 'center-contain',text: 'center-contain' },
+ ];
+
+
 export interface IModernImageSettings {
   height: number | string;
   width: number | string;
@@ -19,6 +43,8 @@ export interface IModernImageSettings {
 
 export interface ICanvasContentOptions {
   
+  pagePreference: IPageLoadPref;
+
   addCkeEditToDiv?: boolean;  //Will add class="cke_editable" to the styles.article div so that Tables have some formatting when shown in app.
   imageOptions?: IModernImageSettings;
 
@@ -103,7 +129,6 @@ export interface IFinManSearch {
   searchType:  boolean; //Choose to also filter on type of content:
 
 }
-
 
 import { ILayout1Page } from './Layout1Page/ILayout1PageProps';
 

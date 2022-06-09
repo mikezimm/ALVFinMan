@@ -450,7 +450,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     ></AlvAccounts>;
 
     const defNewsSort ={
-      prop: '',
+      prop: 'Title',
       order: 'asc',
     };
 
