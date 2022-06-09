@@ -322,14 +322,8 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
 
 
 
-            part = part.replace(/:\"\"(?!,)/g, ':\'\"'); //Replace instances of :"" that do not have a comma after it
-            part = part.replace(/:\"\"(?!,)/g, ':\'\"'); //Replace instances of :"" that do not have a comma after it
-
-
+            part = part.replace(/:\"\"(?!,)/g, '\'\"}'); //Replace instances of :"" that do not have a comma after it
             part = part.replace(/(?<!:)\"\",/g, '\'\",'); //Replace instances of "", that do not have a colon in front it
-
-            part = part.replace(/:\"{\"/g, ':{\"');
-            part = part.replace(/\"}\"/g, '\"\'}');
 
             let startWebPartData = part.indexOf( WebPartDataTag );
             let parseThisPart = startWebPartData < 0 ? part : part.substring( startWebPartData ).replace( WebPartDataTag,'');
