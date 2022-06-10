@@ -53,6 +53,7 @@ export const ForceEverywhere : IPreConfigSettings = {
         // FPS Banner Basics
         infoElementChoice: "IconName=Unknown",
         infoElementText: "Question mark circle",
+
         feedbackEmail: `ae57524a.${window.location.hostname}.onmicrosoft.com@amer.teams.ms`,
 
         // FPS Banner Navigation

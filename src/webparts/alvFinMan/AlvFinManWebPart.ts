@@ -306,6 +306,10 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
 
   public render(): void {
 
+    //Preset infoElement to question mark circle for this particular web part if it's not specificed - due to pin icon being important and usage in pinned location
+    if ( !this.properties.infoElementChoice ) { this.properties.infoElementChoice = 'IconName=Unknown'; }
+    if ( !this.properties.infoElementText ) { this.properties.infoElementText = 'Question mark circle'; }
+    
     this._unqiueId = this.context.instanceId;
 
     // quickRefresh is used for SecureScript for when caching html file.  <<< ================================================================
