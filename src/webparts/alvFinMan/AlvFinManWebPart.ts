@@ -377,12 +377,16 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
         this.properties.showRepoLinks = true; //Always show these users repo links
       }
     } );
+    
     // if ( this.context.pageContext.user.loginName.indexOf( 'oger.elm') > -1 ){ showTricks = true ; }
     // if ( this.context.pageContext.user.loginName.indexOf( 'oger.elm') > -1 ){ showTricks = true ; }
 
     console.log('mainWebPart: verifyAudienceVsUser ~ 297',   );
     this.properties.showBannerGear = verifyAudienceVsUser( this.FPSUser , showTricks, this.properties.homeParentGearAudience, null, renderAsReader );
+    // showTricks = false; Setting this causes this issue in some way:  https://github.com/mikezimm/ALVFinMan/issues/90
+    // showTricks = false ;
     let bannerSetup = buildBannerProps( this.properties , this.FPSUser, buildBannerSettings, showTricks, renderAsReader, this.displayMode );
+
     errMessage = bannerSetup.errMessage;
     this.bannerProps = bannerSetup.bannerProps;
     let expandoErrorObj = bannerSetup.errorObjArray;
@@ -400,6 +404,9 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
     this.bannerProps.replacePanelHTML = this.properties.replacePanelHTML;
 
     console.log('mainWebPart: createElement ~ 316',   );
+
+    // showTricks = false; Setting this causes this issue in some way:  https://github.com/mikezimm/ALVFinMan/issues/90
+    // this.bannerProps.showTricks = false;
 
     const search: IFinManSearch = {
       left: {

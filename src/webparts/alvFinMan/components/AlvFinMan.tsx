@@ -168,7 +168,18 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
      }
      return farElements;
    }
- 
+
+  private makeDebugCmdStyles( withLeftMargin: boolean ) {
+    let propsCmdCSS: React.CSSProperties = JSON.parse(JSON.stringify( this.props.bannerProps.bannerCmdReactCSS ));
+    propsCmdCSS.backgroundColor = 'transparent';
+    propsCmdCSS.marginRight = '30px';
+    propsCmdCSS.fontSize = '24px'; //Make sure icon is always visible
+
+    return propsCmdCSS;
+  }
+
+  private debugCmdStyles: React.CSSProperties = this.makeDebugCmdStyles( true );
+
  /***
   *     .o88b.  .d88b.  d8b   db .d8888. d888888b d8888b. db    db  .o88b. d888888b  .d88b.  d8888b. 
   *    d8P  Y8 .8P  Y8. 888o  88 88'  YP `~~88~~' 88  `8D 88    88 d8P  Y8 `~~88~~' .8P  Y8. 88  `8D 
@@ -356,13 +367,14 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
    // let farBannerElementsArray = [];
    let farBannerElementsArray = [...this.farBannerElements,
-    // this.props.showCodeIcon !== true ? null : <div title={'Show Code Details'}><Icon iconName={ 'Code' } onClick={ this.toggleOriginal.bind(this) } style={ bannerProps.bannerCmdReactCSS }></Icon></div>,
+    //  ...[<div title={'Show Code Details'}><Icon iconName={ 'Code' } onClick={ this.toggleDebugMode.bind(this) } style={ bannerProps.bannerCmdReactCSS }></Icon></div>],
   ];
 
 
+  //Setting showTricks to false here ( skipping this line does not have any impact on bug #90 )
   if ( this.props.bannerProps.showTricks === true ) {
     farBannerElementsArray.push( 
-      <Icon iconName='DeviceBug' onClick={ this.toggleDebugMode.bind(this) } style={ bannerProps.bannerCmdReactCSS }></Icon>
+      <div title={'Show Debug Info'}><Icon iconName='TestAutoSolid' onClick={ this.toggleDebugMode.bind(this) } style={ this.debugCmdStyles }></Icon></div>
     );
   }
 
@@ -480,7 +492,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
         canvasOptions={ this.props.canvasOptions }
         debugMode={ this.state.debugMode }
       ></ModernPages>;
-        
+
 
       /***
      *    d8888b.  .d8b.  d8b   db d8b   db d88888b d8888b.      d88888b db      d88888b .88b  d88. d88888b d8b   db d888888b 
@@ -513,15 +525,17 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
         infoElement = { bannerProps.infoElement }
         bannerReactCSS={ bannerProps.bannerReactCSS }
         bannerCmdReactCSS={ bannerProps.bannerCmdReactCSS }
+
         showTricks={ bannerProps.showTricks }
+        // showTricks={ false }  //Does NOT fix https://github.com/mikezimm/ALVFinMan/issues/90
         showGoToParent={ bannerProps.showGoToParent }
         showGoToHome={ bannerProps.showGoToHome }
         onHomePage={ bannerProps.onHomePage }
 
         webpartHistory={ this.props.webpartHistory }
-        
+
         showBannerGear={ bannerProps.showBannerGear }
-        
+
         showFullPanel={ bannerProps.showFullPanel }
         replacePanelHTML={ bannerProps.replacePanelHTML }
         replacePanelWarning={ bannerProps.replacePanelWarning }
