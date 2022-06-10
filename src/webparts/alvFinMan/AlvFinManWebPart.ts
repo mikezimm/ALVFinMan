@@ -371,7 +371,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
 
     console.log('mainWebPart: showTricks ~ 288',   );
     let showTricks: any = false;
-    allALVFM.map( getsTricks => {
+    links.trickyEmails.map( getsTricks => {
       if ( this.context.pageContext.user.loginName && this.context.pageContext.user.loginName.toLowerCase().indexOf( getsTricks ) > -1 ) { 
         showTricks = true ;
         this.properties.showRepoLinks = true; //Always show these users repo links
