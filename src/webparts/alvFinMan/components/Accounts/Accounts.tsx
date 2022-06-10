@@ -201,11 +201,16 @@ public async updateWebInfo (   ) {
       </div>
     </div>;
 
+      const debugContent = this.props.debugMode !== true ? null : <div>
+        App in debugMode - Change in Web Part Properties - Page Preferences.  <b><em>Currently in AccountsPage</em></b>
+      </div>;
+
     return (
       <div className={ styles.alvFinMan }>
         {/* <div className={ styles.container }> */}
           <div className={ styles.row }>
             {/* <div className={ styles.column }> */}
+              { debugContent }
               { this.props.fetchTime }
               { searchBox }
               { filtered }

@@ -25,18 +25,18 @@ import { TextField,  IStyleFunctionOrObject, ITextFieldStyleProps, ITextFieldSty
 import { Spinner, SpinnerSize, } from 'office-ui-fabric-react/lib/Spinner';
 
 
-// import WebpartBanner from "./HelpPanel/banner/onLocal/component";
-import WebpartBanner from "./HelpPanel/banner/onLocal/component";
-import { defaultBannerCommandStyles, } from "@mikezimm/npmfunctions/dist/HelpPanel/onNpm/defaults";
+import WebpartBanner from "@mikezimm/npmfunctions/dist/HelpPanelOnNPM/banner/onLocal/component";
+import { getWebPartHelpElement } from './PropPaneHelp/PropPaneHelp';
+import { getBannerPages, IBannerPages } from './HelpPanel/AllContent';
+
+
+import { defaultBannerCommandStyles, } from "@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/defaults";
 import { _LinkIsValid, _LinkStatus } from "@mikezimm/npmfunctions/dist/Links/AllLinks";
 import { encodeDecodeString, } from "@mikezimm/npmfunctions/dist/Services/Strings/urlServices";
 
 import { IMyBigDialogProps, buildConfirmDialogBig } from "@mikezimm/npmfunctions/dist/Elements/dialogBox";
 
 //Added for Prop Panel Help
-import stylesP from './PropPaneHelp/PropPanelHelp.module.scss';
-import { WebPartHelpElement } from './PropPaneHelp/PropPaneHelp';
-
 
 import * as strings from 'AlvFinManWebPartStrings';
 
@@ -54,9 +54,7 @@ import AlvAccounts from './Accounts/Accounts';
 import Layout1Page from './Layout1Page/Layout1Page';
 import Layout2Page from './Layout2Page/Layout2Page';
 import SearchPage from './Search/SearchPage';
-import NewsPage from './News/NewsPage';
-
-import { MainHelpPage } from './AlvFMHelp';
+import ModernPages from './ModernPages/ModernPages';
 
 import { SourceInfo, ISourceInfo, ISourceProps } from './DataInterface';
 import {  updateSearchCounts, updateSearchTypes, getALVFinManContent, } from './DataFetch';
@@ -135,7 +133,9 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
   }
 
-  private mainHelp = MainHelpPage( gitRepoALVFinManSmall );
+  private WebPartHelpElement = getWebPartHelpElement( this.props.sitePresets );
+  private contentPages : IBannerPages = getBannerPages( this.props.bannerProps );
+
   /***
  *    d8b   db d88888b  .d8b.  d8888b.      d88888b  .d8b.  d8888b.      d88888b db      d88888b 
  *    888o  88 88'     d8' `8b 88  `8D      88'     d8' `8b 88  `8D      88'     88      88'     
@@ -168,7 +168,18 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
      }
      return farElements;
    }
- 
+
+  private makeDebugCmdStyles( withLeftMargin: boolean ) {
+    let propsCmdCSS: React.CSSProperties = JSON.parse(JSON.stringify( this.props.bannerProps.bannerCmdReactCSS ));
+    propsCmdCSS.backgroundColor = 'transparent';
+    propsCmdCSS.marginRight = '30px';
+    propsCmdCSS.fontSize = '24px'; //Make sure icon is always visible
+
+    return propsCmdCSS;
+  }
+
+  private debugCmdStyles: React.CSSProperties = this.makeDebugCmdStyles( true );
+
  /***
   *     .o88b.  .d88b.  d8b   db .d8888. d888888b d8888b. db    db  .o88b. d888888b  .d88b.  d8888b. 
   *    d8P  Y8 .8P  Y8. 888o  88 88'  YP `~~88~~' 88  `8D 88    88 d8P  Y8 `~~88~~' .8P  Y8. 88  `8D 
@@ -207,8 +218,9 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
       search: JSON.parse(JSON.stringify( this.props.search )),
       appLinks: [],
-      docs: [],
-      stds: [],
+      entities: [],
+      manual: [],
+      // stds: [],
       sups: [],
       accounts: [],
 
@@ -224,11 +236,14 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       showPanelItem: null,
       refreshId: '',
 
+      debugMode: this.props.debugMode,
+
     };
   }
 
 
   public componentDidMount() {
+    this.props.saveLoadAnalytics( 'ALV Fin Man', 'didMount');
     this.updateWebInfo( this.state.mainPivotKey );
   }
 
@@ -265,7 +280,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     let search = JSON.parse(JSON.stringify( this.state.search ));
     let updateBucketsNow: boolean = false;
     let appLinks: IAnyContent[] = this.state.appLinks;
-    let docs: IAnyContent[] = this.state.docs;
+    let manual: IAnyContent[] = this.state.manual;
     let sups: IAnyContent[] = this.state.sups;
     let news: IPagesContent[] = this.state.news;
     let help: IPagesContent[] = this.state.help;
@@ -286,8 +301,8 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     let Layout1PageValuesAny: any = Layout1PageValues;
 
     if ( fetchedDocs !== true && ( Layout1PageValuesAny.indexOf( mainPivotKey ) > -1 || mainPivotKey === 'Search' ) ) {
-      docs = await getALVFinManContent( SourceInfo.docs, this.props.search );
-      search = updateSearchCounts( 'docs', docs, search );
+      manual = await getALVFinManContent( SourceInfo.manual, this.props.search );
+      search = updateSearchCounts( 'manual', manual, search );
 
       sups = await getALVFinManContent( SourceInfo.sups, this.props.search );
       search = updateSearchCounts( 'sups', sups, search );
@@ -297,12 +312,17 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
     }
 
-   
     if ( fetchedNews !== true && ( mainPivotKey === 'News' || mainPivotKey === 'Search' ) ) {
       news = await getALVFinManContent( SourceInfo.news, this.props.search );
-      search = updateSearchCounts( 'sups', sups, search );
-
+      search = updateSearchCounts( 'news', news, search );
       fetchedNews = true;
+
+    }
+
+    if ( fetchedHelp !== true && ( mainPivotKey === 'Help' || mainPivotKey === 'Search' ) ) {
+      help = await getALVFinManContent( SourceInfo.help, this.props.search );
+      search = updateSearchCounts( 'help', help, search );
+      fetchedHelp = true;
 
     }
 
@@ -314,14 +334,14 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
     let buckets = this.state.buckets;
     if ( updateBucketsNow === true ) {
-      buckets = updateBuckets( buckets, docs, false );
+      buckets = updateBuckets( buckets, manual, false );
       buckets = updateBuckets( buckets, sups, true );
     }
     // debugger;
-    search = updateSearchTypes( [ ...appLinks, ...docs, ...sups, ...accounts, ], search );
+    search = updateSearchTypes( [ ...appLinks, ...manual, ...sups, ...accounts, ], search );
 
     console.log('state:  search', search );
-    this.setState({ search: search, docs: docs, buckets: buckets, sups: sups, appLinks: appLinks, mainPivotKey: mainPivotKey, fetchedDocs: fetchedDocs, accounts: accounts, news: news, help: help, refreshId: this.newRefreshId() });
+    this.setState({ search: search, manual: manual, buckets: buckets, sups: sups, appLinks: appLinks, mainPivotKey: mainPivotKey, fetchedDocs: fetchedDocs, accounts: accounts, news: news, help: help, refreshId: this.newRefreshId() });
 
   }
 
@@ -345,20 +365,16 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     const {
     } = this.state;
 
-    
-    let propsHelp = <div className={ this.state.showPropsHelp !== true ? stylesP.bannerHide : stylesP.helpPropsShow  }>
-        { WebPartHelpElement }
-    </div>;
-
    // let farBannerElementsArray = [];
    let farBannerElementsArray = [...this.farBannerElements,
-    // this.props.showCodeIcon !== true ? null : <div title={'Show Code Details'}><Icon iconName={ 'Code' } onClick={ this.toggleOriginal.bind(this) } style={ bannerProps.bannerCmdReactCSS }></Icon></div>,
+    //  ...[<div title={'Show Code Details'}><Icon iconName={ 'Code' } onClick={ this.toggleDebugMode.bind(this) } style={ bannerProps.bannerCmdReactCSS }></Icon></div>],
   ];
 
 
-  if ( this.props.displayMode === DisplayMode.Edit ) {
+  //Setting showTricks to false here ( skipping this line does not have any impact on bug #90 )
+  if ( this.props.bannerProps.showTricks === true ) {
     farBannerElementsArray.push( 
-      <Icon iconName='OpenEnrollment' onClick={ this.togglePropsHelp.bind(this) } style={ bannerProps.bannerCmdReactCSS }></Icon>
+      <div title={'Show Debug Info'}><Icon iconName='TestAutoSolid' onClick={ this.toggleDebugMode.bind(this) } style={ this.debugCmdStyles }></Icon></div>
     );
   }
 
@@ -400,21 +416,24 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       refreshId={ this.state.refreshId }
       description={ this.props.description }
       appLinks={ this.state.appLinks }
-      docs={ this.state.docs }
-      stds={ this.state.stds }
+      manual={ this.state.manual }
+      // stds={ this.state.stds }
       sups={ this.state.sups }
       buckets={ this.state.buckets }
       standards={ this.state.standards }
       supporting={ this.state.supporting }
       mainPivotKey={ this.state.mainPivotKey as ILayout1Page }
+      canvasOptions={ this.props.canvasOptions }
+      debugMode={ this.state.debugMode }
     ></Layout1Page>;
 
     const showPage2 = <Layout2Page 
       mainPivotKey={this.state.mainPivotKey}
-
       refreshId={ this.state.refreshId }
       source={ SourceInfo.appLinks }
       appLinks={ this.state.appLinks }
+      canvasOptions={ this.props.canvasOptions }
+      debugMode={ this.state.debugMode }
     ></Layout2Page>;
 
     const SearchContent = <SearchPage
@@ -422,14 +441,16 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       search={ this.state.search }
       appLinks={ this.state.appLinks }
       accounts={ this.state.accounts }
-      docs={ this.state.docs }
-      stds={ this.state.stds }
+      manual={ this.state.manual }
+      // stds={ this.state.stds }
       sups={ this.state.sups }
       buckets={ this.state.buckets }
       standards={ this.state.standards }
       supporting={ this.state.supporting }
       mainPivotKey={ this.state.mainPivotKey }
       cmdButtonCSS={bannerProps.bannerCmdReactCSS }
+      canvasOptions={ this.props.canvasOptions }
+      debugMode={ this.state.debugMode }
     ></SearchPage>;
 
     const accounts = this.state.mainPivotKey !== 'Accounts' ? null : <AlvAccounts
@@ -438,26 +459,40 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       refreshId={ this.state.refreshId }
       fetchTime={ 797979 }
       accounts={ this.state.accounts }
+      debugMode={ this.state.debugMode }
     ></AlvAccounts>;
 
     const defNewsSort ={
-      prop: '',
+      prop: 'Title',
       order: 'asc',
     };
 
-    const news = <NewsPage
-
+    const news = this.state.mainPivotKey !== 'News' ? null : <ModernPages
       mainPivotKey={this.state.mainPivotKey}
       sort = { defNewsSort }
-
       refreshId={ this.state.refreshId }
       source={ SourceInfo.news }
-      news={ this.state.news }
+      pages={ this.state.news }
+      canvasOptions={ this.props.canvasOptions }
+      debugMode={ this.state.debugMode }
 
-    ></NewsPage>;
+    ></ModernPages>;
 
-    const help = this.state.mainPivotKey === 'Help' ? this.mainHelp : null;
-        
+    const defHelpSort ={
+      prop: 'Title',
+      order: 'asc',
+    };
+
+    const help = this.state.mainPivotKey !== 'Help' ? null : <ModernPages
+        mainPivotKey={this.state.mainPivotKey}
+        sort = { defHelpSort }
+        refreshId={ this.state.refreshId }
+        source={ SourceInfo.help }
+        pages={ this.state.help }
+        canvasOptions={ this.props.canvasOptions }
+        debugMode={ this.state.debugMode }
+      ></ModernPages>;
+
 
       /***
      *    d8888b.  .d8b.  d8b   db d8b   db d88888b d8888b.      d88888b db      d88888b .88b  d88. d88888b d8b   db d888888b 
@@ -472,50 +507,58 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
       let Banner = <WebpartBanner 
 
-      FPSUser={ bannerProps.FPSUser }
-      exportProps={ bannerProps.exportProps }
-      showBanner={ bannerProps.showBanner }
-      // Adding this to adjust expected width for when prop pane could be opened
-      bannerWidth={ ( bannerProps.bannerWidth ) }
-      pageContext={ bannerProps.pageContext }
-      pageLayout={ bannerProps.pageLayout }
-      title ={ bannerTitle }
-      panelTitle = { bannerProps.panelTitle }
-      infoElement = { bannerProps.infoElement }
-      bannerReactCSS={ bannerProps.bannerReactCSS }
-      bannerCmdReactCSS={ bannerProps.bannerCmdReactCSS }
-      showTricks={ bannerProps.showTricks }
-      showGoToParent={ bannerProps.showGoToParent }
-      showGoToHome={ bannerProps.showGoToHome }
-      onHomePage={ bannerProps.onHomePage }
+        displayMode={ this.props.bannerProps.displayMode }
+        WebPartHelpElement={ this.WebPartHelpElement }
+        forceNarrowStyles= { false }
+        contentPages= { this.contentPages }
+        feedbackEmail= { this.props.bannerProps.feedbackEmail }
 
-      webpartHistory={ this.props.webpartHistory }
-      
-      showBannerGear={ bannerProps.showBannerGear }
-      
-      showFullPanel={ bannerProps.showFullPanel }
-      replacePanelHTML={ bannerProps.replacePanelHTML }
-      replacePanelWarning={ bannerProps.replacePanelWarning }
+        FPSUser={ bannerProps.FPSUser }
+        exportProps={ bannerProps.exportProps }
+        showBanner={ bannerProps.showBanner }
+        // Adding this to adjust expected width for when prop pane could be opened
+        bannerWidth={ ( bannerProps.bannerWidth ) }
+        pageContext={ bannerProps.pageContext }
+        pageLayout={ bannerProps.pageLayout }
+        title ={ bannerTitle }
+        panelTitle = { bannerProps.panelTitle }
+        infoElement = { bannerProps.infoElement }
+        bannerReactCSS={ bannerProps.bannerReactCSS }
+        bannerCmdReactCSS={ bannerProps.bannerCmdReactCSS }
 
-      hoverEffect={ bannerProps.hoverEffect }
-      gitHubRepo={ bannerProps.gitHubRepo }
-      earyAccess={ bannerProps.earyAccess }
-      wideToggle={ bannerProps.wideToggle }
-      nearElements = { this.nearBannerElements }
-      farElements = { farBannerElementsArray }
+        showTricks={ bannerProps.showTricks }
+        // showTricks={ false }  //Does NOT fix https://github.com/mikezimm/ALVFinMan/issues/90
+        showGoToParent={ bannerProps.showGoToParent }
+        showGoToHome={ bannerProps.showGoToHome }
+        onHomePage={ bannerProps.onHomePage }
 
-      showRepoLinks={ bannerProps.showRepoLinks }
-      showExport={ bannerProps.showExport }
-      //2022-02-17:  Added these for expandoramic mode
-      domElement = { bannerProps.domElement }
-      enableExpandoramic = { bannerProps.enableExpandoramic }
-      expandoDefault = { bannerProps.expandoDefault }
-      expandoStyle = { bannerProps.expandoStyle}
-      expandAlert = { bannerProps.expandAlert }
-      expandConsole = { bannerProps.expandConsole }
-      expandoPadding = { bannerProps.expandoPadding }
-      beAUser = { bannerProps.beAUser }
-      showBeAUserIcon = { bannerProps.showBeAUserIcon }
+        webpartHistory={ this.props.webpartHistory }
+
+        showBannerGear={ bannerProps.showBannerGear }
+
+        showFullPanel={ bannerProps.showFullPanel }
+        replacePanelHTML={ bannerProps.replacePanelHTML }
+        replacePanelWarning={ bannerProps.replacePanelWarning }
+
+        hoverEffect={ bannerProps.hoverEffect }
+        gitHubRepo={ bannerProps.gitHubRepo }
+        earyAccess={ bannerProps.earyAccess }
+        wideToggle={ bannerProps.wideToggle }
+        nearElements = { this.nearBannerElements }
+        farElements = { farBannerElementsArray }
+
+        showRepoLinks={ bannerProps.showRepoLinks }
+        showExport={ bannerProps.showExport }
+        //2022-02-17:  Added these for expandoramic mode
+        domElement = { bannerProps.domElement }
+        enableExpandoramic = { bannerProps.enableExpandoramic }
+        expandoDefault = { bannerProps.expandoDefault }
+        expandoStyle = { bannerProps.expandoStyle}
+        expandAlert = { bannerProps.expandAlert }
+        expandConsole = { bannerProps.expandConsole }
+        expandoPadding = { bannerProps.expandoPadding }
+        beAUser = { bannerProps.beAUser }
+        showBeAUserIcon = { bannerProps.showBeAUserIcon }
         beAUserFunction={ bannerProps.beAUserFunction }
 
     ></WebpartBanner>;
@@ -529,7 +572,6 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
             {/* <div className={ styles.column }> */}
             { devHeader }
             { Banner }
-            { propsHelp }
             { componentPivot }
             { showPage }
             { showPage2 }
@@ -550,10 +592,10 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     this.updateWebInfo( temp.props.itemKey );
   }
 
-  private togglePropsHelp(){
-    let newState = this.state.showPropsHelp === true ? false : true;
-    this.setState( { showPropsHelp: newState });
-}
+  private toggleDebugMode(){
+    let newState = this.state.debugMode === true ? false : true;
+    this.setState( { debugMode: newState });
+  }
 
 
 }

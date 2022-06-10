@@ -1,7 +1,5 @@
 import * as React from 'react';
 
-import styles from '../banner/SinglePage/InfoPane.module.scss';
-
 import { Icon } from 'office-ui-fabric-react';
 
 import * as links from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
@@ -11,12 +9,12 @@ import { IRepoLinks } from '@mikezimm/npmfunctions/dist/Links/CreateLinks';
 import { convertIssuesMarkdownStringToSpan } from '@mikezimm/npmfunctions/dist/Elements/Markdown';
 
 //import { IHelpTableRow, IHelpTable, IPageContent, ISinglePageProps } from '../Component/ISinglePageProps';
-import { IHelpTableRow, IHelpTable, IPageContent, ISinglePageProps } from '../banner/SinglePage/ISinglePageProps';
+import { IHelpTableRow, IHelpTable, IPageContent, ISinglePageProps } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/banner/SinglePage/ISinglePageProps';
 
 export function whyContent( repoLinks: IRepoLinks ) {
 
     return null;
-    
+
     let table : IHelpTable  = {
         heading: 'Why use Pivot Tiles',
         headers: ['Web part','Features benefits, comparison'],

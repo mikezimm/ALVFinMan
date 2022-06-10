@@ -28,7 +28,7 @@ import ReactJson from "react-json-view";
 import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfunctions/dist/Lists/getFunctions';
 
 import AlvAccounts from '../Accounts/Accounts';
-import { FinManSite, ISourceInfo, ISourceProps, LookupColumns, sitePagesColumns, SourceInfo } from '../DataInterface';
+import { ISourceInfo, ISourceProps, LookupColumns, SourceInfo } from '../DataInterface';
 import { IFMSearchType, SearchTypes } from '../DataInterface';
 import { getSearchTypeIcon } from '../Elements/FileTypeIcon';
 import { makeToggleJSONCmd } from '../Elements/CmdButton';
@@ -85,7 +85,7 @@ export default class Layout1Page extends React.Component<ILayout1PageProps, ILay
 
   private ToggleJSONCmd = makeToggleJSONCmd( this._toggleJSON.bind( this ) );
 
-  private buildLay1Page( pivot: string, bucketClickKey: string, buckets: IFMBuckets, docs: IAnyContent[] , sups: any[] ) {
+  private buildLay1Page( pivot: string, bucketClickKey: string, buckets: IFMBuckets, manual: IAnyContent[] , sups: any[] ) {
     console.log('buildLay1Page:', pivot,bucketClickKey  );
     const key = pivot.split('|')[1] ? pivot.split('|')[1] : pivot.split('|')[0] ;
 
@@ -101,18 +101,21 @@ export default class Layout1Page extends React.Component<ILayout1PageProps, ILay
 
     let showDocs : any[] = [];
     let checkBucketKey = !bucketClickKey ? firstTitle : bucketClickKey;
-    docs.map( item => {
-      let showTitle = item.Title0 ? item.Title0 : item.Title? item.Title: item.searchTitle + '*';
+    manual.map( item => {
+      let showTitleText = item.Title0 ? item.Title0 : item.Title? item.Title: item.searchTitle + '*';
+      let showTitle = <div className={ styles.textEllipse }>{ showTitleText }</div>;
       if ( Array.isArray( item [key] ) === true ) {
         item [key].map( value => {
           if ( consoleLineItemBuild === true ) console.log( 'key value - item', key, value, item ) ;
           if ( value.Title === checkBucketKey ) { showDocs.push( 
-          <li onClick= { this.clickDocumentItem.bind( this, key, 'docs', item  )}> 
+          <li className={ styles.supsLI } onClick= { this.clickDocumentItem.bind( this, key, 'manual', item  )} title={ showTitleText }> 
+            { getSearchTypeIcon( SearchTypes.objs[item.typeIdx] ) }
             { showTitle } </li> ) ; }
         });
       } else { //This is not a multi-select key
           if ( item [key] && item [key].Title === checkBucketKey ) { showDocs.push(  
-          <li onClick= { this.clickDocumentItem.bind( this, key, 'docs', item  )}>
+          <li onClick= { this.clickDocumentItem.bind( this, key, 'manual', item  )}>
+            { getSearchTypeIcon( SearchTypes.objs[item.typeIdx] ) }
             { showTitle } </li>  ) ; }
       }
     });
@@ -120,18 +123,20 @@ export default class Layout1Page extends React.Component<ILayout1PageProps, ILay
 
     let showSups : any[] = [];
     sups.map( item => {
-      let showTitle = item.Title0 ? item.Title0 : item.Title? item.Title: item.searchTitle + '*';
+      // let showTitle = item.FileLeafRef ? item.FileLeafRef: item.Title0 ? item.Title0 : item.Title? item.Title: item.searchTitle + '*';
+      let showTitleText = item.fileDisplayName ? item.fileDisplayName : item.FileLeafRef ? item.FileLeafRef: item.Title0 ? item.Title0 : item.Title? item.Title: item.searchTitle + '*';
+      let showTitle = <div className={ styles.textEllipse }>{ showTitleText }</div>;
       if ( Array.isArray( item [key] ) === true ) {
         item [key].map( value => {
           if ( consoleLineItemBuild === true ) console.log( 'key value - item', key, value, item ) ;
           if ( value.Title === checkBucketKey ) { showSups.push( 
-          <li  className={ styles.supsLI } onClick= { this.clickDocumentItem.bind( this, key, 'sups', item  )}>
+          <li className={ styles.supsLI } onClick= { this.clickDocumentItem.bind( this, key, 'sups', item  )} title={ item.FileLeafRef }>
             { getSearchTypeIcon( SearchTypes.objs[item.typeIdx] ) }
             { showTitle } </li> ) ; }
         });
       } else { //This is not a multi-select key
           if ( item [key] && item [key].Title === checkBucketKey ) { showSups.push(  
-          <li  onClick= { this.clickDocumentItem.bind( this, key, 'sups', item  )}>
+          <li onClick= { this.clickDocumentItem.bind( this, key, 'sups', item  )} title={ item.FileLeafRef }>
             { getSearchTypeIcon( SearchTypes.objs[item.typeIdx] ) }
             { item.FileLeafRef ? item.FileLeafRef : showTitle } </li>  ) ; }
       }
@@ -141,8 +146,8 @@ export default class Layout1Page extends React.Component<ILayout1PageProps, ILay
 
     let page = <div className={ styles.layout1 } >
       <div className={ styles.titleList }><h3>{ this.props.mainPivotKey}</h3> { titles } </div>
-      <div className={ styles.docsList }><h3 onClick={ this.clickLibrary.bind( this, SourceInfo.docs , )}>Standards</h3> { showDocs } </div>
-      <div className={ styles.docsList }><h3 onClick={ this.clickLibrary.bind( this, SourceInfo.sups , )}>Supporting Docs</h3> { showSups } </div>
+      <div className={ styles.docsList }><h3 onClick={ this.clickLibrary.bind( this, SourceInfo.manual , )}>Standards Manual ({ showDocs.length })</h3> { <ul>{ showDocs }</ul> } </div>
+      <div className={ styles.docsList }><h3 onClick={ this.clickLibrary.bind( this, SourceInfo.sups , )}>Supporting Docs ({ showSups.length })</h3> { <ul>{ showSups }</ul> } </div>
     </div>;
     return page;
 
@@ -174,7 +179,7 @@ public async updateWebInfo ( webUrl: string, listChangeOnly : boolean ) {
 
 }
 
-//        
+//
   /***
  *         d8888b. d888888b d8888b.      db    db d8888b. d8888b.  .d8b.  d888888b d88888b 
  *         88  `8D   `88'   88  `8D      88    88 88  `8D 88  `8D d8' `8b `~~88~~' 88'     
@@ -211,7 +216,7 @@ public async updateWebInfo ( webUrl: string, listChangeOnly : boolean ) {
       console.log('Layout1Page: ReactElement', this.props.refreshId  );
       const layout1 = Layout1PageValues.indexOf( this.props.mainPivotKey as any) > -1 ? this.props.mainPivotKey :null;
       const showPage = !layout1 ? null :
-      <div> { this.buildLay1Page( layout1 , this.state.bucketClickKey, this.props.buckets, this.props.docs , this.props.sups ) } </div>; 
+      <div> { this.buildLay1Page( layout1 , this.state.bucketClickKey, this.props.buckets, this.props.manual , this.props.sups ) } </div>; 
   
       if ( showPanelItem && showPanelItem.WikiField ) {
         // const replaceString = '<a onClick=\"console.log(\'Going to\',this.href);window.open(this.href,\'_blank\')\" style="pointer-events:none" href=';
@@ -248,7 +253,8 @@ public async updateWebInfo ( webUrl: string, listChangeOnly : boolean ) {
 
       }
 
-      const docsPage = !showPanelItem || !showPanelItem.WikiField ? null : <div dangerouslySetInnerHTML={{ __html: showPanelItem.WikiField }} />;
+      let contentField = !showPanelItem ? null : showPanelItem.CanvasContent1 ? showPanelItem.CanvasContent1 : showPanelItem.WikiField;
+      const docsPage = !showPanelItem || !contentField ? null : <div dangerouslySetInnerHTML={{ __html: contentField }} />;
       const fileEmbed = !showPanelItem || !showPanelItem.ServerRedirectedEmbedUrl ? null : <iframe src={ showPanelItem.ServerRedirectedEmbedUrl } height='350px' width='100%' style={{paddingTop: '20px' }}></iframe>;
       const panelContent = this.state.showPanelJSON !== true ? null : <div>
         <ReactJson src={ showPanelItem } name={ 'Summary' } collapsed={ false } displayDataTypes={ true } displayObjectSize={ true } enableClipboard={ true } style={{ padding: '20px 0px' }}/>
@@ -270,11 +276,17 @@ public async updateWebInfo ( webUrl: string, listChangeOnly : boolean ) {
           { panelContent }
       </Panel></div>;
   
+  
+      const debugContent = this.props.debugMode !== true ? null : <div style={{ cursor: 'default' }}>
+        App in debugMode - Change in Web Part Properties - Page Preferences.  <b><em>Currently in Layout1Page</em></b>
+      </div>;
+
       return (
         // <div className={ styles.alvFinMan }>
         //   <div className={ styles.container }>
             <div className={ styles.row }>
               {/* <div className={ styles.column }> */}
+                { debugContent }
                 { showPage }
                 { userPanel }
               {/* </div> */}
@@ -303,7 +315,7 @@ public async updateWebInfo ( webUrl: string, listChangeOnly : boolean ) {
   }
 
   
-  private async clickDocumentItem( pivot, supDoc, item, e ) {
+  private async clickDocumentItem( pivot, supDoc: 'sups' | 'manual', item, e ) {
     console.log('clickDocumentItem:', pivot, supDoc, item );
     if ( e.ctrlKey === true && item.FileRef ) {
       window.open( item.FileRef, '_blank' );
@@ -311,7 +323,7 @@ public async updateWebInfo ( webUrl: string, listChangeOnly : boolean ) {
     }  else if ( e.ctrlKey === true && item.ServerRedirectedEmbedUrl ) {
       window.open( item.ServerRedirectedEmbedUrl, '_blank' );
 
-    }  else if ( supDoc === 'docs' ) {
+    }  else if ( supDoc === 'manual' ) {
       await this.getDocWiki( item );
 
     } else {
@@ -333,9 +345,9 @@ public async updateWebInfo ( webUrl: string, listChangeOnly : boolean ) {
    //Standards are really site pages, supporting docs are files
   private async getDocWiki( item: any, ) {
     
-    let sourceInfo: ISourceProps = SourceInfo.stds;
+    let sourceInfo: ISourceProps = SourceInfo.manual;
 
-    let web = await Web( `${window.location.origin}${FinManSite}` );
+    let web = await Web( `${window.location.origin}${sourceInfo.webUrl}` );
     
     const columns = sourceInfo.columns;
 
@@ -343,7 +355,8 @@ public async updateWebInfo ( webUrl: string, listChangeOnly : boolean ) {
     let selColumns = getSelectColumns( columns );
     
     const expandThese = expColumns.join(",");
-    let selectThese = '*,WikiField,FileRef,FileLeafRef,' + selColumns.join(",");
+    let contentField = sourceInfo.isModern === true ? 'CanvasContent1,LayoutsWebpartsContent,BannerImageUrl' : 'WikiField';
+    let selectThese = `*,${contentField},FileRef,FileLeafRef,` + selColumns.join(",");
 
     // Why an await does not work here is beyond me.  It should work :(
     // let fullItem = await web.lists.getByTitle( StandardsLib ).items.select(selectThese).expand(expandThese).getById( item.ID );

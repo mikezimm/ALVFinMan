@@ -55,7 +55,10 @@
 //    exportIgnoreProps, importBlockPropsDev, importBlockPropsTeam, importBlockPropsCorp,
 //    } from './IPivottiles7WebPartProps';
 
-import { IAlvFinManWebPartProps, exportIgnoreProps, importBlockProps, } from './IAlvFinManWebPartProps';
+import { IAlvFinManWebPartProps, exportIgnoreProps, importBlockProps, changeCanvasImages, changeCanvasOptions, changeCanvasNoAnalytics, } from './IAlvFinManWebPartProps';
+import { changeBannerBasics, changeBannerNav, changeBannerTheme, changeBannerOther, } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/ImportProps';
+
+
 import { changeVisitor, changeExpando, changeBanner, changefpsOptions1, changefpsOptions2, } from './IAlvFinManWebPartProps';
 import { ILoadPerformanceALVFM, IPerformanceOp } from './components/Performance/IPerformance';
 
@@ -105,6 +108,9 @@ import { ILoadPerformanceALVFM, IPerformanceOp } from './components/Performance/
     exportStructure.wpInstanceID = wpInstanceID;
     exportStructure.currentWeb = currentWeb;
 
+    exportStructure.changeCanvasImages = changeCanvasImages;
+    exportStructure.changeCanvasNoAnalytics = changeCanvasNoAnalytics;
+    exportStructure.changeCanvasOptions = changeCanvasOptions;
 
     // exportStructure.Script = changeScript;
 
@@ -116,6 +122,36 @@ import { ILoadPerformanceALVFM, IPerformanceOp } from './components/Performance/
     
     exportStructure.Expando = changeExpando;
 
+    exportStructure.fpsOptions2 = changefpsOptions2;
+
+    let exportObject = createExportObject( exportStructure, wpProps, exportIgnoreProps, false );
+
+    console.log('Exportable Props:', exportObject );
+    return exportObject;
+
+  }
+
+  
+  export function buildFPSAnalyticsProps( wpProps : IAlvFinManWebPartProps, wpInstanceID: string, currentWeb: string, ) {
+    let exportStructure :any = {};
+
+    exportStructure.wpInstanceID = wpInstanceID;
+    exportStructure.currentWeb = currentWeb;
+
+    exportStructure.changeCanvasImages = changeCanvasImages;
+    exportStructure.changeCanvasOptions = changeCanvasOptions;
+
+    exportStructure.Visitor = changeVisitor;
+
+    exportStructure.BannerBasics = changeBannerBasics;
+    exportStructure.BannerNav = changeBannerNav;
+
+    exportStructure.BannerTheme = changeBannerTheme;
+    exportStructure.BannerOther = changeBannerOther;
+
+    // exportStructure.Expando = changeExpando;
+
+    exportStructure.fpsOptions1 = changefpsOptions1;
     exportStructure.fpsOptions2 = changefpsOptions2;
 
     let exportObject = createExportObject( exportStructure, wpProps, exportIgnoreProps, false );

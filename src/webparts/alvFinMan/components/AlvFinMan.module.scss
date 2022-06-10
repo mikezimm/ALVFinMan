@@ -50,39 +50,61 @@ $screen-xl-min: 1200px;
     font-family: $ms-font-family-fallbacks;
   }
 
+  
+  h3 {
+    cursor: default;
+  }
+
   .layout1 {
     display: flex;
+    flex-wrap: wrap;
     padding: 20px 30px 20px 30px;
 
     // white-space: nowrap;
-    // overflow: 'hidden';
-    // text-overflow: 'ellipsis';
+    // overflow: hidden;
+    // text-overflow: ellipsis;
 
     h3 {
       margin-top: 0px;
     }
+
+    // Indented list item:  https://silvawebdesigns.com/css-indenting-second-line-li-list-items/
+    ul {
+      text-indent: 0px; 
+      // margin-left: 20px;
+      padding-left: 0px;
+    }
+
     .titleList{
-      width: 250px;
+      min-width: 200px;
+      max-width: 350px;
       padding: 0px 30px;
 
       li {
         white-space: nowrap;
-        overflow: 'hidden';
-        text-overflow: 'ellipsis';
+        overflow: hidden;
+        text-overflow: ellipsis;
         width: 100%;
       }
 
     }
 
-    
+    .textEllipse {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      // width: 100%;
+    }
+
     .docsList{
-      width: 300px;
+      min-width: 300px;
+      max-width: 500px;
       margin: 0px 30px;
       
       li {
         white-space: nowrap;
-        overflow: 'hidden';
-        text-overflow: 'ellipsis';
+        overflow: hidden;
+        text-overflow: ellipsis;
         width: 100%;
         margin: 0px 30px 5px 12px; //use margin so there is a gap between the cursor:pointers
         cursor: pointer;
@@ -94,8 +116,8 @@ $screen-xl-min: 1200px;
         align-items: flex-start;
         flex-wrap: nowrap;
         white-space: nowrap;
-        overflow: 'hidden';
-        text-overflow: 'ellipsis';
+        overflow: hidden;
+        text-overflow: ellipsis;
         max-width: 99%;
         // padding-top: 15px;
         i {
@@ -112,16 +134,16 @@ $screen-xl-min: 1200px;
         // margin: 0px 30px 5px 0px; //use margin so there is a gap between the cursor:pointers
       // cursor: pointer;
       // white-space: nowrap;
-      // overflow: 'hidden';
-      // text-overflow: 'ellipsis';
+      // overflow: hidden;
+      // text-overflow: ellipsis;
       // width: 100%;
       // padding: 0px;
       
   .leftFilter {
     cursor: pointer;
     white-space: nowrap;
-    overflow: 'hidden';
-    text-overflow: 'ellipsis';
+    overflow: hidden;
+    text-overflow: ellipsis;
     padding: 0px;
     color: darkblue;
     margin: 0px 30px 5px 0px; //use margin so there is a gap between the cursor:pointers
@@ -144,8 +166,8 @@ $screen-xl-min: 1200px;
   //   flex-direction: row;
 
   //   // white-space: nowrap;
-  //   // overflow: 'hidden';
-  //   // text-overflow: 'ellipsis';
+  //   // overflow: hidden;
+  //   // text-overflow: ellipsis;
 
   //   .titleList{
   //     width: 300px;
@@ -153,8 +175,8 @@ $screen-xl-min: 1200px;
 
   //     li {
   //       white-space: nowrap;
-  //       overflow: 'hidden';
-  //       text-overflow: 'ellipsis';
+  //       overflow: hidden;
+  //       text-overflow: ellipsis;
   //       width: 100%;
   //     }
 
@@ -170,8 +192,8 @@ $screen-xl-min: 1200px;
       
   //     li {
   //       white-space: nowrap;
-  //       overflow: 'hidden';
-  //       text-overflow: 'ellipsis';
+  //       overflow: hidden;
+  //       text-overflow: ellipsis;
   //       width: 100%;
   //     }
   //   }
@@ -194,7 +216,7 @@ $screen-xl-min: 1200px;
 
 
   .container {
-    max-width: 1500px;
+    max-width: 2500px;
     margin: 0px auto;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 25px 50px 0 rgba(0, 0, 0, 0.1);
   }

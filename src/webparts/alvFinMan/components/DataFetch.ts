@@ -38,10 +38,11 @@ export function createEmptySearchBucket () {
 
     items: [],
     appLinks: [],
+    entities: [],
     accounts: [],
-    stds: [],
+    manual: [],
     sups: [],
-    docs: [],
+    // docs: [],
 
     news: [],
     help: [],
@@ -305,6 +306,9 @@ export function createEmptySearchBucket () {
         item.publishedLoc = item.publishedMS.toLocaleString();
       }
 
+      //Added this to flatten file url for easier use
+      if ( item.File && item.File.ServerRelativeUrl ) { item['File/ServerRelativeUrl'] = item.File.ServerRelativeUrl ; }
+
       if ( item.ReportingSections ) { item.Reporting = item.ReportingSections ; }
 
       let meta: string[] = [];
@@ -412,10 +416,13 @@ export function createEmptySearchBucket () {
 
       item.meta = [...meta, ...item.leftSearch, ...item.topSearch ];
 
+      item.fileDisplayName = ''; //Basically the file name but without extension
+      
       let extIdx = item.FileRef ? item.FileRef.lastIndexOf('.') : -1;
       if ( item['File_x0020_Type'] ) {
         item.type = item['File_x0020_Type'] ;
         searchTitle = item['FileLeafRef'] ? item['FileLeafRef'] : 'No Filename to show';
+        item.fileDisplayName = item['FileLeafRef'].replace(`.${item.type}`,'');
         searchDesc = '';
 
       } else if ( extIdx > -1 ) {
@@ -423,14 +430,7 @@ export function createEmptySearchBucket () {
         if ( item.type === 'aspx' ) { 
           item.type = 'page';
           searchTitle = item.Title;
-          searchDesc = item.Description;
-        }
-
-      } else if ( extIdx > -1 ) {
-        item.type = item.FileRef.substring( extIdx + 1 );
-        if ( item.type === 'aspx' ) { 
-          item.type = 'page';
-          searchTitle = item.Title;
+          item.fileDisplayName = item['FileLeafRef'].replace(`.aspx`,'');
           searchDesc = item.Description;
         }
 
@@ -473,6 +473,9 @@ export function createEmptySearchBucket () {
       }
 
       let searchTypeIdx = SearchTypes.keys.indexOf( item.type ) ;
+      if ( searchTypeIdx === -1 ) {
+        console.log('Invalid searchTypeIdx not found:', item.type, SearchTypes.keys );
+      }
       let adjustIdx = SearchTypes.objs[ searchTypeIdx ].adjust ? SearchTypes.objs[ searchTypeIdx ].adjust : 0;
       searchTypeIdx = searchTypeIdx + adjustIdx;
 

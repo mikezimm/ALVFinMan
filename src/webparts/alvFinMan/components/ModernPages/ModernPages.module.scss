@@ -41,7 +41,14 @@ $screen-xl-min: 1200px;
   }
 }
 
-.newsPage {
+
+.modernPage.debugMode {
+  @include md {
+    background-color: lightyellow;
+  }
+}
+
+.modernPage {
 
   overflow: hidden;
   padding: 1em;
@@ -56,29 +63,40 @@ $screen-xl-min: 1200px;
   padding: 20px 30px 20px 30px;
 
   background-color: lightgray;
+
   @include md {
-    background-color: lightyellow;
     flex-direction: row;
   }
+
+
   // white-space: nowrap;
-  // overflow: 'hidden';
-  // text-overflow: 'ellipsis';
+  // overflow: hidden;
+  // text-overflow: ellipsis;
 
 
   h3 {
     margin-top: 0px;
+    margin-bottom: 0px;
+  }
+
+  .pageDescription {
+    padding-bottom: 15px;
+    cursor: default;
   }
 
   .article {
 
-    min-width: 100%;
-    max-width: 100%;
+
+    min-width: 400px;
+    max-width: 1200px;
+
     padding-left: 0px;
 
     @include md {
       padding-left: 30px;
-      min-width: 40%;
-      max-width: 50%;
+      // At some point, maybe have different widths based on overall width (md)
+      min-width: 400px;
+      max-width: 1200px;
     }
   }
 
@@ -103,12 +121,11 @@ $screen-xl-min: 1200px;
 
       // cursor: pointer;
       // white-space: nowrap;
-      // overflow: 'hidden';
-      // text-overflow: 'ellipsis';
+      // overflow: hidden;
+      // text-overflow: ellipsis;
       // margin: 0px 30px 5px 0px; //use margin so there is a gap between the cursor:pointers
       // padding: 0px;
       width: 100%;
-
 
     }
 
@@ -116,8 +133,8 @@ $screen-xl-min: 1200px;
     @include md {
       // width: 280px;
       padding-bottom: 0px; 
-      min-width: 40%;
-      max-width: 50%;
+      min-width: 250px;
+      max-width: 350px;
       .titleListItem {
 
       }

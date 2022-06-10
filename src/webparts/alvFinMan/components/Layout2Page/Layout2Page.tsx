@@ -32,7 +32,7 @@ import { ILabelColor, ICSSChartTypes, CSSChartTypes, ISeriesSort, ICSSChartSerie
 import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfunctions/dist/Lists/getFunctions';
 
 import AlvAccounts from '../Accounts/Accounts';
-import { FinManSite, ISourceProps, LookupColumns, sitePagesColumns, SourceInfo } from '../DataInterface';
+import { ISourceProps, LookupColumns, SourceInfo } from '../DataInterface';
 import { filter } from 'lodash';
 import { makeToggleJSONCmd } from '../Elements/CmdButton';
 
@@ -96,7 +96,8 @@ export default class Layout2Page extends React.Component<ILayout2PageProps, ILay
     else if ( pageTitle ==='General' ) { pageTitle = 'General Information' ; }
     else if ( pageTitle ==='Links' ) { pageTitle = 'Links to other systems' ; }
 
-    let page = <div className={ styles2.newsPage } >
+
+    let page = <div className={ [ styles2.modernPage, this.props.debugMode === true ? styles2.debugMode : null ].join(' ') } >
       {/* <div className={ styles.titleList }> <ul>{ newsList }</ul></div> */}
       <div className={ styles2.titleList }>
         <h3>{ pageTitle }</h3> 
@@ -209,14 +210,18 @@ export default class Layout2Page extends React.Component<ILayout2PageProps, ILay
           { panelContent }
       </Panel></div>;
 
-  
+      const debugContent = this.props.debugMode !== true ? null : <div>
+        App in debugMode - Change in Web Part Properties - Page Preferences.  <b><em>Currently in Layout2Page</em></b>
+      </div>;
+
       return (
         // <div className={ styles.alvFinMan }>
         <div className={ null }>
-          {/* <div className={ stylesN.newsPage }> */}
+          {/* <div className={ stylesM.modernPage }> */}
           <div className={ null }>
             <div className={ styles.row }>
               {/* <div className={ styles.column }> */}
+                { debugContent }
                 { showPage }
                 { userPanel }
               {/* </div> */}
@@ -252,9 +257,9 @@ export default class Layout2Page extends React.Component<ILayout2PageProps, ILay
   }
 
   
-  private async clickDocumentItem( pivot, supDoc, item, title ) {
+  private async clickDocumentItem( pivot, supDoc: 'sups' | 'manual', item, title ) {
     console.log('clickDocumentItem:', pivot, supDoc, item );
-    if ( supDoc === 'docs' ) {
+    if ( supDoc === 'manual' ) {
       await this.getDocWiki( item );
     } else {
       this.setState({ showItemPanel: true, selectedItem: item });
@@ -272,11 +277,11 @@ export default class Layout2Page extends React.Component<ILayout2PageProps, ILay
 
     return;
 
-    let web = await Web( `${window.location.origin}${FinManSite}` );
+    let web = await Web( `${window.location.origin}${sourceInfo.webUrl}` );
     
     //followUpLink was intended to be able to show content from the LinkColumn as well but that's a little to much 
     let followUpLink = item.LinkColumn ? item.LinkColumn.Url : '';
-    if ( followUpLink.indexOf( FinManSite ) > -1 ) {
+    if ( followUpLink.indexOf( sourceInfo.webUrl ) > -1 ) {
 
     }
 

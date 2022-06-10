@@ -8,10 +8,11 @@
     align-items: flex-start;
     flex-wrap: nowrap;
     white-space: nowrap;
-    overflow: 'hidden';
-    text-overflow: 'ellipsis';
+    overflow: hidden;
+    text-overflow: ellipsis;
     max-width: 99%;
     padding-top: 15px;
+
     i {
       padding-right: 15px;
     }
@@ -22,8 +23,8 @@
         align-items: flex-start;
         flex-wrap: nowrap;
         white-space: nowrap;
-        overflow: 'hidden';
-        text-overflow: 'ellipsis';
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     .accountRow1 {
         display: flex;
@@ -31,17 +32,18 @@
         align-items: flex-start;
         flex-wrap: nowrap;
         white-space: nowrap;
-        overflow: 'hidden';
-        text-overflow: 'ellipsis';
+        overflow: hidden;
+        text-overflow: ellipsis;
 
     div {
         white-space: nowrap;
-        overflow: 'hidden';
-        text-overflow: 'ellipsis';
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
+
     div:nth-child(1) { //This is the Account Title (Number)
         color: 'darkblue';
-        width: 75px;
+        width: 125px;
         font-weight: 600;
         padding-right: 15px;
     }
@@ -67,7 +69,7 @@
         align-items: flex-start;
         flex-wrap: nowrap;
         white-space: nowrap;
-        overflow: 'hidden';
+        overflow: hidden;
     }
 
 }

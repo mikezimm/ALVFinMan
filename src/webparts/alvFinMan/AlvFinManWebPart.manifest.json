@@ -40,16 +40,18 @@
       "searchDefault": true,
       "searchType": true,
 
-      //Standard FPS Option defaults
       "enableExpandoramic": true,
       "expandoDefault": false,
       "expandoStyle": "",
       "expandoPadding": 20,
       "bannerTitle": "",
-      "bannerStyleChoice": "defaultBannerCommandStyles",
+
+      "bannerStyleChoice": "corpDark1",
+      "bannerStyle": "{\"color\":\"white\",\"backgroundColor\":\"#005495\",\"fontSize\":\"larger\",\"fontWeight\":600,\"fontStyle\":\"normal\",\"padding\":\"0px 10px\",\"height\":\"48px\",\"cursor\":\"pointer\"}",
+      "bannerCmdStyle": "{\"color\":\"white\",\"backgroundColor\":\"#005495\",\"fontSize\":16,\"fontWeight\":\"normal\",\"fontStyle\":\"normal\",\"padding\":\"7px 4px\",\"marginRight\":\"0px\",\"borderRadius\":\"5px\",\"cursor\":\"pointer\"}",
+
       "lockStyles": true,
-      "bannerCmdStyle": "",
-      "bannerStyle": "",
+
       "showBanner": true,
       "showGoToHome": true,
       "showGoToParent": true,
@@ -64,7 +66,10 @@
       "allSectionMargin": null,
       "toolBarHide": false,
       "fpsPageStyle": "",
-      "fpsContainerMaxWidth": ""
+      "fpsContainerMaxWidth": "",
+
+      "infoElementChoice": "IconName=Unknown",
+      "infoElementText": "Question mark circle"
     }
   }]
 }

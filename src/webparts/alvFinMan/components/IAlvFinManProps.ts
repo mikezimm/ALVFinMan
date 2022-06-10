@@ -1,12 +1,58 @@
 import { PageContext } from '@microsoft/sp-page-context';
 import { WebPartContext } from "@microsoft/sp-webpart-base";
 
-import { IWebpartBannerProps, } from '@mikezimm/npmfunctions/dist/HelpPanel/onNpm/bannerProps';
+import { IWebpartBannerProps, } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/bannerProps';
+import { ISitePreConfigProps, } from '@mikezimm/npmfunctions/dist/PropPaneHelp/PreConfigFunctions';
 
 import { DisplayMode, Version } from '@microsoft/sp-core-library';
 
 import { IWebpartHistory, IWebpartHistoryItem2, } from '@mikezimm/npmfunctions/dist/Services/PropPane/WebPartHistoryInterface';
 
+export type IPageLoadPref = 'description' | 'canvasContent1' | 'tab';
+
+export interface IPageLoadPrefChoices {
+  key: IPageLoadPref | IObjectFit;
+  text: string;
+}
+export const PageLoadPefs : IPageLoadPrefChoices[] = [ 
+  { key: 'description' ,text: 'Just short description' }, 
+  { key: 'canvasContent1',text: 'Full page' }, 
+  { key: 'tab',text: 'Open full page in new tab' },
+ ];
+
+
+ export type IObjectFit = 'center' | 'contain' | 'cover' | 'none' | 'center-cover' | 'center-contain';
+
+ export const ImageFitPrefs : IPageLoadPrefChoices[] = [ 
+  { key: 'center' ,text: 'center' }, 
+  { key: 'contain',text: 'contain' }, 
+  { key: 'cover',text: 'cover' },
+  { key: 'center-cover',text: 'center-cover' },
+  { key: 'center-contain',text: 'center-contain' },
+ ];
+
+
+export interface IModernImageSettings {
+  height: number | string;
+  width: number | string;
+  objectFit: string; //cover, contain, etc...
+  style: string; //gets embedded directly into all image tags as:  <img style="Your style string here" - height: 150px; object-fit: "cover"; width: 100%;
+  autoFix?: boolean; //Maybe eventually I could try to auto-fix but have this optional.
+  lightBox?: boolean; //Option to add lightbox on click to show image full size
+}
+
+export interface ICanvasContentOptions {
+  
+  pagePreference: IPageLoadPref;
+
+  addCkeEditToDiv?: boolean;  //Will add class="cke_editable" to the styles.article div so that Tables have some formatting when shown in app.
+  imageOptions?: IModernImageSettings;
+
+  h1Styles?: string; //Use similar to FPSPageOptions styling 
+  h2Styles?: string; //Use similar to FPSPageOptions styling 
+  h3Styles?: string; //Use similar to FPSPageOptions styling 
+  
+}
 
 export interface IAlvFinManProps {
   //OOTB Props
@@ -16,8 +62,12 @@ export interface IAlvFinManProps {
   hasTeamsContext: boolean;
   userDisplayName: string;
 
+  //For PropPaneHelp
+  sitePresets : ISitePreConfigProps;
+
   //FPS Banner and Options props
   displayMode: DisplayMode;
+  debugMode: boolean; //Option to display visual ques in app like special color coding and text  DeviceBug
 
   //Environement props
   // pageContext: PageContext;
@@ -34,6 +84,10 @@ export interface IAlvFinManProps {
   defaultPivotKey: ILayoutAll;
 
   search: IFinManSearch ;
+
+  canvasOptions: ICanvasContentOptions;
+
+  saveLoadAnalytics: any;
 
 }
 
@@ -56,8 +110,10 @@ export interface ISearchBucket {
 
   items: IAllContentType[];
   appLinks: IAnyContent[];
-  docs: IAnyContent[];
-  stds: IAnyContent[]; //This is currently not used.... Originally considered it as Standards since the library was 'Standard Docs'.  Maybe could be list of relavant standards in the future?
+  entities: IAnyContent[];
+  manual: IAnyContent[];
+  // docs: IAnyContent[];
+  // stds: IAnyContent[]; //This is currently not used.... Originally considered it as Standards since the library was 'Standard Docs'.  Maybe could be list of relavant standards in the future?
   sups: IAnyContent[];
   accounts: IAnyContent[];
   news: IPagesContent[];
@@ -75,7 +131,6 @@ export interface IFinManSearch {
   searchType:  boolean; //Choose to also filter on type of content:
 
 }
-
 
 import { ILayout1Page } from './Layout1Page/ILayout1PageProps';
 
@@ -109,7 +164,7 @@ export type ILayoutQPage = 'Search';
 export type ILayoutHPage = 'Help';
 export type ILayoutAll = ILayoutNPage | ILayoutLPage | ILayoutGPage | ILayout1Page | ILayoutSPage | ILayoutAPage | ILayoutQPage | ILayoutHPage;
 
-export type IAppFormat = 'accounts' | 'docs' | 'stds' | 'sups' | 'appLinks' | 'news' | 'help';
+export type IAppFormat = 'accounts' | 'manual' | 'sups' | 'appLinks' | 'news' | 'help' | 'entities';
 
 
 // leftSearchFixed: boolean; //Locks the search options
@@ -131,8 +186,11 @@ export interface IAnyContent extends Partial<any> {
   leftSearchLC: string[]; //For easy string compare
   topSearch: string[]; //For easy display of casing
   topSearchLC: string[]; //For easy string compare
+  searchSource: string; //For easy display of casing
+  searchSourceLC: string; //For easy string compare
   type: string;
   typeIdx: number;
+  fileDisplayName: string;
 
   searchTitle: any;
   searchDesc: any;
@@ -180,8 +238,11 @@ export interface IAlvFinManState {
   search: IFinManSearch ;
 
   appLinks: IAnyContent[];
-  docs: IAnyContent[];
-  stds: IAnyContent[]; //This is currently not used.... Originally considered it as Standards since the library was 'Standard Docs'.  Maybe could be list of relavant standards in the future?
+
+  entities: IAnyContent[];
+
+  manual: IAnyContent[];
+  // stds: IAnyContent[]; //This is currently not used.... Originally considered it as Standards since the library was 'Standard Docs'.  Maybe could be list of relavant standards in the future?
   sups: IAnyContent[];
   accounts: IAnyContent[];
 
@@ -203,5 +264,7 @@ export interface IAlvFinManState {
 
   showItemPanel: boolean;
   showPanelItem: any;
+
+  debugMode: boolean; //Option to display visual ques in app like special color coding and text  DeviceBug
 
 }

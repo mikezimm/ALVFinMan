@@ -2,12 +2,12 @@ import { sortStringArray, sortObjectArrayByStringKey, sortNumberArray, sortObjec
 import { ILabelColor, ICSSChartTypes, CSSChartTypes, ISeriesSort, ICSSChartSeries, IChartSeries, ICharNote, } 
     from '@mikezimm/npmfunctions/dist/CSSCharts/ICSSCharts';
 
-import { IFMBuckets, IFMBucketItems, IAnyContent, IPagesContent, ILayoutAll } from "../IAlvFinManProps";
+import { IFMBuckets, IFMBucketItems, IAnyContent, IPagesContent, ILayoutAll, ICanvasContentOptions } from "../IAlvFinManProps";
 import { ISourceProps } from "../DataInterface";
 
-export interface INewsPageProps {
+export interface IModernPagesProps {
 
-  news: IPagesContent[];
+  pages: IPagesContent[];
 
   sort: {
     prop: string;
@@ -22,9 +22,13 @@ export interface INewsPageProps {
 
   refreshId: string;
 
+  canvasOptions: ICanvasContentOptions;
+
+  debugMode?: boolean; //Option to display visual ques in app like special color coding and text
+
 }
 
-export interface INewsPageState {
+export interface IModernPagesState {
   // description: string;
 
   showItemPanel: boolean;

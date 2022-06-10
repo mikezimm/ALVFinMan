@@ -7,10 +7,11 @@ declare interface IAlvFinManWebPartStrings {
   AppSharePointEnvironment: string;
   AppTeamsTabEnvironment: string;
 
-  FinManSite: string;
-  StandardsLib: string;
-  SupportingLib: string;
-  
+  // 1 - Analytics options
+  analyticsWeb: string;
+  analyticsViewsList: string;
+  analyticsDeepLinksList: string;
+
 }
 
 declare module 'AlvFinManWebPartStrings' {

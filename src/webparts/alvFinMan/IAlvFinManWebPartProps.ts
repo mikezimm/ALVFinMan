@@ -10,7 +10,29 @@ import { ISupportedHost } from "@mikezimm/npmfunctions/dist/Services/PropPane/FP
 import { IPropertyFieldGroupOrPerson } from "@pnp/spfx-property-controls/lib/PropertyFieldPeoplePicker";
 
 import { IPerformanceOp, ILoadPerformanceALVFM, IHistoryPerformance } from './components/Performance/IPerformance';
-import { ILayoutAll } from "./components/IAlvFinManProps";
+import { ILayoutAll, IPageLoadPref } from "./components/IAlvFinManProps";
+
+  // // export interface IModernImageSettings {
+  //   imgHeight: number | string;
+  //   imgWidth: number | string;
+  //   imgObjectFit: string; //cover, contain, etc...
+  //   imgStyle: string; //gets embedded directly into all image tags as:  <img style="Your style string here" - height: 150px; object-fit: "cover"; width: 100%;
+  //   imgAutoFix?: boolean; //Maybe eventually I could try to auto-fix but have this optional.
+  
+  // //}
+  
+  // // export interface ICanvasContentOptions {
+    
+  //   canAddCkeEditToDiv?: boolean;  //Will add class="cke_editable" to the styles.article div so that Tables have some formatting when shown in app.
+  //   // imageOptions?: IModernImageSettings;
+  
+  //   canh1Styles?: string; //Use similar to FPSPageOptions styling 
+  //   canh2Styles?: string; //Use similar to FPSPageOptions styling 
+  //   canh3Styles?: string; //Use similar to FPSPageOptions styling 
+
+export const changeCanvasImages = [ 'imgHeight', 'imgWidth', 'imgObjectFit', 'imgAutoFix', ];
+export const changeCanvasNoAnalytics = [ 'imgStyle',  ];
+export const changeCanvasOptions = [ 'canPagePreference', 'canAddCkeEditToDiv', 'canh1Styles', 'canh2Styles', 'canh3Styles', ];
 
 export const changeExpando = [ 
   'enableExpandoramic','expandoDefault','expandoStyle', 'expandoPadding', 'expandoAudience',
@@ -53,10 +75,6 @@ export const importBlockPropsThis = [ ];
 
 export const importBlockProps = [ ...importBlockPropsFPS, ...importBlockPropsThis ];
 
-//This will be in npmFunctions > Services/PropPane/FPSOptionsExpando in next release.
-//  export type IExpandAudiences = 'Site Admins' | 'Site Owners' | 'Page Editors' | 'WWWone';
-
-
 export interface IAlvFinManWebPartProps {
   description: string;
 
@@ -86,7 +104,8 @@ export interface IAlvFinManWebPartProps {
 
     infoElementChoice: string;
     infoElementText: string;
-    
+    feedbackEmail: string;
+
     showGoToHome: boolean;  //defaults to true
     showGoToParent: boolean;  //defaults to true
     homeParentGearAudience: IExpandAudiences;
@@ -118,6 +137,9 @@ export interface IAlvFinManWebPartProps {
 
 
     showTricks: boolean;
+
+    
+  fpsImportProps: string;
 
   // }
 
@@ -155,6 +177,28 @@ export interface IAlvFinManWebPartProps {
 
   loadPerformance: ILoadPerformanceALVFM;
 
-  fpsImportProps: string;
+
+
+  // export interface IModernImageSettings {
+    imgHeight: number | string;
+    imgWidth: number | string;
+    imgObjectFit: string; //cover, contain, etc...
+    imgStyle: string; //gets embedded directly into all image tags as:  <img style="Your style string here" - height: 150px; object-fit: "cover"; width: 100%;
+    imgAutoFix?: boolean; //Maybe eventually I could try to auto-fix but have this optional.
+  
+  //}
+  
+  // export interface ICanvasContentOptions {
+    canPagePreference: IPageLoadPref;
+    canAddCkeEditToDiv?: boolean;  //Will add class="cke_editable" to the styles.article div so that Tables have some formatting when shown in app.
+    // imageOptions?: IModernImageSettings;
+  
+    canh1Styles?: string; //Use similar to FPSPageOptions styling 
+    canh2Styles?: string; //Use similar to FPSPageOptions styling 
+    canh3Styles?: string; //Use similar to FPSPageOptions styling 
+    
+  // }
+
+  debugMode: boolean; //Option to display visual ques in app like special color coding and text
 
 }

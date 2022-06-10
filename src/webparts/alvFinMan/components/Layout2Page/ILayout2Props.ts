@@ -2,7 +2,7 @@ import { sortStringArray, sortObjectArrayByStringKey, sortNumberArray, sortObjec
 import { ILabelColor, ICSSChartTypes, CSSChartTypes, ISeriesSort, ICSSChartSeries, IChartSeries, ICharNote, } 
     from '@mikezimm/npmfunctions/dist/CSSCharts/ICSSCharts';
 
-import { IFMBuckets, IFMBucketItems, IAnyContent, IPagesContent, ILayoutAll } from "../IAlvFinManProps";
+import { IFMBuckets, IFMBucketItems, IAnyContent, IPagesContent, ILayoutAll, ICanvasContentOptions } from "../IAlvFinManProps";
 import { ISourceProps } from "../DataInterface";
 
 export interface ILayout2PageProps {
@@ -16,6 +16,10 @@ export interface ILayout2PageProps {
   mainPivotKey: ILayoutAll;
 
   refreshId: string;
+
+  canvasOptions: ICanvasContentOptions;
+
+  debugMode?: boolean; //Option to display visual ques in app like special color coding and text
 
 }
 
