@@ -79,7 +79,7 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
 
     SortedPages.map( item => {
       let classNames = [ stylesM.titleListItem, styles.leftFilter ];
-      if ( showItem && ( item.ID === showItem.ID ) ) { classNames.push( stylesM.isSelected ) ; }
+      if ( showItem && ( item.ID == showItem.ID ) ) { classNames.push( stylesM.isSelected ) ; }
       //Make sure page has Title and is not a dud, also check it's not a common page that does not belong in this component
       if ( item.Title && ignoreThesePages.indexOf( item.Title ) < 0 ) {
         pagesList.push( <li className={ classNames.join( ' ' ) } onClick= { this.clickNewsItem.bind( this, item.ID, 'pages', item  )} style={ null }>
@@ -147,7 +147,7 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
     console.log('constructor:',   );
     this.state = {
       showItemPanel: false,
-      showCanvasContent1: false,
+      showCanvasContent1: this.props.canvasOptions.pagePreference === 'canvasContent1' ? true : false,
       showPanelJSON: false,
       showThisItem: this.props.pages.length > 0 ? this.props.pages[ 0 ] : null,
       refreshId: `${this.props.refreshId}`,
@@ -165,6 +165,10 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
 
   public async updateWebInfo ( webUrl: string, listChangeOnly : boolean ) {
     console.log('updateWebInfo:',   );
+    if ( this.state.showCanvasContent1 === true ) {
+      this.getDocWiki( this.state.showThisItem , this.state.showCanvasContent1 );
+    }
+
     // this.setState({ docs: docs, buckets: buckets, sups: sups });
 
   }
@@ -275,6 +279,7 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
     // debugger;
 
     let newState = this.state.showItemPanel;
+
     if ( e.altKey === true ) {
       // newState = this.state.showItemPanel === true ? false : true;
       let showCanvasContent1 = e.ctrlKey === true ? true : false;
@@ -282,10 +287,18 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
 
     } else if ( e.ctrlKey === true && item.File ) {
       window.open( item.File.ServerRelativeUrl , '_blank' );
+      this.setState({ showThisItem: item, showItemPanel: newState });
+
+    } else if ( this.state.showCanvasContent1 === true ) {
+      this.getDocWiki( item , this.state.showCanvasContent1 );
+
+    } else if ( this.props.canvasOptions.pagePreference === 'tab' && item.File ) {
+      window.open( item.File.ServerRelativeUrl , '_blank' );
+        this.setState({ showThisItem: item, showItemPanel: newState });
 
     }
 
-    this.setState({ showThisItem: item, showItemPanel: newState });
+
   }
 
   

@@ -10,6 +10,8 @@ import {
   IPropertyPaneDropdownProps,
   PropertyPaneToggle,
   PropertyPaneLabel,
+  PropertyPaneSlider,
+  IPropertyPaneSliderProps,
 
 } from '@microsoft/sp-property-pane';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
@@ -718,6 +720,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
             }, // this group
             {
               groupName: 'ALV Financial Manual Search',
+              isCollapsed: false,
               groupFields: [
                 PropertyPaneToggle("leftSearchFixed", {
                   label: "Use Default Left Search categories",
@@ -769,16 +772,35 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
 
             {
               groupName: 'Page preferences',
+              isCollapsed: true,
               groupFields: [
                 PropertyPaneDropdown('canPagePreference', <IPropertyPaneDropdownProps>{
                   label: 'News and Help page load',
                   options: this.PageLoadPrefsChoices,
                 }),
-                
-                PropertyPaneDropdown('canPagePreference', <IPropertyPaneDropdownProps>{
+
+                PropertyPaneDropdown('imgObjectFit', <IPropertyPaneDropdownProps>{
                   label: 'News and Help page load',
-                  options: this.PageLoadPrefsChoices,
+                  options: this.ImageFitPrefsChoices,
                 }),
+
+                PropertyPaneSlider('imgHeight',  <IPropertyPaneSliderProps>{
+                  label: 'Image Height (px)',
+                  value: 150,
+                  min: 50,
+                  max: 350,
+                  step: 25,
+                }),
+
+                PropertyPaneSlider('imgWidth',  <IPropertyPaneSliderProps>{
+                  label: 'Image Width (%)',
+                  value: 100,
+                  min: 50,
+                  max: 100,
+                  step: 25,
+                  disabled: false,
+                }),
+
               ]
             }, // this group
 

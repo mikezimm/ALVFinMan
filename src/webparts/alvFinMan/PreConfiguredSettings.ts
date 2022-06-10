@@ -3,11 +3,11 @@ import { IPropertyFieldGroupOrPerson } from "@pnp/spfx-property-controls/lib/Pro
 import { IPreConfigSettings, IAllPreConfigSettings } from '@mikezimm/npmfunctions/dist/PropPaneHelp/PreConfigFunctions';
 import { encrptMeOriginalTest } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/logTest';
 import { ContALVFMContent, ContALVFMWebP } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/constants';
-import { IPageLoadPref } from "./components/IAlvFinManProps";
+import { IObjectFit, IPageLoadPref } from "./components/IAlvFinManProps";
 
 const imgHeight:number = 150; //Converted to px
 const imgWidth:number = 100; //Converted to %
-const imgObjectFit: string = 'contain'; //cover; contain; etc...
+const imgObjectFit: IObjectFit = 'cover'; //cover; contain; etc...
 const imgStyle: string =  ''; //gets embedded directly into all image tags as:  <img style="Your style string here" - height: 150px; object-fit: "cover"; width: 100%;
 const imgAutoFix: boolean = false; //Maybe eventually I could try to auto-fix but have this optional.
 
@@ -34,8 +34,8 @@ export const ForceFinancialManual : IPreConfigSettings = {
     location: '/sites/financemanual/',
     props: {
 
-        imgHeight: imgHeight, //Converted to px
-        imgWidth: imgWidth, //Converted to %
+        // imgHeight: imgHeight, //Converted to px
+        // imgWidth: imgWidth, //Converted to %
         imgObjectFit: imgObjectFit, //cover, contain, etc...
         imgStyle: imgStyle, //gets embedded directly into all image tags as:  <img style="Your style string here" - height: 150px; object-fit: "cover"; width: 100%;
         imgAutoFix: imgAutoFix, //Maybe eventually I could try to auto-fix but have this optional.
@@ -99,7 +99,7 @@ export const PresetSomeRandomSite : IPreConfigSettings = {
         imgAutoFix: imgAutoFix, //Maybe eventually I could try to auto-fix but have this optional.
 
         canPagePreference: canPagePreference, //Determines what default page load level
-        
+
         canAddCkeEditToDiv: canAddCkeEditToDiv,  //Will add class="cke_editable" to the styles.article div so that Tables have some formatting when shown in app.
 
         canh1Styles: canh1Styles,  //Use similar to FPSPageOptions styling
