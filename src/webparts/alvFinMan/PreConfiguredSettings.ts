@@ -87,6 +87,8 @@ export const PresetEverywhere : IPreConfigSettings = {
 
         canAddCkeEditToDiv: canAddCkeEditToDiv,  //Will add class="cke_editable" to the styles.article div so that Tables have some formatting when shown in app.
 
+        allSectionMaxWidthEnable: true,
+        allSectionMaxWidth: 2500,
 
     }
 };
