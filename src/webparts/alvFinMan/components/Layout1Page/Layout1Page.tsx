@@ -276,11 +276,17 @@ public async updateWebInfo ( webUrl: string, listChangeOnly : boolean ) {
           { panelContent }
       </Panel></div>;
   
+  
+      const debugContent = this.props.debugMode !== true ? null : <div style={{ cursor: 'default' }}>
+        App in debugMode - Change in Web Part Properties - Page Preferences.  <b><em>Currently in Layout1Page</em></b>
+      </div>;
+
       return (
         // <div className={ styles.alvFinMan }>
         //   <div className={ styles.container }>
             <div className={ styles.row }>
               {/* <div className={ styles.column }> */}
+                { debugContent }
                 { showPage }
                 { userPanel }
               {/* </div> */}

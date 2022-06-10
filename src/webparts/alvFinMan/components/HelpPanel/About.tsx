@@ -35,7 +35,7 @@ export function aboutTable( repoLinks: IRepoLinks, showRepoLinks: boolean ) {
 
 
     table.rows.push( createAboutRow('2022-05-20',"1.0.0.04","#57, #62, #66, #67, #68, #69, #70, #73", showRepoLinks === true ? repoLinks : null ) );
-    table.rows.push( createAboutRow('',"","#56, #75, #76, #77, #79, #80, #81, #82", showRepoLinks === true ? repoLinks : null ) );
+    table.rows.push( createAboutRow('',"","#56, #75, #76, #77, #79, #80, #81, #82, #84, #85, #86, #88", showRepoLinks === true ? repoLinks : null ) );
 
     table.rows.push( createAboutRow('2022-04-28',"1.0.0.03","#46 - Modern News import to app", showRepoLinks === true ? repoLinks : null ) );
     table.rows.push( createAboutRow('',"","#29, #39, #40, #42, #43, #45, #48, #49, #50, #52, #53", showRepoLinks === true ? repoLinks : null ) );

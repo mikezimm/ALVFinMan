@@ -124,7 +124,7 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
     const image = !showItem || !imageUrl ? null : 
     <img src={ imageUrl.Url } height="100px" width="100%" style={{ objectFit: "cover" }} title={ imageUrl.Url }></img>;
 
-    let page = <div className={ stylesM.modernPage } style={{ }} >
+    let page = <div className={ [ stylesM.modernPage, this.props.debugMode === true ? stylesM.debugMode : null ].join(' ') } style={{  }} >
       {/* <div className={ styles.titleList }> <ul>{ pagesList }</ul></div> */}
       <div className={ stylesM.titleList }>
         <h3>{this.props.source.searchSource}</h3>
@@ -154,7 +154,7 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
       sort: {
         prop: this.props.sort.prop,
         order: this.props.sort.order,
-      }
+      },
     };
   }
 
@@ -246,7 +246,10 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
           { panelContent }
       </Panel></div>;
 
-  
+      const debugContent = this.props.debugMode !== true ? null : <div>
+        App in debugMode - Change in Web Part Properties - Page Preferences.  <b><em>Currently in ModernPage</em></b>
+      </div>;
+
       return (
         // <div className={ styles.alvFinMan }>
         <div className={ null }>
@@ -254,6 +257,7 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
           <div className={ null }>
             {/* <div className={ styles.row }> */}
               {/* <div className={ styles.column }> */}
+                { debugContent }
                 { showPage }
                 { userPanel }
               {/* </div> */}

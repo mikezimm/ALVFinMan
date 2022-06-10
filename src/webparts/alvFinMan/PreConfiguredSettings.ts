@@ -90,6 +90,8 @@ export const PresetEverywhere : IPreConfigSettings = {
         allSectionMaxWidthEnable: true,
         allSectionMaxWidth: 2500,
 
+        debugMode: false,
+
     }
 };
 

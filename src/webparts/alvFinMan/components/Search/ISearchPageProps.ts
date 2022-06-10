@@ -25,6 +25,8 @@ export interface ISearchPageProps {
 
   canvasOptions: ICanvasContentOptions;
 
+  debugMode?: boolean; //Option to display visual ques in app like special color coding and text
+
 }
 
 export type ISort = 'asc' | 'dec' | '-';

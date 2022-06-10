@@ -405,6 +405,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
         
         items: [],
         appLinks: [],
+        entities: [],
         accounts: [],
         manual: [],
         sups: [],
@@ -424,6 +425,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
 
         items: [],
         appLinks: [],
+        entities: [],
         accounts: [],
         manual: [],
         sups: [],
@@ -481,6 +483,8 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
         webpartHistory: this.properties.webpartHistory,
 
         sitePresets: this.sitePresets,
+
+        debugMode: this.properties.debugMode === true ? true : false,
 
         //ALVFM props
         defaultPivotKey: this.properties.defaultPivotKey,
@@ -801,6 +805,12 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
                   disabled: false,
                 }),
 
+                PropertyPaneToggle("debugMode", {
+                  label: "Debug mode",
+                  onText: "On - adds special colors and text in app",
+                  offText: "Off"
+                }),
+                //
               ]
             }, // this group
 

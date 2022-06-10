@@ -21,6 +21,8 @@ export interface ILayout1PageProps {
 
   canvasOptions: ICanvasContentOptions;
 
+  debugMode?: boolean; //Option to display visual ques in app like special color coding and text
+
   refreshId: string;
 
 }

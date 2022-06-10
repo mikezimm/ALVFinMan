@@ -67,6 +67,7 @@ export interface IAlvFinManProps {
 
   //FPS Banner and Options props
   displayMode: DisplayMode;
+  debugMode: boolean; //Option to display visual ques in app like special color coding and text
 
   //Environement props
   // pageContext: PageContext;
@@ -109,6 +110,7 @@ export interface ISearchBucket {
 
   items: IAllContentType[];
   appLinks: IAnyContent[];
+  entities: IAnyContent[];
   manual: IAnyContent[];
   // docs: IAnyContent[];
   // stds: IAnyContent[]; //This is currently not used.... Originally considered it as Standards since the library was 'Standard Docs'.  Maybe could be list of relavant standards in the future?
@@ -162,7 +164,7 @@ export type ILayoutQPage = 'Search';
 export type ILayoutHPage = 'Help';
 export type ILayoutAll = ILayoutNPage | ILayoutLPage | ILayoutGPage | ILayout1Page | ILayoutSPage | ILayoutAPage | ILayoutQPage | ILayoutHPage;
 
-export type IAppFormat = 'accounts' | 'manual' | 'sups' | 'appLinks' | 'news' | 'help';
+export type IAppFormat = 'accounts' | 'manual' | 'sups' | 'appLinks' | 'news' | 'help' | 'entities';
 
 
 // leftSearchFixed: boolean; //Locks the search options
@@ -236,6 +238,9 @@ export interface IAlvFinManState {
   search: IFinManSearch ;
 
   appLinks: IAnyContent[];
+
+  entities: IAnyContent[];
+
   manual: IAnyContent[];
   // stds: IAnyContent[]; //This is currently not used.... Originally considered it as Standards since the library was 'Standard Docs'.  Maybe could be list of relavant standards in the future?
   sups: IAnyContent[];

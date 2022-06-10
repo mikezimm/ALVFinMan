@@ -40,7 +40,7 @@ export function createAccountRow( item: IAnyContent , searchText: string, onClic
 
         <div className={ styles.accountDetails}>
         <div className={ styles.accountRow1 } style={{cursor: item.searchHref ? 'pointer' : null }} onClick = { onClick }>
-            <div title="Account Number">{ getHighlightedText( `${ item.Title }`, searchText )  }</div>
+            <div title="OneStream Account / HFM Account">{ getHighlightedText( `${ item.Title } / ${ item.HFMAccount }`, searchText )  }</div>
             <div title="ALGroup">{  getHighlightedText( `${ item.ALGroup }`, searchText )  }</div>
             <div title="SubCategory">{  getHighlightedText( `${ item.SubCategory }`, searchText )  }</div>
             <div title="Name">{  getHighlightedText( `${ item.Name1 }`, searchText )  }</div>

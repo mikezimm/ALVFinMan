@@ -96,7 +96,8 @@ export default class Layout2Page extends React.Component<ILayout2PageProps, ILay
     else if ( pageTitle ==='General' ) { pageTitle = 'General Information' ; }
     else if ( pageTitle ==='Links' ) { pageTitle = 'Links to other systems' ; }
 
-    let page = <div className={ styles2.modernPage } >
+
+    let page = <div className={ [ styles2.modernPage, this.props.debugMode === true ? styles2.debugMode : null ].join(' ') } >
       {/* <div className={ styles.titleList }> <ul>{ newsList }</ul></div> */}
       <div className={ styles2.titleList }>
         <h3>{ pageTitle }</h3> 
@@ -210,6 +211,10 @@ export default class Layout2Page extends React.Component<ILayout2PageProps, ILay
       </Panel></div>;
 
   
+      const debugContent = this.props.debugMode !== true ? null : <div>
+        App in debugMode - Change in Web Part Properties - Page Preferences.  <b><em>Currently in Layout2Page</em></b>
+      </div>;
+
       return (
         // <div className={ styles.alvFinMan }>
         <div className={ null }>
@@ -217,6 +222,7 @@ export default class Layout2Page extends React.Component<ILayout2PageProps, ILay
           <div className={ null }>
             <div className={ styles.row }>
               {/* <div className={ styles.column }> */}
+                { debugContent }
                 { showPage }
                 { userPanel }
               {/* </div> */}

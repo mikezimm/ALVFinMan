@@ -12,6 +12,7 @@
     text-overflow: ellipsis;
     max-width: 99%;
     padding-top: 15px;
+
     i {
       padding-right: 15px;
     }
@@ -39,9 +40,10 @@
         overflow: hidden;
         text-overflow: ellipsis;
     }
+
     div:nth-child(1) { //This is the Account Title (Number)
         color: 'darkblue';
-        width: 75px;
+        width: 125px;
         font-weight: 600;
         padding-right: 15px;
     }

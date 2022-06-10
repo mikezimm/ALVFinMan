@@ -32,9 +32,9 @@ export const LookupColumns: string[] = ['Functions/Title', 'Topics/Title', 'ALGr
 export const ExtraFetchClassicWiki = ['WikiField'];
 export const ExtraFetchModernPage = ['WikiField','CanvasContent1','LayoutsWebpartsContent'];
 
-export type IDefSourceType = 'link' | 'news' | 'help' | 'account' | 'std' | 'manual' | 'SupportDocuments';
+export type IDefSourceType = 'link' | 'news' | 'help' | 'account' | 'std' | 'manual' | 'SupportDocuments' | 'entities';
 
-export type ISearchSource = 'AppLinks' | 'News' | 'Help' | 'Accounts' | 'SupportDocs' | 'Manual' | 'Standards' | 'Policies' | 'Instructions';
+export type ISearchSource = 'AppLinks' | 'News' | 'Help' | 'Accounts' | 'SupportDocs' | 'Manual' | 'Standards' | 'Policies' | 'Instructions' | 'Entities';
 
 export interface ISourceProps {
     key: IAppFormat;
@@ -61,6 +61,7 @@ export interface ISourceInfo {
     news: ISourceProps;
     help: ISourceProps;
     appLinks: ISourceProps;
+    entities: ISourceProps;
     // docs: ISourceProps;
     // stds: ISourceProps;
     sups: ISourceProps;
@@ -134,13 +135,28 @@ export const SourceInfo: ISourceInfo = {
         key: 'accounts',
         defType: 'account',
         webUrl: `${FinManSite}Manual/`,
-        webRelativeLink: "lists/HFMAccounts",
+        webRelativeLink: "lists/Accounts",
         searchSource: 'Accounts',
         searchSourceDesc:  'Accounts list in Manual Subsite',
-        listTitle: "HFMAccounts",
+        listTitle: "Accounts",
         columns: [ 'ID','ALGroup','Description','Name1','RCM','SubCategory'],
-        searchProps: [ 'Title', 'Description', 'ALGroup', 'Name1','RCM','SubCategory' ],
-        selectThese: [ '*', 'ID','ALGroup','Description','Name1','RCM','SubCategory' ],
+        searchProps: [ 'Title', 'Description', 'ALGroup', 'Name1','RCM','SubCategory', 'HFMAccount' ],
+        selectThese: [ '*', 'ID','ALGroup','Description','Name1','RCM','SubCategory', 'HFMAccount' ],
+        isModern: true,
+    },
+
+    
+    entities: {
+        key: 'entities',
+        defType: 'entities',
+        webUrl: `${FinManSite}Manual/`,
+        webRelativeLink: "lists/Entities",
+        searchSource: 'Entities',
+        searchSourceDesc:  'Entities list in Manual Subsite',
+        listTitle: "Entities",
+        columns: [ '*','ID','Title','OSCode', 'HFMCode', 'Controller1', 'Controller2', 'Parent', 'Author/Title','Editor/Title','Author/Name','Editor/Name','Modified','Created','OData__UIVersion','OData__UIVersionString'], //,'StandardDocuments/Title'
+        searchProps: [ 'Title', 'OSCode', 'HFMCode', 'Controller1', 'Controller2', 'Parent' ], //'StandardDocuments/Title'
+        orderBy: { prop: 'Title', asc: false },
         isModern: true,
     },
 
@@ -226,6 +242,7 @@ export const SearchTypes:IFMSearchTypes  = {
         "manual",
         "xls", "xlsm",  "xlsx",
         "news", "help",
+        "entity",
         "unknown" ],
     objs:
         [
@@ -252,6 +269,9 @@ export const SearchTypes:IFMSearchTypes  = {
 
         { key: "news", title: "news", icon: "News", style: "", count: 0 }, 
         { key: "help", title: "help", icon: "Help", style: "", count: 0 }, 
+
+        { key: "entity", title: "entity", icon: "JoinOnlineMeeting", style: "", count: 0 }, 
+
         { key: "unknown", title: "unkown", icon: "Help", style: "", count: 0 }, 
     ]
 };

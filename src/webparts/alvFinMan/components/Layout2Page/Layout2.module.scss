@@ -41,6 +41,13 @@ $screen-xl-min: 1200px;
   }
 }
 
+
+.modernPage.debugMode {
+  @include md {
+    background-color: lavender;
+  }
+}
+
 .modernPage {
 
   overflow: hidden;
@@ -57,7 +64,7 @@ $screen-xl-min: 1200px;
 
   background-color: khaki;
   @include md {
-    background-color: lavender;
+
     flex-direction: row;
   }
   // white-space: nowrap;

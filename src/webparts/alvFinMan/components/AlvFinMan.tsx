@@ -207,6 +207,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
       search: JSON.parse(JSON.stringify( this.props.search )),
       appLinks: [],
+      entities: [],
       manual: [],
       // stds: [],
       sups: [],
@@ -298,14 +299,13 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
     }
 
-   
     if ( fetchedNews !== true && ( mainPivotKey === 'News' || mainPivotKey === 'Search' ) ) {
       news = await getALVFinManContent( SourceInfo.news, this.props.search );
       search = updateSearchCounts( 'news', news, search );
       fetchedNews = true;
 
     }
-   
+
     if ( fetchedHelp !== true && ( mainPivotKey === 'Help' || mainPivotKey === 'Search' ) ) {
       help = await getALVFinManContent( SourceInfo.help, this.props.search );
       search = updateSearchCounts( 'help', help, search );
@@ -410,6 +410,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       supporting={ this.state.supporting }
       mainPivotKey={ this.state.mainPivotKey as ILayout1Page }
       canvasOptions={ this.props.canvasOptions }
+      debugMode={ this.props.debugMode }
     ></Layout1Page>;
 
     const showPage2 = <Layout2Page 
@@ -418,6 +419,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       source={ SourceInfo.appLinks }
       appLinks={ this.state.appLinks }
       canvasOptions={ this.props.canvasOptions }
+      debugMode={ this.props.debugMode }
     ></Layout2Page>;
 
     const SearchContent = <SearchPage
@@ -434,6 +436,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       mainPivotKey={ this.state.mainPivotKey }
       cmdButtonCSS={bannerProps.bannerCmdReactCSS }
       canvasOptions={ this.props.canvasOptions }
+      debugMode={ this.props.debugMode }
     ></SearchPage>;
 
     const accounts = this.state.mainPivotKey !== 'Accounts' ? null : <AlvAccounts
@@ -442,6 +445,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       refreshId={ this.state.refreshId }
       fetchTime={ 797979 }
       accounts={ this.state.accounts }
+      debugMode={ this.props.debugMode }
     ></AlvAccounts>;
 
     const defNewsSort ={
@@ -456,6 +460,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       source={ SourceInfo.news }
       pages={ this.state.news }
       canvasOptions={ this.props.canvasOptions }
+      debugMode={ this.props.debugMode }
 
     ></ModernPages>;
 
@@ -471,6 +476,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
         source={ SourceInfo.help }
         pages={ this.state.help }
         canvasOptions={ this.props.canvasOptions }
+        debugMode={ this.props.debugMode }
       ></ModernPages>;
         
 

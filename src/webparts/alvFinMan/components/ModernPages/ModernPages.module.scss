@@ -41,6 +41,13 @@ $screen-xl-min: 1200px;
   }
 }
 
+
+.modernPage.debugMode {
+  @include md {
+    background-color: lightyellow;
+  }
+}
+
 .modernPage {
 
   overflow: hidden;
@@ -56,10 +63,12 @@ $screen-xl-min: 1200px;
   padding: 20px 30px 20px 30px;
 
   background-color: lightgray;
+
   @include md {
-    background-color: lightyellow;
     flex-direction: row;
   }
+
+
   // white-space: nowrap;
   // overflow: hidden;
   // text-overflow: ellipsis;
