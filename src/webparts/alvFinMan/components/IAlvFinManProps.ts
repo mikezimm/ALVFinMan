@@ -67,7 +67,7 @@ export interface IAlvFinManProps {
 
   //FPS Banner and Options props
   displayMode: DisplayMode;
-  debugMode: boolean; //Option to display visual ques in app like special color coding and text
+  debugMode: boolean; //Option to display visual ques in app like special color coding and text  DeviceBug
 
   //Environement props
   // pageContext: PageContext;
@@ -264,5 +264,7 @@ export interface IAlvFinManState {
 
   showItemPanel: boolean;
   showPanelItem: any;
+
+  debugMode: boolean; //Option to display visual ques in app like special color coding and text  DeviceBug
 
 }

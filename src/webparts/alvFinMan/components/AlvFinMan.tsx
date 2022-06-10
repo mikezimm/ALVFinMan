@@ -225,6 +225,8 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       showPanelItem: null,
       refreshId: '',
 
+      debugMode: this.props.debugMode,
+
     };
   }
 
@@ -358,9 +360,9 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
   ];
 
 
-  if ( this.props.displayMode === DisplayMode.Edit ) {
+  if ( this.props.bannerProps.showTricks === true ) {
     farBannerElementsArray.push( 
-      // <Icon iconName='OpenEnrollment' onClick={ this.togglePropsHelp.bind(this) } style={ bannerProps.bannerCmdReactCSS }></Icon>
+      <Icon iconName='DeviceBug' onClick={ this.toggleDebugMode.bind(this) } style={ bannerProps.bannerCmdReactCSS }></Icon>
     );
   }
 
@@ -410,7 +412,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       supporting={ this.state.supporting }
       mainPivotKey={ this.state.mainPivotKey as ILayout1Page }
       canvasOptions={ this.props.canvasOptions }
-      debugMode={ this.props.debugMode }
+      debugMode={ this.state.debugMode }
     ></Layout1Page>;
 
     const showPage2 = <Layout2Page 
@@ -419,7 +421,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       source={ SourceInfo.appLinks }
       appLinks={ this.state.appLinks }
       canvasOptions={ this.props.canvasOptions }
-      debugMode={ this.props.debugMode }
+      debugMode={ this.state.debugMode }
     ></Layout2Page>;
 
     const SearchContent = <SearchPage
@@ -436,7 +438,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       mainPivotKey={ this.state.mainPivotKey }
       cmdButtonCSS={bannerProps.bannerCmdReactCSS }
       canvasOptions={ this.props.canvasOptions }
-      debugMode={ this.props.debugMode }
+      debugMode={ this.state.debugMode }
     ></SearchPage>;
 
     const accounts = this.state.mainPivotKey !== 'Accounts' ? null : <AlvAccounts
@@ -445,7 +447,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       refreshId={ this.state.refreshId }
       fetchTime={ 797979 }
       accounts={ this.state.accounts }
-      debugMode={ this.props.debugMode }
+      debugMode={ this.state.debugMode }
     ></AlvAccounts>;
 
     const defNewsSort ={
@@ -460,7 +462,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       source={ SourceInfo.news }
       pages={ this.state.news }
       canvasOptions={ this.props.canvasOptions }
-      debugMode={ this.props.debugMode }
+      debugMode={ this.state.debugMode }
 
     ></ModernPages>;
 
@@ -476,7 +478,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
         source={ SourceInfo.help }
         pages={ this.state.help }
         canvasOptions={ this.props.canvasOptions }
-        debugMode={ this.props.debugMode }
+        debugMode={ this.state.debugMode }
       ></ModernPages>;
         
 
@@ -576,10 +578,10 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     this.updateWebInfo( temp.props.itemKey );
   }
 
-  private togglePropsHelp(){
-    let newState = this.state.showPropsHelp === true ? false : true;
-    this.setState( { showPropsHelp: newState });
-}
+  private toggleDebugMode(){
+    let newState = this.state.debugMode === true ? false : true;
+    this.setState( { debugMode: newState });
+  }
 
 
 }

@@ -210,7 +210,6 @@ export default class Layout2Page extends React.Component<ILayout2PageProps, ILay
           { panelContent }
       </Panel></div>;
 
-  
       const debugContent = this.props.debugMode !== true ? null : <div>
         App in debugMode - Change in Web Part Properties - Page Preferences.  <b><em>Currently in Layout2Page</em></b>
       </div>;

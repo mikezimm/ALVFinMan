@@ -245,12 +245,17 @@ public async updateWebInfo (   ) {
           { filtered }
         </div>;
   
+      const debugContent = this.props.debugMode !== true ? null : <div>
+        App in debugMode - Change in Web Part Properties - Page Preferences.  <b><em>Currently in SearchPage</em></b>
+      </div>;
+
       return (
         <div className={ stylesS.searchPage }>
           {/* <div className={ styles.container }> */}
             <div className={ styles.row }>
               {/* <div className={ styles.column }> */}
                 {/* { this.props.fetchTime } */}
+                { debugContent }
                 { searchBox }
 
                 { topSearchContent }

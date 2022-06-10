@@ -65,6 +65,7 @@ import { bannerThemes, bannerThemeKeys, makeCSSPropPaneString, createBannerStyle
 
 import { IRepoLinks } from '@mikezimm/npmfunctions/dist/Links/CreateLinks';
 import { visitorPanelInfo } from './components/VisitorPanel/ALVFMVisitorPanel';
+import { allALVFM } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/constants';
 
 import { IWebpartHistory, IWebpartHistoryItem2 } from '@mikezimm/npmfunctions/dist/Services/PropPane/WebPartHistoryInterface';
 import { createWebpartHistory, ITrimThis, updateWebpartHistory, upgradeV1History } from '@mikezimm/npmfunctions/dist/Services/PropPane/WebPartHistoryFunctions';
@@ -143,19 +144,19 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
   private minQuickLaunch: boolean = false;
   private minHideToolbar: boolean = false;
 
-    //For FPS Banner
-    private forceBanner = true ;
-    private modifyBannerTitle = true ;
-    private modifyBannerStyle = true ;
-  
-    private  expandoDefault = false;
-    private filesList: any = [];
-  
-    private exitPropPaneChanged = false;
+  //For FPS Banner
+  private forceBanner = true ;
+  private modifyBannerTitle = true ;
+  private modifyBannerStyle = true ;
 
-    private expandoErrorObj = {
+  private  expandoDefault = false;
+  private filesList: any = [];
 
-    };
+  private exitPropPaneChanged = false;
+
+  private expandoErrorObj = {
+
+  };
 
   //ADDED FOR WEBPART HISTORY:  
   private thisHistoryInstance: IWebpartHistoryItem2 = null;
@@ -236,7 +237,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
       // Argument of type 'import("C:/Users/dev/Documents/GitHub/ALVFinMan7/node_modules/@microsoft/sp-webpart-base/dist/index-internal").WebPartContext' is not assignable to parameter of type 'import("C:/Users/dev/Documents/GitHub/ALVFinMan7/node_modules/@mikezimm/npmfunctions/node_modules/@microsoft/sp-webpart-base/dist/index-internal").WebPartContext'.
       //   Types have separate declarations of a private property '_domElement'.ts(2345)
       //Typed this.context as any to remove above error
-      this.FPSUser = getFPSUser( this.context as any, links.trickyEmails, this.trickyApp ) ;
+      this.FPSUser = getFPSUser( this.context as any, allALVFM, this.trickyApp ) ;
       console.log( 'FPSUser: ', this.FPSUser );
 
 
@@ -366,12 +367,14 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
 
     console.log('mainWebPart: showTricks ~ 288',   );
     let showTricks: any = false;
-    links.trickyEmails.map( getsTricks => {
+    allALVFM.map( getsTricks => {
       if ( this.context.pageContext.user.loginName && this.context.pageContext.user.loginName.toLowerCase().indexOf( getsTricks ) > -1 ) { 
         showTricks = true ;
         this.properties.showRepoLinks = true; //Always show these users repo links
       }
-      } );
+    } );
+    // if ( this.context.pageContext.user.loginName.indexOf( 'oger.elm') > -1 ){ showTricks = true ; }
+    // if ( this.context.pageContext.user.loginName.indexOf( 'oger.elm') > -1 ){ showTricks = true ; }
 
     console.log('mainWebPart: verifyAudienceVsUser ~ 297',   );
     this.properties.showBannerGear = verifyAudienceVsUser( this.FPSUser , showTricks, this.properties.homeParentGearAudience, null, renderAsReader );
