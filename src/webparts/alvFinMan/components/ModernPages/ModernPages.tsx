@@ -94,7 +94,7 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
 
     const imageUrl = showArticle ? showArticle.BannerImageUrl : null;
 
-    const CanvasContent1 = showCanvasContent1 !== true ? null :
+    const CanvasContent1 = !showArticle || showCanvasContent1 !== true ? null :
       <div className={ ['', this.cke_editable].join(' ') }>
         {/* <h2>CanvasContent1</h2> */}
         <div dangerouslySetInnerHTML={{ __html: showArticle.CanvasContent1Str }} />

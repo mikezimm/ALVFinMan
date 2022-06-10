@@ -56,8 +56,6 @@ import Layout2Page from './Layout2Page/Layout2Page';
 import SearchPage from './Search/SearchPage';
 import ModernPages from './ModernPages/ModernPages';
 
-import { MainHelpPage } from './AlvFMHelp';
-
 import { SourceInfo, ISourceInfo, ISourceProps } from './DataInterface';
 import {  updateSearchCounts, updateSearchTypes, getALVFinManContent, } from './DataFetch';
 
@@ -137,9 +135,6 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
   private WebPartHelpElement = getWebPartHelpElement( this.props.sitePresets );
   private contentPages : IBannerPages = getBannerPages( this.props.bannerProps );
-
-  private mainHelp = MainHelpPage( gitRepoALVFinManSmall );
-
 
   /***
  *    d8b   db d88888b  .d8b.  d8888b.      d88888b  .d8b.  d8888b.      d88888b db      d88888b 
@@ -365,7 +360,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
   if ( this.props.displayMode === DisplayMode.Edit ) {
     farBannerElementsArray.push( 
-      <Icon iconName='OpenEnrollment' onClick={ this.togglePropsHelp.bind(this) } style={ bannerProps.bannerCmdReactCSS }></Icon>
+      // <Icon iconName='OpenEnrollment' onClick={ this.togglePropsHelp.bind(this) } style={ bannerProps.bannerCmdReactCSS }></Icon>
     );
   }
 
@@ -492,56 +487,56 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
       let Banner = <WebpartBanner 
 
-      displayMode={ this.props.bannerProps.displayMode }
-      WebPartHelpElement={ this.WebPartHelpElement }
-      forceNarrowStyles= { false }
-      contentPages= { this.contentPages }
-      feedbackEmail= { this.props.bannerProps.feedbackEmail }
+        displayMode={ this.props.bannerProps.displayMode }
+        WebPartHelpElement={ this.WebPartHelpElement }
+        forceNarrowStyles= { false }
+        contentPages= { this.contentPages }
+        feedbackEmail= { this.props.bannerProps.feedbackEmail }
 
-      FPSUser={ bannerProps.FPSUser }
-      exportProps={ bannerProps.exportProps }
-      showBanner={ bannerProps.showBanner }
-      // Adding this to adjust expected width for when prop pane could be opened
-      bannerWidth={ ( bannerProps.bannerWidth ) }
-      pageContext={ bannerProps.pageContext }
-      pageLayout={ bannerProps.pageLayout }
-      title ={ bannerTitle }
-      panelTitle = { bannerProps.panelTitle }
-      infoElement = { bannerProps.infoElement }
-      bannerReactCSS={ bannerProps.bannerReactCSS }
-      bannerCmdReactCSS={ bannerProps.bannerCmdReactCSS }
-      showTricks={ bannerProps.showTricks }
-      showGoToParent={ bannerProps.showGoToParent }
-      showGoToHome={ bannerProps.showGoToHome }
-      onHomePage={ bannerProps.onHomePage }
+        FPSUser={ bannerProps.FPSUser }
+        exportProps={ bannerProps.exportProps }
+        showBanner={ bannerProps.showBanner }
+        // Adding this to adjust expected width for when prop pane could be opened
+        bannerWidth={ ( bannerProps.bannerWidth ) }
+        pageContext={ bannerProps.pageContext }
+        pageLayout={ bannerProps.pageLayout }
+        title ={ bannerTitle }
+        panelTitle = { bannerProps.panelTitle }
+        infoElement = { bannerProps.infoElement }
+        bannerReactCSS={ bannerProps.bannerReactCSS }
+        bannerCmdReactCSS={ bannerProps.bannerCmdReactCSS }
+        showTricks={ bannerProps.showTricks }
+        showGoToParent={ bannerProps.showGoToParent }
+        showGoToHome={ bannerProps.showGoToHome }
+        onHomePage={ bannerProps.onHomePage }
 
-      webpartHistory={ this.props.webpartHistory }
-      
-      showBannerGear={ bannerProps.showBannerGear }
-      
-      showFullPanel={ bannerProps.showFullPanel }
-      replacePanelHTML={ bannerProps.replacePanelHTML }
-      replacePanelWarning={ bannerProps.replacePanelWarning }
+        webpartHistory={ this.props.webpartHistory }
+        
+        showBannerGear={ bannerProps.showBannerGear }
+        
+        showFullPanel={ bannerProps.showFullPanel }
+        replacePanelHTML={ bannerProps.replacePanelHTML }
+        replacePanelWarning={ bannerProps.replacePanelWarning }
 
-      hoverEffect={ bannerProps.hoverEffect }
-      gitHubRepo={ bannerProps.gitHubRepo }
-      earyAccess={ bannerProps.earyAccess }
-      wideToggle={ bannerProps.wideToggle }
-      nearElements = { this.nearBannerElements }
-      farElements = { farBannerElementsArray }
+        hoverEffect={ bannerProps.hoverEffect }
+        gitHubRepo={ bannerProps.gitHubRepo }
+        earyAccess={ bannerProps.earyAccess }
+        wideToggle={ bannerProps.wideToggle }
+        nearElements = { this.nearBannerElements }
+        farElements = { farBannerElementsArray }
 
-      showRepoLinks={ bannerProps.showRepoLinks }
-      showExport={ bannerProps.showExport }
-      //2022-02-17:  Added these for expandoramic mode
-      domElement = { bannerProps.domElement }
-      enableExpandoramic = { bannerProps.enableExpandoramic }
-      expandoDefault = { bannerProps.expandoDefault }
-      expandoStyle = { bannerProps.expandoStyle}
-      expandAlert = { bannerProps.expandAlert }
-      expandConsole = { bannerProps.expandConsole }
-      expandoPadding = { bannerProps.expandoPadding }
-      beAUser = { bannerProps.beAUser }
-      showBeAUserIcon = { bannerProps.showBeAUserIcon }
+        showRepoLinks={ bannerProps.showRepoLinks }
+        showExport={ bannerProps.showExport }
+        //2022-02-17:  Added these for expandoramic mode
+        domElement = { bannerProps.domElement }
+        enableExpandoramic = { bannerProps.enableExpandoramic }
+        expandoDefault = { bannerProps.expandoDefault }
+        expandoStyle = { bannerProps.expandoStyle}
+        expandAlert = { bannerProps.expandAlert }
+        expandConsole = { bannerProps.expandConsole }
+        expandoPadding = { bannerProps.expandoPadding }
+        beAUser = { bannerProps.beAUser }
+        showBeAUserIcon = { bannerProps.showBeAUserIcon }
         beAUserFunction={ bannerProps.beAUserFunction }
 
     ></WebpartBanner>;

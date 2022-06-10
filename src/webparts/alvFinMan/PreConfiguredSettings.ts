@@ -30,19 +30,10 @@ const FinancialManualContacts: IPropertyFieldGroupOrPerson = {
     imageUrl: null,
 };
 
-export const ForceFinancialManual : IPreConfigSettings = {
-    location: '/sites/financemanual/',
+
+export const ForceEverywhere : IPreConfigSettings = {
+    location: '*',
     props: {
-
-        // imgHeight: imgHeight, //Converted to px
-        // imgWidth: imgWidth, //Converted to %
-        imgObjectFit: imgObjectFit, //cover, contain, etc...
-        imgStyle: imgStyle, //gets embedded directly into all image tags as:  <img style="Your style string here" - height: 150px; object-fit: "cover"; width: 100%;
-        imgAutoFix: imgAutoFix, //Maybe eventually I could try to auto-fix but have this optional.
-
-        canPagePreference: canPagePreference, //Determines what default page load level
-
-        canAddCkeEditToDiv: canAddCkeEditToDiv,  //Will add class="cke_editable" to the styles.article div so that Tables have some formatting when shown in app.
 
         canh1Styles: canh1Styles,  //Use similar to FPSPageOptions styling
         canh2Styles: canh2Styles,  //Use similar to FPSPageOptions styling
@@ -60,7 +51,6 @@ export const ForceFinancialManual : IPreConfigSettings = {
         supportContacts: [ FinancialManualContacts ],
 
         // FPS Banner Basics
-        bannerTitle: 'ALV Financial Manual App',
         infoElementChoice: "IconName=Unknown",
         infoElementText: "Question mark circle",
         feedbackEmail: `ae57524a.${window.location.hostname}.onmicrosoft.com@amer.teams.ms`,
@@ -78,18 +68,13 @@ export const ForceFinancialManual : IPreConfigSettings = {
     }
 };
 
-
-export const PresetFinancialManual : IPreConfigSettings = {
-    location: '/sites/financemanual/',
-    props: {
-        homeParentGearAudience: 'Everyone',
-
-    }
-};
-
-export const PresetSomeRandomSite : IPreConfigSettings = {
+export const PresetEverywhere : IPreConfigSettings = {
     location: '*',
     props: {
+
+        // FPS Banner Basics
+        bannerTitle: 'ALV Financial Manual App',
+
         homeParentGearAudience: 'Some Test Value',
 
         imgHeight: imgHeight, //Converted to px
@@ -102,14 +87,40 @@ export const PresetSomeRandomSite : IPreConfigSettings = {
 
         canAddCkeEditToDiv: canAddCkeEditToDiv,  //Will add class="cke_editable" to the styles.article div so that Tables have some formatting when shown in app.
 
-        canh1Styles: canh1Styles,  //Use similar to FPSPageOptions styling
-        canh2Styles: canh2Styles,  //Use similar to FPSPageOptions styling
-        canh3Styles: canh3Styles, //Use similar to FPSPageOptions styling
+
+    }
+};
+
+export const ForceFinancialManual : IPreConfigSettings = {
+    location: '/sites/financemanual/',
+    props: {
+
+        // imgHeight: imgHeight, //Converted to px
+        // imgWidth: imgWidth, //Converted to %
+        imgObjectFit: imgObjectFit, //cover, contain, etc...
+        imgStyle: imgStyle, //gets embedded directly into all image tags as:  <img style="Your style string here" - height: 150px; object-fit: "cover"; width: 100%;
+        imgAutoFix: imgAutoFix, //Maybe eventually I could try to auto-fix but have this optional.
+
+        canPagePreference: canPagePreference, //Determines what default page load level
+
+        canAddCkeEditToDiv: canAddCkeEditToDiv,  //Will add class="cke_editable" to the styles.article div so that Tables have some formatting when shown in app.
+
+        // FPS Banner Basics
+        bannerTitle: 'ALV Financial Manual App',
+
+        homeParentGearAudience: 'Everyone',
+    }
+};
+
+export const PresetFinancialManual : IPreConfigSettings = {
+    location: '/sites/financemanual/',
+    props: {
+
 
     }
 };
 
 export const PreConfiguredProps : IAllPreConfigSettings = {
-    forced: [ ForceFinancialManual,  ],
-    preset: [ PresetFinancialManual, PresetSomeRandomSite ],
+    forced: [ ForceFinancialManual, ForceEverywhere  ],
+    preset: [ PresetFinancialManual, PresetEverywhere ],
 };
