@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styles from '../AlvFinMan.module.scss';
 import styles2 from './Layout2.module.scss';
-import { ILayoutGPage, ILayoutSPage, ILayoutAll, ILayoutAPage, IFMBuckets, IPagesContent, IAnyContent  } from '../IAlvFinManProps';
+import { ILayoutGPage, ILayoutSPage, IAllPages, ILayoutAPage, IFMBuckets, IPagesContent, IAnyContent  } from '../IAlvFinManProps';
 import { ILayout2PageProps, ILayout2PageState, } from './ILayout2Props';
 
 import { escape } from '@microsoft/sp-lodash-subset';

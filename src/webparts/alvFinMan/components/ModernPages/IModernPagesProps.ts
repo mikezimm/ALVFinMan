@@ -2,7 +2,7 @@ import { sortStringArray, sortObjectArrayByStringKey, sortNumberArray, sortObjec
 import { ILabelColor, ICSSChartTypes, CSSChartTypes, ISeriesSort, ICSSChartSeries, IChartSeries, ICharNote, } 
     from '@mikezimm/npmfunctions/dist/CSSCharts/ICSSCharts';
 
-import { IFMBuckets, IFMBucketItems, IAnyContent, IPagesContent, ILayoutAll, ICanvasContentOptions } from "../IAlvFinManProps";
+import { IFMBuckets, IFMBucketItems, IAnyContent, IPagesContent, IAllPages, ICanvasContentOptions } from "../IAlvFinManProps";
 import { ISourceProps } from "../DataInterface";
 
 export interface IModernPagesProps {
@@ -18,7 +18,7 @@ export interface IModernPagesProps {
 
   // buckets: IFMBuckets;
 
-  mainPivotKey: ILayoutAll;
+  mainPivotKey: IAllPages;
 
   refreshId: string;
 

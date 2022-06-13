@@ -91,7 +91,7 @@ export const repoLink: IRepoLinks = links.gitRepoALVFinManSmall;
 import * as strings from 'AlvFinManWebPartStrings';
 import AlvFinMan from './components/AlvFinMan';
 import { allPivots } from './components/AlvFinMan';
-import { IAlvFinManProps, ICanvasContentOptions, IFinManSearch, ILayoutAll, ImageFitPrefs, IModernImageSettings, ISearchBucket, PageLoadPefs } from './components/IAlvFinManProps';
+import { IAlvFinManProps, ICanvasContentOptions, IFinManSearch, IAllPages, ImageFitPrefs, IModernImageSettings, ISearchBucket, PageLoadPefs } from './components/IAlvFinManProps';
 import { IAlvFinManWebPartProps, exportIgnoreProps, importBlockProps, } from './IAlvFinManWebPartProps';
 import { baseFetchInfo, IFetchInfo } from './components/IFetchInfo';
 import { createEmptySearchBucket, } from './components/DataFetch';
@@ -1060,7 +1060,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
  *                                                                                
  */
   
-  private async saveLoadAnalytics( Title: string, Result: string, location: ILayoutAll ) {
+  private async saveLoadAnalytics( Title: string, Result: string, location: IAllPages ) {
 
     if ( this.sessionTabs.indexOf( location ) > -1 ) {
       //Tab was visited, determine action

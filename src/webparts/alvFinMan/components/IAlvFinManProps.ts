@@ -81,7 +81,7 @@ export interface IAlvFinManProps {
   //ADDED FOR WEBPART HISTORY:  
   webpartHistory: IWebpartHistory;
 
-  defaultPivotKey: ILayoutAll;
+  defaultPivotKey: IAllPages;
 
   search: IFinManSearch ;
 
@@ -162,7 +162,18 @@ export type ILayoutSPage = 'Statements';
 export type ILayoutAPage = 'Accounts';
 export type ILayoutQPage = 'Search';
 export type ILayoutHPage = 'Help';
-export type ILayoutAll = ILayoutNPage | ILayoutLPage | ILayoutGPage | ILayout1Page | ILayoutSPage | ILayoutAPage | ILayoutQPage | ILayoutHPage;
+export type ILayoutEPage = 'Entities';
+
+export type ILayoutStdPage = 'Standards';
+export type ILayoutSupPage = 'SupportDocs';
+export type ILayoutSourcesPage = 'Sources';
+export type ILayoutCategorizedPage = 'Categorized';
+
+
+
+export type IAllPages = ILayoutNPage | ILayoutLPage | ILayoutGPage | ILayout1Page | ILayoutSPage | ILayoutAPage | ILayoutQPage | ILayoutHPage | ILayoutSourcesPage | ILayoutCategorizedPage;
+export type ISourcePage = '' | ILayoutNPage | ILayoutLPage | ILayoutAPage | ILayoutHPage | ILayoutStdPage | ILayoutSupPage | ILayoutEPage | ILayoutSupPage;
+export type ICategoryPage = ILayout1Page | ILayoutSPage;
 
 export type IAppFormat = 'accounts' | 'manual' | 'sups' | 'appLinks' | 'news' | 'help' | 'entities';
 
@@ -257,7 +268,11 @@ export interface IAlvFinManState {
   standards: IFMBucketItems;
   supporting: IFMBucketItems;
 
-  mainPivotKey: ILayoutAll;
+  mainPivotKey: IAllPages;
+  sourcePivotKey: ISourcePage;
+  categorizedPivotKey: ICategoryPage;
+  deepestKey: IAllPages;
+
   // bucketClickKey: string;
   docItemKey: string;
   supItemKey: string;

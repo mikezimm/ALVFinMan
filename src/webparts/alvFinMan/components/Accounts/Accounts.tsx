@@ -38,7 +38,7 @@ const pivotStyles = {
 // const pivotHeading4 : ILayout1Page = 'Functions';
 // const pivotHeading5 : ILayout1Page = 'Topics';
 
-// const allPivots: ILayoutAll[] = [ pivotHeading0, pivotHeading1, pivotHeading2, pivotHeading3, pivotHeading4, pivotHeading5 ];
+// const allPivots: IAllPages[] = [ pivotHeading0, pivotHeading1, pivotHeading2, pivotHeading3, pivotHeading4, pivotHeading5 ];
 // const layout1Pivots : ILayout1Page[] = [ pivotHeading2, pivotHeading3, pivotHeading4, pivotHeading5 ];
 
 // const pivotTitles = allPivots.map( pivot => { return pivot.split('|')[0] ; } );
@@ -47,7 +47,7 @@ const pivotStyles = {
 //   return <PivotItem headerText={ pivotTitles[idx] } ariaLabel={pivotTitles[idx]} title={pivotTitles[idx]} itemKey={ key } ></PivotItem>;
 // });
 
-// const pivotHeading6 = 'Function';
+// const sourcePivotKey = 'Function';
 
 export default class AlvAccounts extends React.Component<IAlvAccountsProps, IAlvAccountsState> {
 
@@ -140,7 +140,7 @@ public async updateWebInfo (   ) {
       
     //   <PivotItem headerText={ pivotHeading5 } ariaLabel={pivotHeading5} title={pivotHeading5} itemKey={ pivotHeading5 } keytipProps={ { content: 'Hello', keySequences: ['a','b','c'] } }></PivotItem>
 
-    //   <PivotItem headerText={ pivotHeading6 } ariaLabel={pivotHeading6} title={pivotHeading6} itemKey={ pivotHeading6 } keytipProps={ { content: 'Hello', keySequences: ['a','b','c'] } }></PivotItem> */}
+    //   <PivotItem headerText={ sourcePivotKey } ariaLabel={sourcePivotKey} title={sourcePivotKey} itemKey={ sourcePivotKey } keytipProps={ { content: 'Hello', keySequences: ['a','b','c'] } }></PivotItem> */}
     // </Pivot>;
 
     // const layout1 = layout1Pivots.indexOf( this.state.mainPivotKey as any) > 0 ? this.state.mainPivotKey :layout1Pivots[0];
