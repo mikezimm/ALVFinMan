@@ -2,8 +2,11 @@ import { sortStringArray, sortObjectArrayByStringKey, sortNumberArray, sortObjec
 import { ILabelColor, ICSSChartTypes, CSSChartTypes, ISeriesSort, ICSSChartSeries, IChartSeries, ICharNote, } 
     from '@mikezimm/npmfunctions/dist/CSSCharts/ICSSCharts';
 
-import { IFMBuckets, IFMBucketItems, IAnyContent, IPagesContent, IAllPages, ICanvasContentOptions } from "../IAlvFinManProps";
+import { IFMBuckets, IFMBucketItems, IAnyContent, IPagesContent, ICanvasContentOptions } from "../IAlvFinManProps";
 import { ISourceProps } from "../DataInterface";
+
+export type IModernPage = 'News' | 'Help' | 'Standards' | '';
+export const ModernPageValues: IModernPage[] = [ 'News', 'Help' ,'Standards'  ];
 
 export interface IModernPagesProps {
 
@@ -18,7 +21,7 @@ export interface IModernPagesProps {
 
   // buckets: IFMBuckets;
 
-  mainPivotKey: IAllPages;
+  mainPivotKey: IModernPage;
 
   refreshId: string;
 

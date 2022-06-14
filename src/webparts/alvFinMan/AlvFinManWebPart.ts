@@ -90,8 +90,8 @@ export const repoLink: IRepoLinks = links.gitRepoALVFinManSmall;
 
 import * as strings from 'AlvFinManWebPartStrings';
 import AlvFinMan from './components/AlvFinMan';
-import { allPivots } from './components/AlvFinMan';
-import { IAlvFinManProps, ICanvasContentOptions, IFinManSearch, IAllPages, ImageFitPrefs, IModernImageSettings, ISearchBucket, PageLoadPefs } from './components/IAlvFinManProps';
+import { defaultPivots, IDefaultPage } from './components/IAlvFinManProps';
+import { IAlvFinManProps, ICanvasContentOptions, IFinManSearch, ImageFitPrefs, IModernImageSettings, ISearchBucket, PageLoadPefs } from './components/IAlvFinManProps';
 import { IAlvFinManWebPartProps, exportIgnoreProps, importBlockProps, } from './IAlvFinManWebPartProps';
 import { baseFetchInfo, IFetchInfo } from './components/IFetchInfo';
 import { createEmptySearchBucket, } from './components/DataFetch';
@@ -101,7 +101,7 @@ const topSearchDefault = 'Capex;Inventory;Template;Policy;Weekly;Monthly;Quarter
 
 export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWebPartProps> {
 
-   private DefaultPivotChoices =  allPivots.map( ( pivot, idx ) => {
+   private DefaultPivotChoices =  defaultPivots.map( ( pivot, idx ) => {
      return { index: idx, key: pivot, text: pivot };
    });
 
@@ -294,7 +294,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
 
       // DEFAULTS SECTION:  ALVFinMan   <<< ================================================================
       if ( !this.properties.defaultPivotKey ) { this.properties.defaultPivotKey = 'General' ; }
-      if ( allPivots.indexOf( this.properties.defaultPivotKey ) < 0 ) { this.properties.defaultPivotKey = allPivots[0] ; }
+      if ( defaultPivots.indexOf( this.properties.defaultPivotKey ) < 0 ) { this.properties.defaultPivotKey = defaultPivots[0] ; }
 
       this.renderCustomStyles( false );
       this.resetAllSearch();
@@ -506,6 +506,8 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
         canvasOptions: canvasOptions,
 
         search: search,
+
+        maxDeep: 20, //      maxDeep: 20,
 
 
       }
@@ -1060,7 +1062,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
  *                                                                                
  */
   
-  private async saveLoadAnalytics( Title: string, Result: string, location: IAllPages ) {
+  private async saveLoadAnalytics( Title: string, Result: string, location: IDefaultPage ) {
 
     if ( this.sessionTabs.indexOf( location ) > -1 ) {
       //Tab was visited, determine action

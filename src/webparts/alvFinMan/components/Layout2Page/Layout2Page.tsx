@@ -1,8 +1,8 @@
 import * as React from 'react';
 import styles from '../AlvFinMan.module.scss';
 import styles2 from './Layout2.module.scss';
-import { ILayoutGPage, ILayoutSPage, IAllPages, ILayoutAPage, IFMBuckets, IPagesContent, IAnyContent  } from '../IAlvFinManProps';
-import { ILayout2PageProps, ILayout2PageState, } from './ILayout2Props';
+import { ILayoutGPage, ILayoutSPage, ILayoutAPage, IFMBuckets, IPagesContent, IAnyContent  } from '../IAlvFinManProps';
+import { ILayout2PageProps, ILayout2PageState, ILayout2Page, Layout2PageValues } from './ILayout2Props';
 
 import { escape } from '@microsoft/sp-lodash-subset';
 
@@ -177,7 +177,7 @@ export default class Layout2Page extends React.Component<ILayout2PageProps, ILay
 
   public render(): React.ReactElement<ILayout2PageProps> {
 
-    if ( this.props.mainPivotKey !== 'General' && this.props.mainPivotKey !== 'Statements' && this.props.mainPivotKey !== 'Links' ) {
+    if ( Layout2PageValues.indexOf( this.props.mainPivotKey ) < 0 ) {
       return ( null );
 
     } else {

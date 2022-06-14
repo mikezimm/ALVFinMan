@@ -10,7 +10,7 @@ import { ISupportedHost } from "@mikezimm/npmfunctions/dist/Services/PropPane/FP
 import { IPropertyFieldGroupOrPerson } from "@pnp/spfx-property-controls/lib/PropertyFieldPeoplePicker";
 
 import { IPerformanceOp, ILoadPerformanceALVFM, IHistoryPerformance } from './components/Performance/IPerformance';
-import { IAllPages, IPageLoadPref } from "./components/IAlvFinManProps";
+import { IDefaultPage, IMainPage, IPageLoadPref } from "./components/IAlvFinManProps";
 
   // // export interface IModernImageSettings {
   //   imgHeight: number | string;
@@ -159,7 +159,7 @@ export interface IAlvFinManWebPartProps {
 
 
   //For ALVFinancialManual
-  defaultPivotKey: IAllPages;
+  defaultPivotKey: IDefaultPage;
 
   leftSearchFixed: boolean; //Locks the search options
   leftSearchStr: string; // Primary/Fixed search for left side of search page

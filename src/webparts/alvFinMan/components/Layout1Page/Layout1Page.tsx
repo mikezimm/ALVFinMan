@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styles from '../AlvFinMan.module.scss';
-import { ILayoutGPage, ILayoutSPage, IAllPages, ILayoutAPage, IFMBuckets, IAnyContent,   } from '../IAlvFinManProps';
+import { ILayoutGPage, ILayoutSPage, ILayoutAPage, IFMBuckets, IAnyContent,   } from '../IAlvFinManProps';
 import { ILayout1PageProps, ILayout1PageState, ILayout1Page, Layout1PageValues, } from './ILayout1PageProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 

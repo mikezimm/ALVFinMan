@@ -3,11 +3,12 @@ import styles from './AlvFinMan.module.scss';
 import { Icon, IIconProps } from 'office-ui-fabric-react/lib/Icon';
 import { DisplayMode, Version } from '@microsoft/sp-core-library';
 
-import { IAlvFinManProps, IAlvFinManState, IFMBuckets, ILayoutNPage, ILayoutGPage, ILayoutSPage, IAllPages, ILayoutAPage,
+import { IAlvFinManProps, IAlvFinManState, IFMBuckets, ILayoutNPage, ILayoutGPage, ILayoutSPage, ILayoutAPage,
   ILayoutQPage, ILayoutHPage, IAnyContent, IFinManSearch, IAppFormat, ISearchBucket,
-  IPagesContent, ILayoutLPage, ILayoutEPage, ILayoutSourcesPage, ISourcePage, ICategoryPage, ILayoutCategorizedPage, ILayoutStdPage, ILayoutSupPage } from './IAlvFinManProps';
+  IPagesContent, ILayoutLPage, ILayoutEPage, ILayoutSourcesPage, ISourcePage, ICategoryPage, ILayoutCategorizedPage, ILayoutStdPage, ILayoutSupPage, IDeepLink, IMainPage, IDefaultPage, IDefMainPage, mainDefPivots, pivotHeadingCatgorized, pivotHeadingSources } from './IAlvFinManProps';
 
 import { ILayout1Page, ILayout1PageProps, Layout1PageValues } from './Layout1Page/ILayout1PageProps';
+import { ILayout2Page,  } from './Layout2Page/ILayout2Props';
 import { escape } from '@microsoft/sp-lodash-subset';
 
 import { Web, ISite } from '@pnp/sp/presets/all';
@@ -66,6 +67,8 @@ import {  updateSearchCounts, updateSearchTypes, getALVFinManContent, } from './
 import {  createEmptyBuckets,  updateBuckets } from './DataProcess';
 import { gitRepoALVFinManSmall } from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
 
+import { allMainPivots, sourcePivots, categorizedPivots } from './IAlvFinManProps';
+
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
 
 const consoleLineItemBuild: boolean = false;
@@ -102,49 +105,24 @@ const mainPivotStyles = {
     //   textAlign: "center"
     }};
 
-const pivotHeadingNews : ILayoutNPage = 'News';
-const pivotHeading0 : ILayoutGPage = 'General';
 
-const pivotHeading1 : ILayoutSPage = 'Statements';
-// const pivotHeading2 : ILayout1Page = 'Reporting|Sections';
-const pivotHeading2 : ILayout1Page = 'Reporting';
-const pivotHeading3 : ILayout1Page = 'Processes';
-const pivotHeading4 : ILayout1Page = 'Functions';
-const pivotHeading5 : ILayout1Page = 'Topics';
-const pivotHeadingAcc : ILayoutAPage = 'Accounts';
+//Original mainPivots before Sources and Categories
 
-const pivotHeadingSourcesearch : ILayoutQPage = 'Search';
-const pivotHeadingHelp : ILayoutHPage = 'Help';
-const pivotHeadingLinks : ILayoutLPage = 'Links';
-const pivotHeadingEntities : ILayoutEPage = 'Entities';
+//
 
-const pivotHeadingSources : ILayoutSourcesPage = 'Sources';
-
-const pivotHeadingManual: ILayoutStdPage = 'Standards';
-const pivotHeadingSupporting: ILayoutSupPage = 'SupportDocs';
-
-const pivotHeadingCatgorized : ILayoutCategorizedPage = 'Categorized';
-
-
-//Original allPivots before Sources and Categories
-// export const allPivots: IAllPages[] = [ pivotHeading0, pivotHeadingNews, pivotHeading1, pivotHeading2, pivotHeading3, pivotHeading4, pivotHeading5, pivotHeadingAcc, pivotHeadingSourcesearch, pivotHeadingLinks, pivotHeadingHelp, pivotHeadingSources, pivotHeadingCatgorized ];
-export const allPivots: IAllPages[] = [ pivotHeading0, pivotHeadingNews, pivotHeadingSourcesearch, pivotHeadingHelp, pivotHeadingSources, pivotHeadingCatgorized ];
-
-const mainTitles = allPivots.map( pivot => { return pivot.split('|')[0] ; } );
-// const mainKeys = allPivots.map( pivot => { return pivot.split('|')[1] ? pivot.split('|')[1] : pivot.split('|')[0] ; } );
-const mainKeys = allPivots.map( pivot => { return pivot.split('|')[1] ? pivot.split('|')[1] : pivot.split('|')[0] ; } );
+const mainTitles = allMainPivots.map( pivot => { return pivot.split('|')[0] ; } );
+// const mainKeys = mainPivots.map( pivot => { return pivot.split('|')[1] ? pivot.split('|')[1] : pivot.split('|')[0] ; } );
+const mainKeys = allMainPivots.map( pivot => { return pivot.split('|')[1] ? pivot.split('|')[1] : pivot.split('|')[0] ; } );
 const mainItems = mainKeys.map( ( key, idx ) => {
   return <PivotItem headerText={ mainTitles[idx] } ariaLabel={mainTitles[idx]} title={mainTitles[idx]} itemKey={ key } ></PivotItem>;
 });
 
-//ILayoutNPage | ILayoutLPage | ILayoutAPage | ILayoutHPage | ILayoutStdPage | ILayoutSupPage | ILayoutEPage
-const sourcePivots: ISourcePage[] = [ pivotHeadingNews, pivotHeadingHelp, pivotHeadingAcc, pivotHeadingLinks, pivotHeadingManual, pivotHeadingSupporting, pivotHeadingEntities ];
+
 const sourceKeys = sourcePivots.map( pivot => { return pivot.split('|')[1] ? pivot.split('|')[1] : pivot.split('|')[0] ; } );
 const sourceItems = sourceKeys.map( ( key, idx ) => {
   return <PivotItem headerText={ sourcePivots[idx] } ariaLabel={sourcePivots[idx]} title={sourcePivots[idx]} itemKey={ key } ></PivotItem>;
 });
 
-const categorizedPivots: ICategoryPage[] = [ pivotHeading1, pivotHeading2, pivotHeading3, pivotHeading4, pivotHeading5,  ];
 const categorizedKeys = categorizedPivots.map( pivot => { return pivot.split('|')[1] ? pivot.split('|')[1] : pivot.split('|')[0] ; } );
 const categorizedItems = categorizedKeys.map( ( key, idx ) => {
   return <PivotItem headerText={ categorizedPivots[idx] } ariaLabel={categorizedPivots[idx]} title={categorizedPivots[idx]} itemKey={ key } ></PivotItem>;
@@ -168,6 +146,81 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
   private WebPartHelpElement = getWebPartHelpElement( this.props.sitePresets );
   private contentPages : IBannerPages = getBannerPages( this.props.bannerProps );
+
+  
+  private getMainPivotKey( defaultPivotKey: IDefaultPage ) {
+
+    let mainPivotKey: IMainPage = null;
+
+    //Covers Category pages
+    if ( categorizedPivots.indexOf( defaultPivotKey as any ) > -1 ) {
+      mainPivotKey = pivotHeadingCatgorized;
+
+    //Covers Sources that are also Main Pivots
+    } else if ( mainDefPivots.indexOf( defaultPivotKey as any ) > -1 ) {
+      mainPivotKey = defaultPivotKey as any;
+
+    } else if ( sourcePivots.indexOf( defaultPivotKey as any ) > -1 ) {
+      mainPivotKey = pivotHeadingSources;
+
+    } else {
+      alert('No Idea what mainPivotKey is for' + defaultPivotKey );
+      mainPivotKey = 'Categorized';
+
+    }
+
+    return mainPivotKey;
+
+  }
+
+  /**
+   * bumpDeepState will add this new deepState to the this.state.deepState object and return it.
+   * NOTE:  It does not actually update the component state.  That should be done after.
+   * @param main 
+   * @param second 
+   * @param deeps 
+   * @returns 
+   */
+  private bumpDeepState( main: IMainPage, second: ISourcePage | ICategoryPage, deeps: string[], deepLinks: IDeepLink[] ) {
+    let newDeepState : IDeepLink[] = deepLinks.map( deep => {  return deep; } );
+    let thisTime = new Date();
+
+    const newDeep: IDeepLink = {
+      main: main,
+      second: second,
+      deep1: deeps[0],
+      deep2: deeps[1],
+      deep3: deeps[2],
+      deep4: deeps[3],
+      time: thisTime,
+      timeMs: thisTime.getTime(),
+      timeLabel: thisTime.toLocaleString(),
+      deltaMs: newDeepState.length === 0 ? 0 : thisTime.getTime() - newDeepState[0].timeMs,
+      processTime: 0,
+
+    };
+
+    //Add this deep link to current history
+    newDeepState.unshift( newDeep );
+
+    //Remove the last item if the total length > than the max length
+    if ( newDeepState.length > this.props.maxDeep ) { newDeepState.pop(); }
+
+    return newDeepState;
+
+  }
+
+
+  private bumpDeepStateByDefaultPivotKey( defaultPivotKey: IDefaultPage ) {
+    let mainPivotKey = this.getMainPivotKey( defaultPivotKey );
+    let secondKey = mainDefPivots.indexOf( mainPivotKey as any ) > -1 ? '' : defaultPivotKey;
+
+    //Watchout for this one where I had to set secondKey as any...
+    let newDeepState : IDeepLink[] = this.bumpDeepState( mainPivotKey, secondKey as any, [], this.state ? this.state.deepLinks : [] );
+
+    return newDeepState;
+
+  }
 
   /***
  *    d8b   db d88888b  .d8b.  d8888b.      d88888b  .d8b.  d8888b.      d88888b db      d88888b 
@@ -238,7 +291,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
     let showDevHeader = debugMode === true || isWorkbench === true ? true : false;
 
-    let mainPivotKey: IAllPages = this.props.defaultPivotKey ? this.props.defaultPivotKey : 'General';
+    let mainPivotKey: IMainPage = this.getMainPivotKey( this.props.defaultPivotKey ); // IMainPage = this.props.defaultPivotKey ? this.props.defaultPivotKey : 'General';
 
     this.state = {
       showPropsHelp: false,
@@ -246,9 +299,11 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       lastStateChange: '',
 
       mainPivotKey: mainPivotKey,
-      sourcePivotKey: '',
-      categorizedPivotKey: '',
-      deepestKey: mainPivotKey,
+      sourcePivotKey: sourcePivots.indexOf( this.props.defaultPivotKey as any ) > -1 ? this.props.defaultPivotKey as any : '',
+      categorizedPivotKey: categorizedPivots.indexOf( this.props.defaultPivotKey as any ) > -1 ? this.props.defaultPivotKey as any : '',
+      deepestPivot: this.props.defaultPivotKey,
+
+      deepLinks: this.bumpDeepStateByDefaultPivotKey( this.props.defaultPivotKey ),
 
       fetchedDocs: false,
       fetchedAccounts: false,
@@ -313,9 +368,9 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
   }
 
-  public async updateWebInfo ( mainPivotKey: IAllPages, sourcePivotKey: ISourcePage, categorizedPivotKey: ICategoryPage ) {
+  public async updateWebInfo ( mainPivotKey: IMainPage, sourcePivotKey: ISourcePage, categorizedPivotKey: ICategoryPage ) {
 
-    let deepestKey: IAllPages | ISourcePage | ICategoryPage | any = mainPivotKey;
+    let deepestKey: IMainPage | ISourcePage | ICategoryPage | any = mainPivotKey;
     if ( mainPivotKey === 'Sources' ) { deepestKey = sourcePivotKey ; }
     if ( mainPivotKey === 'Categorized' ) { deepestKey = categorizedPivotKey ; }
 
@@ -384,7 +439,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
     console.log('state:  search', search );
     this.setState({ search: search, manual: manual, buckets: buckets, sups: sups, appLinks: appLinks, 
-      mainPivotKey: mainPivotKey, sourcePivotKey: sourcePivotKey, categorizedPivotKey: categorizedPivotKey, deepestKey: deepestKey,
+      mainPivotKey: mainPivotKey, sourcePivotKey: sourcePivotKey, categorizedPivotKey: categorizedPivotKey, deepestPivot: deepestKey,
       fetchedDocs: fetchedDocs, accounts: accounts, news: news, help: help, refreshId: this.newRefreshId() });
 
   }
@@ -483,6 +538,8 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     </Pivot>;
 
 
+
+
     const showPage1 = <Layout1Page
       source={ SourceInfo }
       refreshId={ this.state.refreshId }
@@ -494,13 +551,13 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       buckets={ this.state.buckets }
       standards={ this.state.standards }
       supporting={ this.state.supporting }
-      mainPivotKey={ this.state.deepestKey as ILayout1Page }
+      mainPivotKey={ this.state.deepestPivot as ILayout1Page }
       canvasOptions={ this.props.canvasOptions }
       debugMode={ this.state.debugMode }
     ></Layout1Page>;
 
     const showPage2 = <Layout2Page 
-      mainPivotKey={this.state.deepestKey}
+      mainPivotKey={ this.state.deepestPivot as ILayout2Page }
       refreshId={ this.state.refreshId }
       source={ SourceInfo.appLinks }
       appLinks={ this.state.appLinks }
@@ -519,13 +576,13 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       buckets={ this.state.buckets }
       standards={ this.state.standards }
       supporting={ this.state.supporting }
-      mainPivotKey={ this.state.deepestKey }
+      mainPivotKey={ this.state.mainPivotKey }
       cmdButtonCSS={bannerProps.bannerCmdReactCSS }
       canvasOptions={ this.props.canvasOptions }
       debugMode={ this.state.debugMode }
     ></SearchPage>;
 
-    const accounts = this.state.deepestKey !== 'Accounts' ? null : <AlvAccounts
+    const accounts = this.state.sourcePivotKey !== 'Accounts' ? null : <AlvAccounts
       source={ SourceInfo }
       primarySource={ SourceInfo.accounts }
       refreshId={ this.state.refreshId }
@@ -539,8 +596,8 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       order: 'asc',
     };
 
-    const news = this.state.deepestKey !== 'News' ? null : <ModernPages
-      mainPivotKey={this.state.deepestKey}
+    const news = this.state.mainPivotKey !== 'News' ? null : <ModernPages
+      mainPivotKey={this.state.mainPivotKey}
       sort = { defNewsSort }
       refreshId={ this.state.refreshId }
       source={ SourceInfo.news }
@@ -555,8 +612,8 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       order: 'asc',
     };
 
-    const help = this.state.deepestKey !== 'Help' ? null : <ModernPages
-        mainPivotKey={this.state.deepestKey}
+    const help = this.state.mainPivotKey !== 'Help' ? null : <ModernPages
+        mainPivotKey={this.state.mainPivotKey}
         sort = { defHelpSort }
         refreshId={ this.state.refreshId }
         source={ SourceInfo.help }
