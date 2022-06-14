@@ -420,6 +420,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
         items: [],
         appLinks: [],
         entities: [],
+        acronyms: [],
         accounts: [],
         manual: [],
         sups: [],
@@ -429,6 +430,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
         help: [],
 
       },
+
       top: {
         SearchFixed: this.properties.topSearchFixed,
         SearchStr: this.properties.topSearchStr,
@@ -440,6 +442,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
         items: [],
         appLinks: [],
         entities: [],
+        acronyms: [],
         accounts: [],
         manual: [],
         sups: [],
@@ -452,6 +455,16 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
       type: createEmptySearchBucket(),
       searchPlural: this.properties.searchPlural,
       searchType: this.properties.searchType,
+
+      manual: [],
+      news: [],
+      help: [],
+      appLinks: [],
+      entities: [],
+      acronyms: [],
+      sups: [],
+      accounts: [],
+
     };
 
     let canvasOptions: ICanvasContentOptions = {

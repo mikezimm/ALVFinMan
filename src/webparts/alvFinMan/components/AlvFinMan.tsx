@@ -309,10 +309,13 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       fetchedAccounts: false,
       fetchedNews: false,
       fetchedHelp: false,
+      fetchedAcronyms: false,
+      fetchedEntities: false,
 
       search: JSON.parse(JSON.stringify( this.props.search )),
       appLinks: [],
       entities: [],
+      acronyms: [],
       manual: [],
       // stds: [],
       sups: [],
@@ -324,6 +327,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       buckets: createEmptyBuckets(),
       standards: createEmptyBuckets(),
       supporting: createEmptyBuckets(),
+
       docItemKey: '',
       supItemKey: '',
       showItemPanel: false,
@@ -378,6 +382,8 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     let updateBucketsNow: boolean = false;
     let appLinks: IAnyContent[] = this.state.appLinks;
     let manual: IAnyContent[] = this.state.manual;
+    let acronyms: IAnyContent[] = this.state.acronyms;
+    let entities: IAnyContent[] = this.state.entities;
     let sups: IAnyContent[] = this.state.sups;
     let news: IPagesContent[] = this.state.news;
     let help: IPagesContent[] = this.state.help;
@@ -387,10 +393,24 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     let fetchedDocs = this.state.fetchedDocs === true ? true : false;
     let fetchedNews = this.state.fetchedNews === true ? true : false;
     let fetchedHelp = this.state.fetchedHelp === true ? true : false;
+    let fetchedEntities = this.state.fetchedEntities === true ? true : false;
+    let fetchedAcronyms = this.state.fetchedAcronyms === true ? true : false;
 
     if ( appLinks.length === 0 ) {
       appLinks = await getALVFinManContent( SourceInfo.appLinks, this.props.search );
       search = updateSearchCounts( 'appLinks', appLinks, search );
+      updateBucketsNow = true;
+    }
+    
+    if ( fetchedAcronyms !== true && ( deepestKey === 'Acronyms' || deepestKey === 'Search' ) ) {
+      acronyms = await getALVFinManContent( SourceInfo.acronyms, this.props.search );
+      search = updateSearchCounts( 'acronyms', acronyms, search );
+      updateBucketsNow = true;
+    }
+
+    if ( fetchedEntities !== true && ( deepestKey === 'Entities' || deepestKey === 'Search' )  ) {
+      entities = await getALVFinManContent( SourceInfo.entities, this.props.search );
+      search = updateSearchCounts( 'entities', entities, search );
       updateBucketsNow = true;
     }
 

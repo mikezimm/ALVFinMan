@@ -39,6 +39,7 @@ export function createEmptySearchBucket () {
     items: [],
     appLinks: [],
     entities: [],
+    acronyms: [],
     accounts: [],
     manual: [],
     sups: [],

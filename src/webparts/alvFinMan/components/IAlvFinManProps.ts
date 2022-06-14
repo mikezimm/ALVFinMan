@@ -120,6 +120,7 @@ export interface ISearchBucket {
   accounts: IAnyContent[];
   news: IPagesContent[];
   help: IPagesContent[];
+  acronyms: IAnyContent[];
 
 }
 
@@ -131,6 +132,15 @@ export interface IFinManSearch {
 
   searchPlural: boolean; //Future use, basically search for the keywords specified in props but also look for ones with an s after it.
   searchType:  boolean; //Choose to also filter on type of content:
+
+  manual: string[];
+  news: string[];
+  help: string[];
+  appLinks: string[];
+  entities: string[];
+  acronyms: string[];
+  sups: string[];
+  accounts: string[];
 
 }
 
@@ -208,7 +218,7 @@ export type ICategoryPage = ILayout1Page | ILayoutSPage;
 export type IDefaultPage = IDefMainPage | ISourcePage | ICategoryPage;
 
 
-export type IAppFormat = 'accounts' | 'manual' | 'sups' | 'appLinks' | 'news' | 'help' | 'entities';
+export type IAppFormat = 'accounts' | 'manual' | 'sups' | 'appLinks' | 'news' | 'help' | 'entities' | 'acronyms' ;
 
 export const mainDefPivots: IDefMainPage[] = [ pivotHeading0, pivotHeadingNews, pivotHeadingSourcesearch, pivotHeadingHelp, ];
 export const mainAltPivots: IAltMainPage[] = [ pivotHeadingSources, pivotHeadingCatgorized, pivotHeadingHist ];
@@ -310,6 +320,8 @@ export interface IAlvFinManState {
 
   entities: IAnyContent[];
 
+  acronyms: IAnyContent[];
+
   manual: IAnyContent[];
   // stds: IAnyContent[]; //This is currently not used.... Originally considered it as Standards since the library was 'Standard Docs'.  Maybe could be list of relavant standards in the future?
   sups: IAnyContent[];
@@ -322,6 +334,9 @@ export interface IAlvFinManState {
   fetchedDocs: boolean;
   fetchedNews: boolean;
   fetchedHelp: boolean;
+  fetchedEntities: boolean;
+  fetchedAcronyms: boolean;
+
   buckets: IFMBuckets;
   standards: IFMBucketItems;
   supporting: IFMBucketItems;
