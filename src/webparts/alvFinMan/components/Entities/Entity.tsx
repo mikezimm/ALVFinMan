@@ -140,6 +140,11 @@ public async updateWebInfo (   ) {
         { this.state.searchTime === null ? '' : ' ~ Time ' + this.state.searchTime + ' ms' }
         { /* 'Searching ' + (this.state.searchType !== 'all' ? this.state.filteredTiles.length : ' all' ) + ' items' */ }
       </div>
+      
+      <div className={ [ stylesA.searchStatus, styles.goToLink ].join(' ')} onClick={ () => { window.open( `${this.props.primarySource.webUrl}${this.props.primarySource.webRelativeLink}`,'_blank' ) ; } }>
+        Go to full list
+      </div>
+
     </div>;
 
       const debugContent = this.props.debugMode !== true ? null : <div>

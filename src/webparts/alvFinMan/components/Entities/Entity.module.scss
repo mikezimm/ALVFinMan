@@ -1,7 +1,12 @@
 @import '~office-ui-fabric-react/dist/sass/References.scss';
 
   
-
+.goToLink {
+    text-decoration: none;
+    padding-left: 50px;
+    // color: ;
+    cursor: pointer;
+}
 
 .topSearch {
     // background: pink;
