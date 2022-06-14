@@ -175,6 +175,15 @@ export interface IAlvFinManWebPartProps {
   searchType:  boolean; //Choose to also filter on type of content:
   searchDefault:  boolean; //Resets all values to default and locks them.  Turning on and off resets all values
 
+  manualSearch: string;
+  newsSearch: string;
+  helpSearch: string;
+  appLinksSearch: string;
+  entitiesSearch: string;
+  acronymsSearch: string;
+  supsSearch: string;
+  accountsSearch: string;
+
   loadPerformance: ILoadPerformanceALVFM;
 
 

@@ -401,7 +401,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       search = updateSearchCounts( 'appLinks', appLinks, search );
       updateBucketsNow = true;
     }
-    
+
     if ( fetchedAcronyms !== true && ( deepestKey === 'Acronyms' || deepestKey === 'Search' ) && this.state.acronyms.length === 0 ) {
       acronyms = await getALVFinManContent( SourceInfo.acronyms, this.props.search );
       search = updateSearchCounts( 'acronyms', acronyms, search );
@@ -556,9 +556,6 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       { categorizedItems }
 
     </Pivot>;
-
-
-
 
     const showPage1 = <Layout1Page
       source={ SourceInfo }

@@ -3,6 +3,8 @@ import * as ReactDom from 'react-dom';
 import { DisplayMode, Version } from '@microsoft/sp-core-library';
 
 import {
+  IPropertyPaneField,
+  IPropertyPaneGroup,
   IPropertyPaneConfiguration,
   PropertyPaneTextField,
   IPropertyPaneDropdownOption,
@@ -452,18 +454,19 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
         help: [],
 
       },
+      
       type: createEmptySearchBucket(),
       searchPlural: this.properties.searchPlural,
       searchType: this.properties.searchType,
 
-      manual: [],
-      news: [],
-      help: [],
-      appLinks: [],
-      entities: [],
-      acronyms: [],
-      sups: [],
-      accounts: [],
+      manual: this.properties.manualSearch ? this.properties.manualSearch.split(';') : [],
+      news:  this.properties.newsSearch ? this.properties.newsSearch.split(';') : [],
+      help:  this.properties.helpSearch ? this.properties.helpSearch.split(';') : [],
+      appLinks:  this.properties.appLinksSearch ? this.properties.appLinksSearch.split(';') : [],
+      entities:  this.properties.entitiesSearch ? this.properties.entitiesSearch.split(';') : [],
+      acronyms:  this.properties.acronymsSearch ? this.properties.acronymsSearch.split(';') : [],
+      sups:  this.properties.supsSearch ? this.properties.supsSearch.split(';') : [],
+      accounts:  this.properties.accountsSearch ? this.properties.accountsSearch.split(';') : [],
 
     };
 
@@ -731,6 +734,30 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
 
   }
 
+  protected buildSourceSearchProps() :IPropertyPaneGroup {
+
+    let fields: IPropertyPaneField<any>[] = [];
+    ['manual', 'news', 'help', 'appLinks', 'entities', 'acronyms', 'sups', 'accounts',  ].map( item => {
+
+      fields.push(PropertyPaneTextField(`${item}Search`, {
+        label: `${item.toUpperCase()} page - Search buttons`,
+        description: `Semi-colon separated words,  Use 'hideme' to hide this feature.`,
+        disabled: false,
+      }));
+
+    });
+
+    let sourceSearch: IPropertyPaneGroup = {
+      groupName: 'Source pages search',
+      isCollapsed: false,
+      groupFields: fields,
+    };
+
+    return sourceSearch;
+
+  }
+
+
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
    return {
       pages: [
@@ -788,6 +815,8 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
 
               ]
             }, // this group
+
+            this.buildSourceSearchProps(),
 
             // imgHeight: imgHeight, //Converted to px
             // imgWidth: imgWidth, //Converted to %
