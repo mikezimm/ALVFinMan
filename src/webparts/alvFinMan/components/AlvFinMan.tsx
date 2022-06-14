@@ -5,7 +5,7 @@ import { DisplayMode, Version } from '@microsoft/sp-core-library';
 
 import { IAlvFinManProps, IAlvFinManState, IFMBuckets, ILayoutNPage, ILayoutGPage, ILayoutSPage, ILayoutAPage,
   ILayoutQPage, ILayoutHPage, IAnyContent, IFinManSearch, IAppFormat, ISearchBucket,
-  IPagesContent, ILayoutLPage, ILayoutEPage, ILayoutSourcesPage, ISourcePage, ICategoryPage, ILayoutCategorizedPage, ILayoutStdPage, ILayoutSupPage, IDeepLink, IMainPage, IDefaultPage, IDefMainPage, mainDefPivots, pivotHeadingCatgorized, pivotHeadingSources } from './IAlvFinManProps';
+  IPagesContent, ILayoutLPage, ILayoutEPage, ILayoutSourcesPage, ISourcePage, ICategoryPage, ILayoutCategorizedPage, ILayoutStdPage, ILayoutSupPage, IDeepLink, IMainPage, IDefaultPage, IDefMainPage, mainDefPivots, pivotHeadingCatgorized, pivotHeadingSources, IEntityContent, IAllContentType, IAcronymContent } from './IAlvFinManProps';
 
 import { ILayout1Page, ILayout1PageProps, Layout1PageValues } from './Layout1Page/ILayout1PageProps';
 import { ILayout2Page,  } from './Layout2Page/ILayout2Props';
@@ -59,6 +59,8 @@ import Layout1Page from './Layout1Page/Layout1Page';
 import Layout2Page from './Layout2Page/Layout2Page';
 import SearchPage from './Search/SearchPage';
 import ModernPages from './ModernPages/ModernPages';
+import Entities from './Entities/Entity';
+import Acronyms from './Acronyms/Acronym';
 
 import { SourceInfo, ISourceInfo, ISourceProps } from './DataInterface';
 import {  updateSearchCounts, updateSearchTypes, getALVFinManContent, } from './DataFetch';
@@ -382,8 +384,8 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     let updateBucketsNow: boolean = false;
     let appLinks: IAnyContent[] = this.state.appLinks;
     let manual: IAnyContent[] = this.state.manual;
-    let acronyms: IAnyContent[] = this.state.acronyms;
-    let entities: IAnyContent[] = this.state.entities;
+    let acronyms: IAcronymContent[] = this.state.acronyms;
+    let entities: IEntityContent[] = this.state.entities;
     let sups: IAnyContent[] = this.state.sups;
     let news: IPagesContent[] = this.state.news;
     let help: IPagesContent[] = this.state.help;
@@ -404,13 +406,15 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
     if ( fetchedAcronyms !== true && ( deepestKey === 'Acronyms' || deepestKey === 'Search' ) && this.state.acronyms.length === 0 ) {
       acronyms = await getALVFinManContent( SourceInfo.acronyms, this.props.search );
-      search = updateSearchCounts( 'acronyms', acronyms, search );
+      search = updateSearchCounts( 'acronyms', acronyms as IAllContentType[], search );
+      fetchedAcronyms = true;
       updateBucketsNow = true;
     }
 
     if ( fetchedEntities !== true && ( deepestKey === 'Entities' || deepestKey === 'Search' && this.state.entities.length === 0 )  ) {
       entities = await getALVFinManContent( SourceInfo.entities, this.props.search );
-      search = updateSearchCounts( 'entities', entities, search );
+      search = updateSearchCounts( 'entities', entities as IAllContentType[], search );
+      fetchedEntities = true;
       updateBucketsNow = true;
     }
 
@@ -459,8 +463,12 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
     console.log('state:  search', search );
     this.setState({ search: search, manual: manual, buckets: buckets, sups: sups, appLinks: appLinks,
+      entities: entities, acronyms: acronyms,
       mainPivotKey: mainPivotKey, sourcePivotKey: sourcePivotKey, categorizedPivotKey: categorizedPivotKey, deepestPivot: deepestKey,
-      fetchedDocs: fetchedDocs, accounts: accounts, news: news, help: help, refreshId: this.newRefreshId() });
+      accounts: accounts, news: news, help: help, refreshId: this.newRefreshId(),
+      fetchedDocs: fetchedDocs, fetchedNews: fetchedNews, fetchedHelp: fetchedHelp, fetchedEntities: fetchedEntities,  fetchedAcronyms: fetchedAcronyms,
+    
+    });
 
   }
 
@@ -604,9 +612,30 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       primarySource={ SourceInfo.accounts }
       refreshId={ this.state.refreshId }
       fetchTime={ 797979 }
-      accounts={ this.state.accounts }
+      items={ this.state.accounts }
       debugMode={ this.state.debugMode }
     ></AlvAccounts>;
+
+    
+    const acronyms = this.state.sourcePivotKey !== 'Acronyms' ? null : <Acronyms
+      source={ SourceInfo }
+      primarySource={ SourceInfo.acronyms }
+      refreshId={ this.state.refreshId }
+      fetchTime={ 797979 }
+      items={ this.state.acronyms }
+      debugMode={ this.state.debugMode }
+    ></Acronyms>;
+
+    
+    const entities = this.state.sourcePivotKey !== 'Entities' ? null : <Entities
+      source={ SourceInfo }
+      primarySource={ SourceInfo.entities }
+      refreshId={ this.state.refreshId }
+      fetchTime={ 797979 }
+      items={ this.state.entities }
+      debugMode={ this.state.debugMode }
+    ></Entities>;
+
 
     const defNewsSort ={
       prop: 'Title',
@@ -724,6 +753,8 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
             { showPage1 }
             { showPage2 }
             { accounts }
+            { acronyms }
+            { entities }
             { news }
             { SearchContent }
             { help }

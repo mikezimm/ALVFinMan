@@ -1,14 +1,14 @@
 import { ISourceInfo, ISourceProps } from "../DataInterface";
-import { IAnyContent } from "../IAlvFinManProps";
+import { IEntityContent } from "../IAlvFinManProps";
 
-export interface IAlvAccountsProps {
+export interface IAlvEntitysProps {
 
   refreshId: string;
 
   source: ISourceInfo;
   primarySource: ISourceProps;
 
-  items: IAnyContent[];
+  items: IEntityContent[];
   fetchTime: number;
 
   debugMode?: boolean; //Option to display visual ques in app like special color coding and text
@@ -17,7 +17,7 @@ export interface IAlvAccountsProps {
 
 export type ISort = 'asc' | 'dec' | '-';
 
-export interface IAlvAccountsState {
+export interface IAlvEntitysState {
   // description: string;
 
   filtered: any[];

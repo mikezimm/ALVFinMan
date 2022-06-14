@@ -213,6 +213,7 @@ export function createEmptySearchBucket () {
         SearchCount: search.left.SearchCount[ idx ],
       };
     });
+
     search.top.Objects = search.top.Search.map( ( searchLC, idx ) => {
       return {
         Search: search.top.Search[ idx ],
@@ -394,8 +395,12 @@ export function createEmptySearchBucket () {
       // Create empty search arrays
       item.leftSearch = [];
       item.leftSearchLC = [];
+
       item.topSearch = [];
       item.topSearchLC = [];
+
+      item.sourceSearch = [];
+      item.sourceSearchLC = [];
 
       //update item's left search string arrays
       search.left.Search.map( ( keyWord, idx ) => {
@@ -405,6 +410,17 @@ export function createEmptySearchBucket () {
           item.leftSearchLC.push( keyWordLC );
         }
       });
+
+      //update item's top search string arrays
+      search.top.Search.map( ( keyWord, idx ) => {
+        let keyWordLC = search.top.SearchLC[ idx ];
+        if ( item.searchTextLC.indexOf( keyWordLC ) > - 1 ) {
+          item.topSearch.push( keyWord );
+          item.topSearchLC.push( keyWordLC );
+        }
+      });
+
+      //sourceProps.searchProps[ idx ]
 
       //update item's top search string arrays
       search.top.Search.map( ( keyWord, idx ) => {

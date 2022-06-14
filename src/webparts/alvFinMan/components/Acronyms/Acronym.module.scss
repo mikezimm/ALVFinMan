@@ -1,0 +1,76 @@
+@import '~office-ui-fabric-react/dist/sass/References.scss';
+
+.acronymItem {
+
+    //This is the same styling that should be in Search listItem
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 99%;
+    padding-top: 15px;
+
+    i {
+      padding-right: 15px;
+    }
+
+    .acronymDetails {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .acronymRow1 {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+    div {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    div:nth-child(1) { //This is the Acronym Title (Number)
+        color: 'darkblue';
+        width: 125px;
+        font-weight: 600;
+        padding-right: 15px;
+    }
+    div:nth-child(2) { //This is the Acronym ALGroup
+        color: 'darkred';
+        width: 225px;
+        font-weight: 600;
+    }
+    div:nth-child(3) { //This is the Acronym SubCategory
+        color: 'darkgreen';
+        width: 150px;
+        font-weight: 600;
+    }
+    div:nth-child(4) { //This is the Acronym Name
+        color: 'darkvoilet';
+        width: calc(100%-450px);
+        font-weight: 600;
+    }
+    }
+    .acronymRow2 {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+}
+

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styles from '../AlvFinMan.module.scss';
-import { IAlvAccountsProps, IAlvAccountsState, } from './IAlvAccountsProps';
+import { IAlvEntitysProps, IAlvEntitysState, } from './IAlvEntityProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 
 import { Web, ISite } from '@pnp/sp/presets/all';
@@ -19,7 +19,7 @@ import * as strings from 'AlvFinManWebPartStrings';
 import ReactJson from "react-json-view";
 
 
-import { createAccountRow } from './AccountItem';
+import { createEntityRow } from './EntityItem';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
 
@@ -31,25 +31,7 @@ const pivotStyles = {
   //   textAlign: "center"
   }};
 
-// const pivotHeading0 : ILayoutMPage = 'Main';
-// const pivotHeading1 : ILayoutSPage = 'Statements';
-// const pivotHeading2 : ILayout1Page = 'Reporting|Sections';
-// const pivotHeading3 : ILayout1Page = 'Processes';
-// const pivotHeading4 : ILayout1Page = 'Functions';
-// const pivotHeading5 : ILayout1Page = 'Topics';
-
-// const allPivots: IAllPages[] = [ pivotHeading0, pivotHeading1, pivotHeading2, pivotHeading3, pivotHeading4, pivotHeading5 ];
-// const layout1Pivots : ILayout1Page[] = [ pivotHeading2, pivotHeading3, pivotHeading4, pivotHeading5 ];
-
-// const pivotTitles = allPivots.map( pivot => { return pivot.split('|')[0] ; } );
-// const pivotKeys = allPivots.map( pivot => { return pivot.split('|')[1] ? pivot.split('|')[1] : pivot.split('|')[0] ; } );
-// const pivotItems = pivotKeys.map( ( key, idx ) => {
-//   return <PivotItem headerText={ pivotTitles[idx] } ariaLabel={pivotTitles[idx]} title={pivotTitles[idx]} itemKey={ key } ></PivotItem>;
-// });
-
-// const sourcePivotKey = 'Function';
-
-export default class AlvAccounts extends React.Component<IAlvAccountsProps, IAlvAccountsState> {
+export default class AlvEntitys extends React.Component<IAlvEntitysProps, IAlvEntitysState> {
 
 
   private LastSearch = '';
@@ -69,10 +51,8 @@ export default class AlvAccounts extends React.Component<IAlvAccountsProps, IAlv
  //Standards are really site pages, supporting docs are files
 
 
-public constructor(props:IAlvAccountsProps){
+public constructor(props:IAlvEntitysProps){
   super(props);
-  // console.log('pivotTitles', pivotTitles );
-  // console.log('pivotKeys', pivotKeys );
 
   this.state = {
     refreshId: this.props.refreshId,
@@ -115,12 +95,12 @@ public async updateWebInfo (   ) {
  *                                                                                         
  */
 
-  public render(): React.ReactElement<IAlvAccountsProps> {
+  public render(): React.ReactElement<IAlvEntitysProps> {
 
     let filtered = [];
-    this.state.filtered.map( item => {
+    this.state.filtered.map( entity => {
       if ( filtered.length < this.state.slideCount ) {
-        filtered.push( createAccountRow( item, this.state.searchText, null ));
+        filtered.push( createEntityRow( entity, this.state.searchText, null ));
 
       }
     });
@@ -138,14 +118,14 @@ public async updateWebInfo (   ) {
         onChange={ this._onSearchChange.bind(this) }
       />
       <div className={styles.searchStatus}>
-        { 'Searching ' + this.state.filtered.length + ' accounts' }
+        { 'Searching ' + this.state.filtered.length + ' entitys' }
         { this.state.searchTime === null ? '' : ' ~ Time ' + this.state.searchTime + ' ms' }
         { /* 'Searching ' + (this.state.searchType !== 'all' ? this.state.filteredTiles.length : ' all' ) + ' items' */ }
       </div>
     </div>;
 
       const debugContent = this.props.debugMode !== true ? null : <div>
-        App in debugMode - Change in Web Part Properties - Page Preferences.  <b><em>Currently in AccountsPage</em></b>
+        App in debugMode - Change in Web Part Properties - Page Preferences.  <b><em>Currently in EntitysPage</em></b>
       </div>;
 
     return (

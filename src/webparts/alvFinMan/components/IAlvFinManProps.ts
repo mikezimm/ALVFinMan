@@ -252,8 +252,12 @@ export interface IAnyContent extends Partial<any> {
   leftSearchLC: string[]; //For easy string compare
   topSearch: string[]; //For easy display of casing
   topSearchLC: string[]; //For easy string compare
-  searchSource: string; //For easy display of casing
-  searchSourceLC: string; //For easy string compare
+  searchSource: string; //For easy display of casing - For search page info
+  searchSourceLC: string; //For easy string compare - For search page info
+
+  sourceSearch: string[]; //For search buttons on Source Page 
+  sourceSearchLC: string[]; //For search buttons on Source Page 
+
   type: string;
   typeIdx: number;
   fileDisplayName: string;
@@ -292,6 +296,29 @@ export interface IPagesContent extends Partial<IAnyContent> {
 
 }
 
+export interface IEntityContent extends Partial<IAnyContent> {
+  ID: string;
+  Title: string;
+  OSCode: string;
+  HFMCode: string;
+  Parent: string;
+  Controller1: any;
+  Controller2: any;
+
+}
+
+export interface IAcronymContent extends Partial<IAnyContent> {
+  ID: string;
+  Title: string;
+  Description: string;
+  LongDefinition: string;
+  SearchWords: string;
+  Official: any;
+  StandardDocuments: string;
+  SupportDocuments: string;
+
+}
+
 export interface IDeepLink {
   main: IMainPage;
   second: ISourcePage | ICategoryPage;
@@ -320,9 +347,9 @@ export interface IAlvFinManState {
 
   appLinks: IAnyContent[];
 
-  entities: IAnyContent[];
+  entities: IEntityContent[];
 
-  acronyms: IAnyContent[];
+  acronyms: IAcronymContent[];
 
   manual: IAnyContent[];
   // stds: IAnyContent[]; //This is currently not used.... Originally considered it as Standards since the library was 'Standard Docs'.  Maybe could be list of relavant standards in the future?
