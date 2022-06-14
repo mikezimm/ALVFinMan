@@ -360,8 +360,6 @@ export function createEmptySearchBucket () {
 
             } else {
 
-
-
               let result = `${sourceProps.searchProps[ idx ]}=${item[ propArray[0] ][ propArray[1] ] }`;
               if ( sourceProps.searchProps[ idx ] === 'ReportingSections/Title' ) { 
                 result += ` || Reporting/Title=${item[ propArray[0] ][ propArray[1] ] }`; }

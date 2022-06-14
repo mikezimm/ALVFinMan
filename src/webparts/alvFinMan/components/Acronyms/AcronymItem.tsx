@@ -30,10 +30,10 @@ import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
 import { Icon, IIconProps } from 'office-ui-fabric-react/lib/Icon';
 
 import { IFMSearchType, SearchTypes } from '../DataInterface';
-import { IAnyContent, ISearchObject } from '../IAlvFinManProps';
+import { IAcronymContent, IAnyContent, ISearchObject } from '../IAlvFinManProps';
 import { getHighlightedText } from '../Elements/HighlightedText';
 
-export function createAcronymRow( item: IAnyContent , searchText: string, onClick: any ) {
+export function createAcronymRow( item: IAcronymContent , searchText: string, onClick: any ) {
 
     const row = <div className={ styles.acronymItem }>
         <div><Icon iconName={ SearchTypes.objs[item.typeIdx].icon }></Icon></div>
@@ -43,10 +43,10 @@ export function createAcronymRow( item: IAnyContent , searchText: string, onClic
             <div>{ item.ID }</div>
             <div title="Acronym">{  getHighlightedText( `${ item.Title }`, searchText )  }</div>
             <div title="Short Description">{  getHighlightedText( `${ item.Description }`, searchText )  }</div>
-            <div title="Name">{  getHighlightedText( `${ item.Name1 }`, searchText )  }</div>
         </div>
         <div className={ styles.acronymRow2}>
-            <div>{  getHighlightedText( `${ item.LongDefinition }`, searchText )  }</div>
+            <div title="LongDefinition">{  !item.LongDefinition ? '' : 'Definition:  ' + getHighlightedText( `${ item.LongDefinition }`, searchText )  }</div>
+            <div title="Related to">{ !item.SearchWords ? '' : 'Related to:  ' + getHighlightedText( `${ item.SearchWords }`, searchText )  }</div>
         </div>
         </div>
     </div>;

@@ -118,7 +118,7 @@ public async updateWebInfo (   ) {
         onChange={ this._onSearchChange.bind(this) }
       />
       <div className={styles.searchStatus}>
-        { 'Searching ' + this.state.filtered.length + ' entitys' }
+        { 'Searching ' + this.state.filtered.length + ' entities' }
         { this.state.searchTime === null ? '' : ' ~ Time ' + this.state.searchTime + ' ms' }
         { /* 'Searching ' + (this.state.searchType !== 'all' ? this.state.filteredTiles.length : ' all' ) + ' items' */ }
       </div>

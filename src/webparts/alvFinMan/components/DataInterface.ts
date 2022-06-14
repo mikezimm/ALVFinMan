@@ -161,7 +161,7 @@ export const SourceInfo: ISourceInfo = {
         searchSourceDesc:  'Entities list in Manual Subsite',
         listTitle: "Entities",
         columns: [ '*','ID','Title','OSCode', 'HFMCode', 'Controller1/Title', 'Controller2/Title', 'Parent', 'Author/Title','Editor/Title','Author/Name','Editor/Name','Modified','Created','OData__UIVersion','OData__UIVersionString'], //,'StandardDocuments/Title'
-        searchProps: [ 'Title', 'OSCode', 'HFMCode', 'Controller1', 'Controller2', 'Parent' ], //'StandardDocuments/Title'
+        searchProps: [ 'Title', 'OSCode', 'HFMCode', 'Controller1/Title', 'Controller2/Title', 'Parent' ], //'StandardDocuments/Title'
         orderBy: { prop: 'Title', asc: false },
         isModern: true,
         defSearchButtons: [],

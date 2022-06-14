@@ -30,10 +30,10 @@ import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
 import { Icon, IIconProps } from 'office-ui-fabric-react/lib/Icon';
 
 import { IFMSearchType, SearchTypes } from '../DataInterface';
-import { IAnyContent, ISearchObject } from '../IAlvFinManProps';
+import { IAnyContent, IEntityContent, ISearchObject } from '../IAlvFinManProps';
 import { getHighlightedText } from '../Elements/HighlightedText';
 
-export function createEntityRow( item: IAnyContent , searchText: string, onClick: any ) {
+export function createEntityRow( item: IEntityContent , searchText: string, onClick: any ) {
 
     const row = <div className={ styles.entityItem }>
         <div><Icon iconName={ SearchTypes.objs[item.typeIdx].icon }></Icon></div>
@@ -41,12 +41,13 @@ export function createEntityRow( item: IAnyContent , searchText: string, onClick
         <div className={ styles.entityDetails}>
         <div className={ styles.entityRow1 } style={{cursor: item.searchHref ? 'pointer' : null }} onClick = { onClick }>
             <div>{ item.ID }</div>
-            <div title="Acronym">{  getHighlightedText( `${ item.Title }`, searchText )  }</div>
-            <div title="Short Description">{  getHighlightedText( `${ item.Description }`, searchText )  }</div>
-            <div title="Name">{  getHighlightedText( `${ item.Name1 }`, searchText )  }</div>
+            <div title="OSCode / HFMCode">{  getHighlightedText( `${ item.OSCode + ' / ' + item.HFMCode }`, searchText )  }</div>
+            {/* <div title="HFMCode">{  getHighlightedText( `${ item.HFMCode }`, searchText )  }</div> */}
+            <div title="Entity">{  getHighlightedText( `${ item.Title }`, searchText )  }</div>
         </div>
         <div className={ styles.entityRow2}>
-            <div>{  getHighlightedText( `${ item.LongDefinition }`, searchText )  }</div>
+            <div title="Controller1">{  'Controller: ' + !item.Controller1[0] ? 'None assigned' : getHighlightedText( `${ item.Controller1[0].Title }`, searchText )  }</div>
+            <div title="Controller2">{  'Backups: ' + getHighlightedText( `${ !item.Controller2 ? null : item.Controller2.map( controller => { return controller.Title ; }).join('; ')}`, searchText )  }</div>
         </div>
         </div>
     </div>;
