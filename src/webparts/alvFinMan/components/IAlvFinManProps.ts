@@ -178,6 +178,7 @@ export type ILayoutAPage = 'Accounts';
 export type ILayoutQPage = 'Search';
 export type ILayoutHPage = 'Help';
 export type ILayoutEPage = 'Entities';
+export type ILayoutAcronymPage = 'Acronyms';
 
 export type ILayoutStdPage = 'Standards';
 export type ILayoutSupPage = 'SupportDocs';
@@ -200,6 +201,7 @@ export const pivotHeadingHelp : ILayoutHPage = 'Help';
 export const pivotHeadingHist : ILayoutHistPage = 'History';
 export const pivotHeadingLinks : ILayoutLPage = 'Links';
 export const pivotHeadingEntities : ILayoutEPage = 'Entities';
+export const pivotHeadingAcronyms : ILayoutAcronymPage = 'Acronyms';
 
 export const pivotHeadingSources : ILayoutSourcesPage = 'Sources';
 
@@ -212,7 +214,7 @@ export type IDefMainPage = ILayoutNPage | ILayoutGPage | ILayoutQPage | ILayoutH
 export type IAltMainPage = ILayoutSourcesPage | ILayoutCategorizedPage | ILayoutHistPage;
 export type IMainPage = IDefMainPage | IAltMainPage;
 
-export type ISourcePage = '' | ILayoutLPage | ILayoutAPage | ILayoutStdPage | ILayoutSupPage | ILayoutEPage | ILayoutSupPage  | ILayoutLPage;
+export type ISourcePage = '' | ILayoutLPage | ILayoutAPage | ILayoutStdPage | ILayoutSupPage | ILayoutEPage |  ILayoutAcronymPage;
 export type ICategoryPage = ILayout1Page | ILayoutSPage;
 
 export type IDefaultPage = IDefMainPage | ISourcePage | ICategoryPage;
@@ -222,7 +224,7 @@ export type IAppFormat = 'accounts' | 'manual' | 'sups' | 'appLinks' | 'news' | 
 
 export const mainDefPivots: IDefMainPage[] = [ pivotHeading0, pivotHeadingNews, pivotHeadingSourcesearch, pivotHeadingHelp, ];
 export const mainAltPivots: IAltMainPage[] = [ pivotHeadingSources, pivotHeadingCatgorized, pivotHeadingHist ];
-export const sourcePivots: ISourcePage[] = [ pivotHeadingAcc, pivotHeadingLinks, pivotHeadingManual, pivotHeadingSupporting, pivotHeadingEntities ];
+export const sourcePivots: ISourcePage[] = [ pivotHeadingAcc, pivotHeadingLinks, pivotHeadingManual, pivotHeadingSupporting, pivotHeadingEntities, pivotHeadingAcronyms ];
 
 export const categorizedPivots: ICategoryPage[] = [ pivotHeading1, pivotHeading2, pivotHeading3, pivotHeading4, pivotHeading5,  ];
 

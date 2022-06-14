@@ -402,13 +402,13 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       updateBucketsNow = true;
     }
     
-    if ( fetchedAcronyms !== true && ( deepestKey === 'Acronyms' || deepestKey === 'Search' ) ) {
+    if ( fetchedAcronyms !== true && ( deepestKey === 'Acronyms' || deepestKey === 'Search' ) && this.state.acronyms.length === 0 ) {
       acronyms = await getALVFinManContent( SourceInfo.acronyms, this.props.search );
       search = updateSearchCounts( 'acronyms', acronyms, search );
       updateBucketsNow = true;
     }
 
-    if ( fetchedEntities !== true && ( deepestKey === 'Entities' || deepestKey === 'Search' )  ) {
+    if ( fetchedEntities !== true && ( deepestKey === 'Entities' || deepestKey === 'Search' && this.state.entities.length === 0 )  ) {
       entities = await getALVFinManContent( SourceInfo.entities, this.props.search );
       search = updateSearchCounts( 'entities', entities, search );
       updateBucketsNow = true;
@@ -458,7 +458,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     search = updateSearchTypes( [ ...appLinks, ...manual, ...sups, ...accounts, ], search );
 
     console.log('state:  search', search );
-    this.setState({ search: search, manual: manual, buckets: buckets, sups: sups, appLinks: appLinks, 
+    this.setState({ search: search, manual: manual, buckets: buckets, sups: sups, appLinks: appLinks,
       mainPivotKey: mainPivotKey, sourcePivotKey: sourcePivotKey, categorizedPivotKey: categorizedPivotKey, deepestPivot: deepestKey,
       fetchedDocs: fetchedDocs, accounts: accounts, news: news, help: help, refreshId: this.newRefreshId() });
 

@@ -31,7 +31,7 @@ export const LookupColumns: string[] = ['Functions/Title', 'Topics/Title', 'ALGr
 export const ExtraFetchClassicWiki = ['WikiField'];
 export const ExtraFetchModernPage = ['WikiField','CanvasContent1','LayoutsWebpartsContent'];
 
-export type IDefSourceType = 'link' | 'news' | 'help' | 'account' | 'std' | 'manual' | 'SupportDocuments' | 'entities' | 'acronyms' ;
+export type IDefSourceType = 'link' | 'news' | 'help' | 'account' | 'std' | 'manual' | 'SupportDocuments' | 'entity' | 'acronym' ;
 
 export type ISearchSource = 'AppLinks' | 'News' | 'Help' | 'Accounts' | 'SupportDocs' | 'Manual' | 'Standards' | 'Policies' | 'Instructions' | 'Entities' | 'Acronyms' ;
 
@@ -154,13 +154,13 @@ export const SourceInfo: ISourceInfo = {
 
     entities: {
         key: 'entities',
-        defType: 'entities',
+        defType: 'entity',
         webUrl: `${FinManSite}Manual/`,
         webRelativeLink: "lists/Entities",
         searchSource: 'Entities',
         searchSourceDesc:  'Entities list in Manual Subsite',
         listTitle: "Entities",
-        columns: [ '*','ID','Title','OSCode', 'HFMCode', 'Controller1', 'Controller2', 'Parent', 'Author/Title','Editor/Title','Author/Name','Editor/Name','Modified','Created','OData__UIVersion','OData__UIVersionString'], //,'StandardDocuments/Title'
+        columns: [ '*','ID','Title','OSCode', 'HFMCode', 'Controller1/Title', 'Controller2/Title', 'Parent', 'Author/Title','Editor/Title','Author/Name','Editor/Name','Modified','Created','OData__UIVersion','OData__UIVersionString'], //,'StandardDocuments/Title'
         searchProps: [ 'Title', 'OSCode', 'HFMCode', 'Controller1', 'Controller2', 'Parent' ], //'StandardDocuments/Title'
         orderBy: { prop: 'Title', asc: false },
         isModern: true,
@@ -169,14 +169,14 @@ export const SourceInfo: ISourceInfo = {
 
     acronyms: {
         key: 'acronyms',
-        defType: 'acronyms',
+        defType: 'acronym',
         webUrl: `${FinManSite}Manual/`,
         webRelativeLink: "lists/Acronyms",
         searchSource: 'Acronyms',
         searchSourceDesc:  'Acronyms list in Manual Subsite',
         listTitle: "Acronyms",
-        columns: [ '*','ID','Title','Description', 'SearchWords', 'LongDefinition', 'Official.Url', 'Official.Description', 'StandardDocuments/ID', 'StandardDocuments/Title', 'Author/Title','Editor/Title','Author/Name','Editor/Name','Modified','Created','OData__UIVersion','OData__UIVersionString'], //,'StandardDocuments/Title'
-        searchProps: [ 'Title', 'Description', 'SearchWords', 'LongDefinition', 'Official.Description', 'StandardDocuments/Title', ], //'StandardDocuments/Title'
+        columns: [ '*','ID','Title','Description', 'SearchWords', 'LongDefinition', 'Official', 'StandardDocuments/ID', 'StandardDocuments/Title', 'Author/Title','Editor/Title','Author/Name','Editor/Name','Modified','Created','OData__UIVersion','OData__UIVersionString'], //,'StandardDocuments/Title'
+        searchProps: [ 'Title', 'Description', 'SearchWords', 'LongDefinition', 'StandardDocuments/Title', ], //'StandardDocuments/Title'
         orderBy: { prop: 'Title', asc: false },
         isModern: true,
         defSearchButtons: [],
