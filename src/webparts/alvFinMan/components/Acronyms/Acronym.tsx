@@ -1,5 +1,7 @@
 import * as React from 'react';
-import styles from '../AlvFinMan.module.scss';
+import stylesA from '../AlvFinMan.module.scss';
+import styles from './Acronym.module.scss';
+
 import { IAlvAcronymsProps, IAlvAcronymsState, } from './IAlvAcronymProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 
@@ -57,6 +59,7 @@ public constructor(props:IAlvAcronymsProps){
   this.state = {
     refreshId: this.props.refreshId,
     filtered: this.props.items,
+    topSearch: [],
     slideCount: 20,
     sortNum: 'asc',
     sortName: '-',
@@ -107,17 +110,18 @@ public async updateWebInfo (   ) {
 
     /*https://developer.microsoft.com/en-us/fabric#/controls/web/searchbox*/
     let searchBox =  
-    <div className={[styles.searchContainer ].join(' ')} >
+    <div className={[stylesA.searchContainer ].join(' ')} >
       <SearchBox
-        className={styles.searchBox}
+        className={stylesA.searchBox}
         styles={{ root: { maxWidth:250 } }}
         placeholder="Search"
         onSearch={ this._onSearchChange.bind(this) }
         onFocus={ () => console.log('this.state',  this.state) }
         onBlur={ () => console.log('onBlur called') }
         onChange={ this._onSearchChange.bind(this) }
+        onClear={ this._onSearchChange.bind(this) }
       />
-      <div className={styles.searchStatus}>
+      <div className={stylesA.searchStatus}>
         { 'Searching ' + this.state.filtered.length + ' accounts' }
         { this.state.searchTime === null ? '' : ' ~ Time ' + this.state.searchTime + ' ms' }
         { /* 'Searching ' + (this.state.searchType !== 'all' ? this.state.filteredTiles.length : ' all' ) + ' items' */ }
@@ -129,9 +133,9 @@ public async updateWebInfo (   ) {
       </div>;
 
     return (
-      <div className={ styles.alvFinMan }>
+      <div className={ stylesA.alvFinMan }>
         {/* <div className={ styles.container }> */}
-          <div className={ styles.row }>
+          <div className={ stylesA.row }>
             {/* <div className={ styles.column }> */}
               { debugContent }
               { this.props.fetchTime }

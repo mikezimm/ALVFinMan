@@ -42,11 +42,11 @@ export function createAcronymRow( item: IAcronymContent , searchText: string, on
         <div className={ styles.acronymRow1 } style={{cursor: item.searchHref ? 'pointer' : null }} onClick = { onClick }>
             <div>{ item.ID }</div>
             <div title="Acronym">{  getHighlightedText( `${ item.Title }`, searchText )  }</div>
-            <div title="Short Description">{  getHighlightedText( `${ item.Description }`, searchText )  }</div>
+            <div title="Short Description">Description:&nbsp;&nbsp;{ !item.Description ? '---' : getHighlightedText( `${ item.Description }`, searchText )  }</div>
         </div>
         <div className={ styles.acronymRow2}>
-            <div title="LongDefinition">{  !item.LongDefinition ? '' : 'Definition:  ' + getHighlightedText( `${ item.LongDefinition }`, searchText )  }</div>
-            <div title="Related to">{ !item.SearchWords ? '' : 'Related to:  ' + getHighlightedText( `${ item.SearchWords }`, searchText )  }</div>
+            <div title="LongDefinition">Definition:&nbsp;&nbsp;{  !item.LongDefinition ? '---' : getHighlightedText( `${ item.LongDefinition }`, searchText )  }</div>
+            <div title="Related to" style={{paddingLeft: '30px' }}>Related to:&nbsp;&nbsp;{ !item.SearchWords ? '' : getHighlightedText( `${ item.SearchWords }`, searchText )  }</div>
         </div>
         </div>
     </div>;

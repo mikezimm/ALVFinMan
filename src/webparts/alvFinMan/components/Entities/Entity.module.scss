@@ -1,5 +1,46 @@
 @import '~office-ui-fabric-react/dist/sass/References.scss';
 
+  
+
+
+.topSearch {
+    // background: pink;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    margin-top: 10px;
+    // padding: 10px;
+    .button {
+        padding: 7px 10px;
+        height: 16px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 50px;
+        margin-right: 10px;
+
+        text-decoration: none;
+        text-align: center;
+        // height: 32px;
+    
+        // Primary Button
+        min-width: 80px;
+        background-color: lightgray;
+        border-color: lightgray;
+        color: black;
+    }
+
+    .button.isSelected {
+        background-color: $ms-color-themePrimary;
+        border-color: $ms-color-themePrimary;
+        color: $ms-color-white;
+        font-weight: bolder;
+      }
+
+
+}
+
 .entityItem {
 
     //This is the same styling that should be in Search listItem
@@ -11,7 +52,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 99%;
-    padding-top: 15px;
+    padding-top: 20px;
 
     i {
       padding-right: 15px;
@@ -47,22 +88,26 @@
             font-weight: 600;
             padding-right: 15px;
         }
-        div:nth-child(2) { //This is the Entity Name
+        div:nth-child(2) { //This is the Entity Parent
             color: darkred;
             width: 225px;
             font-weight: 600;
         }
+
         div:nth-child(3) { //This is the Entity OSCode
             color: darkgreen;
             width: 350px;
             font-weight: 600;
         }
+
         div:nth-child(4) { //This is the Entity HFMCode
             color: darkviolet;
+            width: 350px;
             width: calc(100%-450px);
             font-weight: 600;
         }
     }
+
     .entityRow2 {
         display: flex;
         flex-direction: row;

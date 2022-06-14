@@ -609,6 +609,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
     const accounts = this.state.sourcePivotKey !== 'Accounts' ? null : <AlvAccounts
       source={ SourceInfo }
+      search={ this.state.search }
       primarySource={ SourceInfo.accounts }
       refreshId={ this.state.refreshId }
       fetchTime={ 797979 }
@@ -619,6 +620,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     
     const acronyms = this.state.sourcePivotKey !== 'Acronyms' ? null : <Acronyms
       source={ SourceInfo }
+      search={ this.state.search }
       primarySource={ SourceInfo.acronyms }
       refreshId={ this.state.refreshId }
       fetchTime={ 797979 }
@@ -629,6 +631,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     
     const entities = this.state.sourcePivotKey !== 'Entities' ? null : <Entities
       source={ SourceInfo }
+      search={ this.state.search }
       primarySource={ SourceInfo.entities }
       refreshId={ this.state.refreshId }
       fetchTime={ 797979 }

@@ -329,7 +329,14 @@ export function createEmptySearchBucket () {
         } else if ( propArray.length === 2 ) {
           let hasError: boolean = false;
           try {
-            item[ sourceProps.searchProps[ idx ] ] = item[ propArray[0] ][ propArray[1] ]; //Add flattened value - item["Author/Title"]= item.Author.Title
+            if ( Array.isArray( item[ propArray[0] ] )) {
+              item[ sourceProps.searchProps[ idx ] ] = item[ propArray[0] ].map( itemX => { return itemX[ propArray[1] ] ; }); //Add flattened value - item["Author/Title"]= [ item.Author[0].Title, item.Author[1].Title]
+
+            } else {
+              item[ sourceProps.searchProps[ idx ] ] = item[ propArray[0] ][ propArray[1] ]; //Add flattened value - item["Author/Title"]= item.Author.Title
+
+            }
+
             //Manually copy ReportingSections/Title over to Reporting/Title
             if ( sourceProps.searchProps[ idx ] === 'ReportingSections/Title' ) { item[ 'Reporting/Title'] = item[ sourceProps.searchProps[ idx ] ]; }
           } catch (e) {
@@ -351,12 +358,16 @@ export function createEmptySearchBucket () {
                 result += ` || Reporting/Title=${item[ propArray[0] ][ propArray[1] ] .join(';')}`; }
               return result;
 
-            } else if ( Array.isArray( item[ propArray[0] ] )  ) {
+            } else if ( Array.isArray( item[ propArray[0] ] )  ) { //As in Controller2/Title
               /**
                * NEED TO ADD LOOP HERE TO CHECK FOR MULTI-SELECT Lookups like ReportingSections/Titles.
                * They don't get caught in the above one because the logic does not work that way
                */
 
+              if ( item[ sourceProps.searchProps[ idx ] ] ) {
+                let result = `${sourceProps.searchProps[ idx ]}=${item[ sourceProps.searchProps[ idx ] ] .join(';')}`;
+                return result;
+              }
 
             } else {
 

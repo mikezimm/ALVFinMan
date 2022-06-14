@@ -1,9 +1,11 @@
 import { ISourceInfo, ISourceProps } from "../DataInterface";
-import { IEntityContent } from "../IAlvFinManProps";
+import { IEntityContent, IFinManSearch } from "../IAlvFinManProps";
 
 export interface IAlvEntitysProps {
 
   refreshId: string;
+
+  search: IFinManSearch ;
 
   source: ISourceInfo;
   primarySource: ISourceProps;
@@ -21,6 +23,8 @@ export interface IAlvEntitysState {
   // description: string;
 
   filtered: any[];
+  topSearch: string[];
+  
   slideCount: number;
   sortNum: ISort;
   sortName: ISort;

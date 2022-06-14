@@ -1,5 +1,7 @@
 import * as React from 'react';
-import styles from '../AlvFinMan.module.scss';
+import stylesA from '../AlvFinMan.module.scss';
+import styles from './Entity.module.scss';
+
 import { IAlvEntitysProps, IAlvEntitysState, } from './IAlvEntityProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 
@@ -20,6 +22,7 @@ import ReactJson from "react-json-view";
 
 
 import { createEntityRow } from './EntityItem';
+import { IEntityContent } from '../IAlvFinManProps';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
 
@@ -58,6 +61,7 @@ public constructor(props:IAlvEntitysProps){
     refreshId: this.props.refreshId,
     filtered: this.props.items,
     slideCount: 20,
+    topSearch: [],
     sortNum: 'asc',
     sortName: '-',
     sortGroup: '-',
@@ -97,6 +101,18 @@ public async updateWebInfo (   ) {
 
   public render(): React.ReactElement<IAlvEntitysProps> {
 
+    const search = this.props.search;
+    
+    let topSearch: any[] = [];  //All major future to be grid components
+
+    search.entities.map( searchObject => {
+      let classNames = [ styles.button ];
+      if ( this.state.topSearch.indexOf( searchObject ) > -1 ) { classNames.push( styles.isSelected ) ; }
+      topSearch.push( <div className={ classNames.join(' ') } style={ null }  onClick={ this._clickTop.bind( this, searchObject )}>{ searchObject }</div> );
+    });
+
+    const topSearchContent = <div className={ styles.topSearch } style={ { background : this.props.debugMode === true ? 'pink' : null }} >{ topSearch }</div>;
+
     let filtered = [];
     this.state.filtered.map( entity => {
       if ( filtered.length < this.state.slideCount ) {
@@ -105,19 +121,21 @@ public async updateWebInfo (   ) {
       }
     });
 
+
     /*https://developer.microsoft.com/en-us/fabric#/controls/web/searchbox*/
     let searchBox =  
-    <div className={[styles.searchContainer ].join(' ')} >
+    <div className={[stylesA.searchContainer ].join(' ')} >
       <SearchBox
-        className={styles.searchBox}
+        className={stylesA.searchBox}
         styles={{ root: { maxWidth:250 } }}
         placeholder="Search"
         onSearch={ this._onSearchChange.bind(this) }
         onFocus={ () => console.log('this.state',  this.state) }
         onBlur={ () => console.log('onBlur called') }
         onChange={ this._onSearchChange.bind(this) }
+        onClear={ this._onSearchChange.bind(this) }
       />
-      <div className={styles.searchStatus}>
+      <div className={stylesA.searchStatus}>
         { 'Searching ' + this.state.filtered.length + ' entities' }
         { this.state.searchTime === null ? '' : ' ~ Time ' + this.state.searchTime + ' ms' }
         { /* 'Searching ' + (this.state.searchType !== 'all' ? this.state.filteredTiles.length : ' all' ) + ' items' */ }
@@ -129,13 +147,14 @@ public async updateWebInfo (   ) {
       </div>;
 
     return (
-      <div className={ styles.alvFinMan }>
+      <div className={ stylesA.alvFinMan }>
         {/* <div className={ styles.container }> */}
-          <div className={ styles.row }>
+          <div className={ stylesA.row }>
             {/* <div className={ styles.column }> */}
               { debugContent }
-              { this.props.fetchTime }
+              { this.state.searchTime }
               { searchBox }
+              { topSearchContent }
               { filtered }
               {/* { componentPivot }
               { showPage }
@@ -147,6 +166,75 @@ public async updateWebInfo (   ) {
     );
   }
   
+  private _clickTop( item: string, event ) {
+
+
+    let selected: string[] = this.toggleSearchInArray( this.state.topSearch, item , event.ctrlKey === true ? 'multi' : 'single' );
+    console.log('_clickTop:', item, selected );
+
+    let startingItems: IEntityContent[] = this.props.items;
+    let filtered: IEntityContent[] = this.getFilteredItems( startingItems, this.state.searchText, selected, );
+
+    this.setState({ topSearch: selected , filtered: filtered });
+  }
+
+  private toggleSearchInArray( searchArray: string[], value: string, doThis: 'multi' | 'single' ) {
+
+    let selected: string[] = JSON.parse(JSON.stringify( searchArray ));
+    const idx = selected.indexOf( value );
+    if ( doThis === 'multi' ) {
+      if ( idx < 0 ) { selected.push( value ) ; } else { delete selected[ idx ] ; }
+    } else if ( doThis === 'single' ) {
+      if ( selected.length > 1 ) {
+        selected = [ value ] ;  }
+      else if ( idx < 0 ) { selected = [ value ] ; }
+      else if ( idx > -1 ) { selected = [ ] ; }
+      else { alert( 'toggleSearchInArrayError'); console.log('toggleSearchInArray Not triggered:', value, doThis, searchArray, ) ; }
+    }
+  
+    return selected;
+  
+  }
+
+  
+  private getFilteredItems( startingItems: IEntityContent[], text: string, top: string[]  ) {
+
+    let filteredItems : IEntityContent[] = [];
+
+    startingItems.map( item => {
+
+      let passMe = true;
+
+      //Hiding this if I only go with simple text search
+      // if ( top.length > 0 && passMe === true ) { 
+      //   let passThis: boolean = false;
+      //   item.topSearch.map( test => {
+      //     if ( top.indexOf( test ) > -1 ) { passThis = true ; }
+      //   });
+      //   if ( passThis === false ) { passMe = false; }
+      // }
+
+      //Separate logic from SearchPage.tsx search... this looks at the searchTextLC for simpler execution
+      if ( top.length > 0 && passMe === true ) { 
+        let passThis: any = false;
+        top.map( topTest => {
+          if ( item.searchTextLC.indexOf( topTest.toLowerCase() ) > -1 ) { passThis = true ; }
+        });
+        if ( passThis === false ) { passMe = false; }
+      }
+
+      if ( passMe === true && text && text.length > 0 ) { 
+        if ( item.searchTextLC.indexOf( text.toLowerCase() ) < 0 ) { passMe = false; }
+
+      }
+
+      if ( passMe === true ) { filteredItems.push ( item ) ; }
+    });
+
+    console.log(' filteredItems: ', filteredItems );
+    return filteredItems;
+  }
+
   /**
    * Source:  https://github.com/pnp/sp-dev-fx-webparts/issues/1944
    * 
@@ -171,26 +259,19 @@ public async updateWebInfo (   ) {
   }
 
   private _onSearchChange ( NewSearch ){
-  
+
+    let startTime = new Date();
     const SearchValue = NewSearch.target.value;
-    
+
+    let filtered: IEntityContent[] = this.getFilteredItems( this.props.items, NewSearch.target.value, this.state.topSearch, );
+
+    let endTime = new Date();
+    let totalTime = endTime.getTime() - startTime.getTime();
+
     if ( !SearchValue ) {
-      this.setState({ filtered: this.props.items, searchText: '', searchTime: null });
-    } else {
-
-      let startTime = new Date();
-      let filtered: any[] = [];
-      let NewSearchLC = SearchValue.toLowerCase();
-      this.props.items.map( item => {
-        if ( item.searchTextLC.indexOf( NewSearchLC ) > -1 ) {
-          filtered.push( item );
-        }
-      });
-  
       
-      let endTime = new Date();
-
-      let totalTime = endTime.getTime() - startTime.getTime();
+      this.setState({ filtered: filtered, searchText: '', searchTime: totalTime });
+    } else {
 
       this.setState({ filtered: filtered, searchText: SearchValue, searchTime: totalTime });
     }

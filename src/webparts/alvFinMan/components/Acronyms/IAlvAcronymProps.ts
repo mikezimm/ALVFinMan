@@ -1,9 +1,11 @@
 import { ISourceInfo, ISourceProps } from "../DataInterface";
-import { IAcronymContent } from "../IAlvFinManProps";
+import { IAcronymContent, IFinManSearch } from "../IAlvFinManProps";
 
 export interface IAlvAcronymsProps {
 
   refreshId: string;
+
+  search: IFinManSearch ;
 
   source: ISourceInfo;
   primarySource: ISourceProps;
@@ -21,6 +23,8 @@ export interface IAlvAcronymsState {
   // description: string;
 
   filtered: any[];
+  topSearch: string[];
+  
   slideCount: number;
   sortNum: ISort;
   sortName: ISort;

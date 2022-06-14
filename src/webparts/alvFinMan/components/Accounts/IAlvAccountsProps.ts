@@ -1,9 +1,11 @@
 import { ISourceInfo, ISourceProps } from "../DataInterface";
-import { IAnyContent } from "../IAlvFinManProps";
+import { IAnyContent, IFinManSearch } from "../IAlvFinManProps";
 
 export interface IAlvAccountsProps {
 
   refreshId: string;
+
+  search: IFinManSearch ;
 
   source: ISourceInfo;
   primarySource: ISourceProps;

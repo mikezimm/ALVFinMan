@@ -1,5 +1,29 @@
 @import '~office-ui-fabric-react/dist/sass/References.scss';
 
+  
+.button.isSelected {
+    background-color: $ms-color-themePrimary;
+    border-color: $ms-color-themePrimary;
+    color: $ms-color-white;
+  }
+
+.topSearch {
+    background: pink;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    // padding: 10px;
+    .button {
+        padding: 7px;
+        height: 16px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 50px;
+    }
+}
+
 .acronymItem {
 
     //This is the same styling that should be in Search listItem
@@ -11,7 +35,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 99%;
-    padding-top: 15px;
+    padding-top: 20px;
 
     i {
       padding-right: 15px;
