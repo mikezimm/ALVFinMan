@@ -274,9 +274,9 @@ public async updateWebInfo (   ) {
 
     //https://stackoverflow.com/a/40493291
 
-    setTimeout(() => {
+    // setTimeout(() => {
       this.updateParentDeeplinks( SearchValue, this.state.topSearch );
-    }, 1000);
+    // }, 1000);
 
     let filtered: IEntityContent[] = this.getFilteredItems( this.props.items, NewSearch.target.value, this.state.topSearch, );
 
