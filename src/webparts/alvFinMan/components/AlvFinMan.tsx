@@ -149,7 +149,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
   private WebPartHelpElement = getWebPartHelpElement( this.props.sitePresets );
   private contentPages : IBannerPages = getBannerPages( this.props.bannerProps );
 
-  
+
   private getMainPivotKey( defaultPivotKey: IDefaultPage ) {
 
     let mainPivotKey: IMainPage = null;
@@ -221,6 +221,19 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     let newDeepState : IDeepLink[] = this.bumpDeepState( mainPivotKey, secondKey as any, [], this.state ? this.state.deepLinks : [] );
 
     return newDeepState;
+
+  }
+
+  private updatePathNameDeepLink(primary: string, secondary: string, remaining: string[] ) {
+    
+    let newParameters = `?primary=${primary}&secondary=${secondary}`;
+    let theRest = remaining.length === 0 ? '' : remaining.map( (link, idx) => { return `&deep${idx}=${link}` }).join('');
+    const nextURL = window.location.pathname + newParameters;
+    const nextTitle = 'ALV Finance Manual';
+    const nextState = { additionalInformation: 'Update the Url with app deep link' };
+
+    // This will replace the current entry in the browser's history, without reloading
+    window.history.replaceState(nextState, nextTitle, nextURL);
 
   }
 

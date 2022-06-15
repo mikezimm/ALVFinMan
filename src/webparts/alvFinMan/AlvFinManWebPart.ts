@@ -160,6 +160,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
 
   };
 
+  private renderCount = 0;
   //ADDED FOR WEBPART HISTORY:  
   private thisHistoryInstance: IWebpartHistoryItem2 = null;
 
