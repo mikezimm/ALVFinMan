@@ -190,6 +190,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
    */
   private bumpDeepState( main: IMainPage | 'copyLast', second: ISourcePage | ICategoryPage | 'copyLast', deeps: string[], logic: IDeepLogic, deepLinks: IDeepLink[] ) : IDeepStateChange {
     
+    const historyPause = 2000;
 
     if ( main === 'History' ) { return { deepLinks: deepLinks, hasChanged: false } ; }
 
@@ -242,7 +243,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
             hasChanged = true ;
 
             if ( logic === 'Sources' || logic === 'Accounts' ) {
-              if ( newDeep.timeMs < ( prevDeep.timeMs + 1000 ) ) {
+              if ( newDeep.timeMs < ( prevDeep.timeMs + historyPause ) ) {
                 //Just update last deepLink because it is likely just clicking around or typing in search
                 updateLast = true ;
   
