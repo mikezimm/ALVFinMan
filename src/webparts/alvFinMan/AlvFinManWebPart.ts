@@ -465,6 +465,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
       help:  this.properties.helpSearch ? this.properties.helpSearch.split(';') : [],
       appLinks:  this.properties.appLinksSearch ? this.properties.appLinksSearch.split(';') : [],
       entities:  this.properties.entitiesSearch ? this.properties.entitiesSearch.split(';') : [],
+      history:  this.properties.historySearch ? this.properties.historySearch.split(';') : [],
       acronyms:  this.properties.acronymsSearch ? this.properties.acronymsSearch.split(';') : [],
       sups:  this.properties.supsSearch ? this.properties.supsSearch.split(';') : [],
       accounts:  this.properties.accountsSearch ? this.properties.accountsSearch.split(';') : [],
@@ -738,7 +739,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
   protected buildSourceSearchProps() :IPropertyPaneGroup {
 
     let fields: IPropertyPaneField<any>[] = [];
-    ['manual', 'news', 'help', 'appLinks', 'entities', 'acronyms', 'sups', 'accounts',  ].map( item => {
+    ['manual', 'news', 'help', 'appLinks', 'entities', 'acronyms', 'sups', 'accounts', 'history' ].map( item => {
 
       fields.push(PropertyPaneTextField(`${item}Search`, {
         label: `${item.toUpperCase()} page - Search buttons`,

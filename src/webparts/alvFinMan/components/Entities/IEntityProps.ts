@@ -1,7 +1,7 @@
 import { ISourceInfo, ISourceProps } from "../DataInterface";
 import { IEntityContent, IFinManSearch } from "../IAlvFinManProps";
 
-export interface IAlvEntitysProps {
+export interface IEntitysProps {
 
   refreshId: string;
 
@@ -9,6 +9,8 @@ export interface IAlvEntitysProps {
 
   source: ISourceInfo;
   primarySource: ISourceProps;
+
+  bumpDeepLinks: any;
 
   items: IEntityContent[];
   fetchTime: number;
@@ -19,7 +21,7 @@ export interface IAlvEntitysProps {
 
 export type ISort = 'asc' | 'dec' | '-';
 
-export interface IAlvEntitysState {
+export interface IEntitysState {
   // description: string;
 
   filtered: any[];

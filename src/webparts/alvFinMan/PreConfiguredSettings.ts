@@ -93,6 +93,7 @@ export const PresetEverywhere : IPreConfigSettings = {
 
         debugMode: false,
         entitiesSearch: 'AAM;AAS;ACH;AEU;ALV_Corp;ALVGO;ALVTC;NDC',
+        historySearch: 'News;Help;Accounts;Links;Standards;SupportDocs;Entities;Acronyms',
 
     }
 };

@@ -139,6 +139,7 @@ export interface IFinManSearch {
   appLinks: string[];
   entities: string[];
   acronyms: string[];
+  history: string[];
   sups: string[];
   accounts: string[];
 
@@ -319,6 +320,8 @@ export interface IAcronymContent extends Partial<IAnyContent> {
 
 }
 
+export type IDeepLogic = '' | 'Sources' | 'Accounts' | 'Other';
+
 export interface IDeepLink {
   main: IMainPage;
   second: ISourcePage | ICategoryPage;
@@ -331,6 +334,8 @@ export interface IDeepLink {
   timeLabel: string;
   deltaMs: number;
   processTime: number;
+  searchTextLC: string;
+  logic: IDeepLogic;
 
 }
 

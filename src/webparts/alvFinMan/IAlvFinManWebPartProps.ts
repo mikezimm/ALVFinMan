@@ -180,6 +180,7 @@ export interface IAlvFinManWebPartProps {
   helpSearch: string;
   appLinksSearch: string;
   entitiesSearch: string;
+  historySearch: string;
   acronymsSearch: string;
   supsSearch: string;
   accountsSearch: string;

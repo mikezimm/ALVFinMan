@@ -1,8 +1,8 @@
 import * as React from 'react';
 import stylesA from '../AlvFinMan.module.scss';
-import styles from './Entity.module.scss';
+import styles from './History.module.scss';
 
-import { IEntitysProps, IEntitysState, } from './IEntityProps';
+import { IHistoryProps, IHistoryState, } from './IHistoryProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 
 import { Web, ISite } from '@pnp/sp/presets/all';
@@ -21,8 +21,8 @@ import * as strings from 'AlvFinManWebPartStrings';
 import ReactJson from "react-json-view";
 
 
-import { createEntityRow } from './EntityItem';
-import { IEntityContent } from '../IAlvFinManProps';
+import { createHistoryRow } from './HistoryItem';
+import { IDeepLink } from '../IAlvFinManProps';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
 
@@ -34,7 +34,7 @@ const pivotStyles = {
   //   textAlign: "center"
   }};
 
-export default class AlvEntitys extends React.Component<IEntitysProps, IEntitysState> {
+export default class History extends React.Component<IHistoryProps, IHistoryState> {
 
 
   private LastSearch = '';
@@ -54,7 +54,7 @@ export default class AlvEntitys extends React.Component<IEntitysProps, IEntitysS
  //Standards are really site pages, supporting docs are files
 
 
-public constructor(props:IEntitysProps){
+public constructor(props:IHistoryProps){
   super(props);
 
   this.state = {
@@ -99,13 +99,13 @@ public async updateWebInfo (   ) {
  *                                                                                         
  */
 
-  public render(): React.ReactElement<IEntitysProps> {
+  public render(): React.ReactElement<IHistoryProps> {
 
     const search = this.props.search;
     
     let topSearch: any[] = [];  //All major future to be grid components
 
-    search.entities.map( searchObject => {
+    search.history.map( searchObject => {
       let classNames = [ styles.button ];
       if ( this.state.topSearch.indexOf( searchObject ) > -1 ) { classNames.push( styles.isSelected ) ; }
       topSearch.push( <div className={ classNames.join(' ') } style={ null }  onClick={ this._clickTop.bind( this, searchObject )}>{ searchObject }</div> );
@@ -116,7 +116,7 @@ public async updateWebInfo (   ) {
     let filtered = [];
     this.state.filtered.map( entity => {
       if ( filtered.length < this.state.slideCount ) {
-        filtered.push( createEntityRow( entity, this.state.searchText, null ));
+        filtered.push( createHistoryRow( entity, this.state.searchText, null ));
 
       }
     });
@@ -136,19 +136,15 @@ public async updateWebInfo (   ) {
         onClear={ this._onSearchChange.bind(this) }
       />
       <div className={stylesA.searchStatus}>
-        { 'Searching ' + this.state.filtered.length + ' entities' }
+        { 'Searching ' + this.state.filtered.length + ' history' }
         { this.state.searchTime === null ? '' : ' ~ Time ' + this.state.searchTime + ' ms' }
         { /* 'Searching ' + (this.state.searchType !== 'all' ? this.state.filteredTiles.length : ' all' ) + ' items' */ }
-      </div>
-      
-      <div className={ [ stylesA.searchStatus, styles.goToLink ].join(' ')} onClick={ () => { window.open( `${this.props.primarySource.webUrl}${this.props.primarySource.webRelativeLink}`,'_blank' ) ; } }>
-        Go to full list
       </div>
 
     </div>;
 
       const debugContent = this.props.debugMode !== true ? null : <div>
-        App in debugMode - Change in Web Part Properties - Page Preferences.  <b><em>Currently in EntitysPage</em></b>
+        App in debugMode - Change in Web Part Properties - Page Preferences.  <b><em>Currently in HistorysPage</em></b>
       </div>;
 
     return (
@@ -176,13 +172,10 @@ public async updateWebInfo (   ) {
     let selected: string[] = this.toggleSearchInArray( this.state.topSearch, item , event.ctrlKey === true ? 'multi' : 'single' );
     console.log('_clickTop:', item, selected );
 
-    let startingItems: IEntityContent[] = this.props.items;
-    let filtered: IEntityContent[] = this.getFilteredItems( startingItems, this.state.searchText, selected, );
+    let startingItems: IDeepLink[] = this.props.items;
+    let filtered: IDeepLink[] = this.getFilteredItems( startingItems, this.state.searchText, selected, );
 
     this.setState({ topSearch: selected , filtered: filtered });
-
-    //https://stackoverflow.com/a/40493291
-    this.updateParentDeeplinks( this.state.searchText, selected );
 
   }
 
@@ -205,9 +198,9 @@ public async updateWebInfo (   ) {
   }
 
   
-  private getFilteredItems( startingItems: IEntityContent[], text: string, top: string[]  ) {
+  private getFilteredItems( startingItems: IDeepLink[], text: string, top: string[]  ) {
 
-    let filteredItems : IEntityContent[] = [];
+    let filteredItems : IDeepLink[] = [];
 
     startingItems.map( item => {
 
@@ -272,13 +265,7 @@ public async updateWebInfo (   ) {
     let startTime = new Date();
     const SearchValue = NewSearch.target.value;
 
-    //https://stackoverflow.com/a/40493291
-
-    setTimeout(() => {
-      this.updateParentDeeplinks( SearchValue, this.state.topSearch );
-    }, 1000);
-
-    let filtered: IEntityContent[] = this.getFilteredItems( this.props.items, NewSearch.target.value, this.state.topSearch, );
+    let filtered: IDeepLink[] = this.getFilteredItems( this.props.items, NewSearch.target.value, this.state.topSearch, );
 
     let endTime = new Date();
     let totalTime = endTime.getTime() - startTime.getTime();
@@ -291,11 +278,6 @@ public async updateWebInfo (   ) {
       this.setState({ filtered: filtered, searchText: SearchValue, searchTime: totalTime });
     }
 
-  }
-
-  private updateParentDeeplinks( searchText: string, topLinks: string[]) {
-    var deepLink2 = encodeURIComponent(JSON.stringify( topLinks ));
-    this.props.bumpDeepLinks( 'copyLast', 'copyLast', [searchText, deepLink2 ] );
   }
 
 }

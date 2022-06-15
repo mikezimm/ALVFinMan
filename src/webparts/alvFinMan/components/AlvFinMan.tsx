@@ -5,7 +5,7 @@ import { DisplayMode, Version } from '@microsoft/sp-core-library';
 
 import { IAlvFinManProps, IAlvFinManState, IFMBuckets, ILayoutNPage, ILayoutGPage, ILayoutSPage, ILayoutAPage,
   ILayoutQPage, ILayoutHPage, IAnyContent, IFinManSearch, IAppFormat, ISearchBucket,
-  IPagesContent, ILayoutLPage, ILayoutEPage, ILayoutSourcesPage, ISourcePage, ICategoryPage, ILayoutCategorizedPage, ILayoutStdPage, ILayoutSupPage, IDeepLink, IMainPage, IDefaultPage, IDefMainPage, mainDefPivots, pivotHeadingCatgorized, pivotHeadingSources, IEntityContent, IAllContentType, IAcronymContent } from './IAlvFinManProps';
+  IPagesContent, ILayoutLPage, ILayoutEPage, ILayoutSourcesPage, ISourcePage, ICategoryPage, ILayoutCategorizedPage, ILayoutStdPage, ILayoutSupPage, IDeepLink, IMainPage, IDefaultPage, IDefMainPage, mainDefPivots, pivotHeadingCatgorized, pivotHeadingSources, IEntityContent, IAllContentType, IAcronymContent, IDeepLogic } from './IAlvFinManProps';
 
 import { ILayout1Page, ILayout1PageProps, Layout1PageValues } from './Layout1Page/ILayout1PageProps';
 import { ILayout2Page,  } from './Layout2Page/ILayout2Props';
@@ -70,6 +70,7 @@ import {  createEmptyBuckets,  updateBuckets } from './DataProcess';
 import { gitRepoALVFinManSmall } from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
 
 import { allMainPivots, sourcePivots, categorizedPivots } from './IAlvFinManProps';
+import History from './History/History';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
 
@@ -135,6 +136,10 @@ const categorizedItems = categorizedKeys.map( ( key, idx ) => {
 
 const FetchingSpinner = <Spinner size={SpinnerSize.large} label={"FetchingSpinner ..."} style={{ padding: 30 }} />;
 
+export interface IDeepStateChange {
+  deepLinks: IDeepLink[];
+  hasChanged: boolean;
+}
 
 export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinManState> {
 
@@ -183,13 +188,22 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
    * @param deeps 
    * @returns 
    */
-  private bumpDeepState( main: IMainPage, second: ISourcePage | ICategoryPage, deeps: string[], deepLinks: IDeepLink[] ) {
+  private bumpDeepState( main: IMainPage | 'copyLast', second: ISourcePage | ICategoryPage | 'copyLast', deeps: string[], logic: IDeepLogic, deepLinks: IDeepLink[] ) : IDeepStateChange {
+    
+
+    if ( main === 'History' ) { return { deepLinks: deepLinks, hasChanged: false } ; }
+
+    const newmain = deepLinks[0] && main === 'copyLast' ? deepLinks[0].main : main;
+    const newsecond = deepLinks[0] && second === 'copyLast' ? deepLinks[0].second : second;
+
     let newDeepState : IDeepLink[] = deepLinks.map( deep => {  return deep; } );
     let thisTime = new Date();
+    let searchTextLC: string = `${newmain} || ${newsecond} `;
+    searchTextLC += deeps.map( deep => { return `|| ${deep}` ; }).join('');
 
     const newDeep: IDeepLink = {
-      main: main,
-      second: second,
+      main: main === 'copyLast' ? deepLinks[0].main : main,
+      second: second === 'copyLast' ? deepLinks[0].second : second,
       deep1: deeps[0],
       deep2: deeps[1],
       deep3: deeps[2],
@@ -199,16 +213,63 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       timeLabel: thisTime.toLocaleString(),
       deltaMs: newDeepState.length === 0 ? 0 : thisTime.getTime() - newDeepState[0].timeMs,
       processTime: 0,
+      searchTextLC: searchTextLC.toLowerCase(),
+      logic: logic,
 
     };
 
-    //Add this deep link to current history
-    newDeepState.unshift( newDeep );
+    let hasChanged: any = false;
+    if ( !deepLinks ) {
+      alert('deepLinks should exist here :)');
+      hasChanged = false;
 
-    //Remove the last item if the total length > than the max length
-    if ( newDeepState.length > this.props.maxDeep ) { newDeepState.pop(); }
+    } else if ( deepLinks.length === 0 ) {
+      newDeepState = [ newDeep ];
+      hasChanged = true;
 
-    return newDeepState;
+    } else { //There is a previous deep state item to compare to
+
+      const prevDeep = deepLinks[0];
+
+      let updateLast: any = false;
+
+      if ( prevDeep.main !== newDeep.main && prevDeep.second !== newDeep.second ) {
+        hasChanged = true;
+
+      } else {//main and second are both equal, check for deeper updates
+        [ 1,2,3,4 ].map( idx => {
+          if ( prevDeep[ 'deep' + idx ] !== newDeep[ 'deep' + idx ] ) { 
+            hasChanged = true ;
+
+            if ( logic === 'Sources' || logic === 'Accounts' ) {
+              if ( newDeep.timeMs < ( prevDeep.timeMs + 1000 ) ) {
+                //Just update last deepLink because it is likely just clicking around or typing in search
+                updateLast = true ;
+  
+              }
+            }
+          }
+        });
+      }
+
+      if ( updateLast === true ) {
+        //This will add the new delta to the previous one
+        newDeep.deltaMs = newDeepState[0].deltaMs + newDeep.deltaMs; 
+        newDeepState[0] = newDeep;
+
+      } else if ( hasChanged === true ) {
+        //Add this deep link to current history
+        newDeepState.unshift( newDeep );
+
+        //Remove the last item if the total length > than the max length
+        if ( newDeepState.length > this.props.maxDeep ) { newDeepState.pop(); }
+      }
+    }
+
+
+    this.updatePathNameDeepLink( main, second, deeps );
+
+    return { deepLinks: newDeepState, hasChanged: hasChanged };
 
   }
 
@@ -218,22 +279,37 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     let secondKey = mainDefPivots.indexOf( mainPivotKey as any ) > -1 ? '' : defaultPivotKey;
 
     //Watchout for this one where I had to set secondKey as any...
-    let newDeepState : IDeepLink[] = this.bumpDeepState( mainPivotKey, secondKey as any, [], this.state ? this.state.deepLinks : [] );
+    let deepChange : IDeepStateChange = this.bumpDeepState( mainPivotKey, secondKey as any, [], '',  this.state ? this.state.deepLinks : [] );
 
-    return newDeepState;
+    return deepChange;
 
   }
 
-  private updatePathNameDeepLink(primary: string, secondary: string, remaining: string[] ) {
-    
-    let newParameters = `?primary=${primary}&secondary=${secondary}`;
-    let theRest = remaining.length === 0 ? '' : remaining.map( (link, idx) => { return `&deep${idx}=${link}` }).join('');
+  private updatePathNameDeepLink( primary: string, secondary: string, remaining: string[] ) {
+
+    if ( primary === 'copyLast' ) { primary = this.state.mainPivotKey; }
+    if ( secondary === 'copyLast' ) { secondary = this.state.deepestPivot; }
+
+    let newParameters = `?primary=${primary}`;
+    newParameters = !secondary ? newParameters : `${newParameters}&secondary=${secondary}`;
+    let theRest = remaining.length === 0 ? '' : remaining.map( (link, idx) => { return `&deep${idx}=${link}`; }).join('');
+    newParameters += theRest;
     const nextURL = window.location.pathname + newParameters;
     const nextTitle = 'ALV Finance Manual';
     const nextState = { additionalInformation: 'Update the Url with app deep link' };
 
     // This will replace the current entry in the browser's history, without reloading
     window.history.replaceState(nextState, nextTitle, nextURL);
+
+  }
+
+  private bumpDeepStateFromComponent( primary: string, secondary: string, remaining: string[] ) {
+
+    let deepChange: IDeepStateChange = this.bumpDeepState( primary as any, secondary  as any, remaining, 'Sources',  this.state.deepLinks );
+
+    if ( deepChange.hasChanged === true ) {
+      this.setState( { deepLinks: deepChange.deepLinks });
+    }
 
   }
 
@@ -318,7 +394,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       categorizedPivotKey: categorizedPivots.indexOf( this.props.defaultPivotKey as any ) > -1 ? this.props.defaultPivotKey as any : '',
       deepestPivot: this.props.defaultPivotKey,
 
-      deepLinks: this.bumpDeepStateByDefaultPivotKey( this.props.defaultPivotKey ),
+      deepLinks: this.bumpDeepStateByDefaultPivotKey( this.props.defaultPivotKey ).deepLinks,
 
       fetchedDocs: false,
       fetchedAccounts: false,
@@ -473,11 +549,15 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     }
     // debugger;
     search = updateSearchTypes( [ ...appLinks, ...manual, ...sups, ...accounts, ], search );
+    let deepSecond = deepestKey && deepestKey !== mainPivotKey ? deepestKey : '';
+
+    let deepChange: IDeepStateChange = this.bumpDeepState( mainPivotKey, deepSecond ,  [], '',  this.state.deepLinks );
 
     console.log('state:  search', search );
     this.setState({ search: search, manual: manual, buckets: buckets, sups: sups, appLinks: appLinks,
       entities: entities, acronyms: acronyms,
-      mainPivotKey: mainPivotKey, sourcePivotKey: sourcePivotKey, categorizedPivotKey: categorizedPivotKey, deepestPivot: deepestKey,
+      mainPivotKey: mainPivotKey, sourcePivotKey: sourcePivotKey, categorizedPivotKey: categorizedPivotKey, 
+      deepLinks: deepChange.deepLinks, deepestPivot: deepestKey,
       accounts: accounts, news: news, help: help, refreshId: this.newRefreshId(),
       fetchedDocs: fetchedDocs, fetchedNews: fetchedNews, fetchedHelp: fetchedHelp, fetchedEntities: fetchedEntities,  fetchedAcronyms: fetchedAcronyms,
     
@@ -620,7 +700,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       debugMode={ this.state.debugMode }
     ></SearchPage>;
 
-    const accounts = this.state.sourcePivotKey !== 'Accounts' ? null : <AlvAccounts
+    const accounts = this.state.mainPivotKey !== 'Sources' || this.state.sourcePivotKey !== 'Accounts' ? null : <AlvAccounts
       source={ SourceInfo }
       search={ this.state.search }
       primarySource={ SourceInfo.accounts }
@@ -631,7 +711,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     ></AlvAccounts>;
 
     
-    const acronyms = this.state.sourcePivotKey !== 'Acronyms' ? null : <Acronyms
+    const acronyms = this.state.mainPivotKey !== 'Sources' || this.state.sourcePivotKey !== 'Acronyms' ? null : <Acronyms
       source={ SourceInfo }
       search={ this.state.search }
       primarySource={ SourceInfo.acronyms }
@@ -642,7 +722,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     ></Acronyms>;
 
     
-    const entities = this.state.sourcePivotKey !== 'Entities' ? null : <Entities
+    const entities = this.state.mainPivotKey !== 'Sources' || this.state.sourcePivotKey !== 'Entities' ? null : <Entities
       source={ SourceInfo }
       search={ this.state.search }
       primarySource={ SourceInfo.entities }
@@ -650,8 +730,11 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       fetchTime={ 797979 }
       items={ this.state.entities }
       debugMode={ this.state.debugMode }
+      bumpDeepLinks= { this.bumpDeepStateFromComponent.bind(this) }
     ></Entities>;
 
+    const deepHistory = this.state.mainPivotKey !== 'History' ? null : 
+      <ReactJson src={ this.state.deepLinks } name={ 'History' } collapsed={ false } displayDataTypes={ false } displayObjectSize={ false } enableClipboard={ true } style={{ padding: '20px 0px' }} theme= { 'rjv-default' } indentWidth={ 2}/>;
 
     const defNewsSort ={
       prop: 'Title',
@@ -675,14 +758,22 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     };
 
     const help = this.state.mainPivotKey !== 'Help' ? null : <ModernPages
-        mainPivotKey={this.state.mainPivotKey}
-        sort = { defHelpSort }
-        refreshId={ this.state.refreshId }
-        source={ SourceInfo.help }
-        pages={ this.state.help }
-        canvasOptions={ this.props.canvasOptions }
-        debugMode={ this.state.debugMode }
-      ></ModernPages>;
+      mainPivotKey={this.state.mainPivotKey}
+      sort = { defHelpSort }
+      refreshId={ this.state.refreshId }
+      source={ SourceInfo.help }
+      pages={ this.state.help }
+      canvasOptions={ this.props.canvasOptions }
+      debugMode={ this.state.debugMode }
+    ></ModernPages>;
+
+    const history = this.state.mainPivotKey !== 'History' ? null : <History
+      search={ this.state.search }
+      refreshId={ this.state.refreshId }
+      fetchTime={ 797979 }
+      items={ this.state.deepLinks }
+      debugMode={ this.state.debugMode }
+    ></History>;
 
 
       /***
@@ -774,6 +865,8 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
             { news }
             { SearchContent }
             { help }
+            { history }
+            { deepHistory }
             {/* </div> */}
           </div>
         </div>
