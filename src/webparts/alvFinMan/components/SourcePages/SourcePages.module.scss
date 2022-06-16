@@ -1,6 +1,25 @@
 @import '~office-ui-fabric-react/dist/sass/References.scss';
 
   
+.storagePage {
+    padding: 10px 20px 20px 20px;
+    margin: 0 -8px;
+
+}
+
+.searchSourceDesc {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 12px;
+}
+
+.sourceDesc {
+    font-size: larger;
+    font-weight: 600;
+}
+
 .goToLink {
     text-decoration: none;
     padding-left: 50px;
@@ -14,7 +33,7 @@
     flex-direction: row;
     justify-content: flex-start;
     flex-wrap: wrap;
-    margin-top: 10px;
+
     // padding: 10px;
     .button {
         cursor: pointer;
@@ -23,15 +42,15 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        max-width: 50px;
+        // max-width: 50px;
         margin-right: 10px;
+        margin-top: 10px;
 
         text-decoration: none;
         text-align: center;
-        // height: 32px;
-    
+
         // Primary Button
-        min-width: 80px;
+        min-width: 50px;
         background-color: lightgray;
         border-color: lightgray;
         color: black;
@@ -45,6 +64,10 @@
       }
 
 
+}
+
+.itemIcon {
+    font-size: 20px;
 }
 
 .entityItem {

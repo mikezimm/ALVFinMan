@@ -13,7 +13,10 @@ export interface ISourcePagesProps {
 
   pageWidth: number;
 
+  deepProps: string[];
+
   bumpDeepLinks: any;
+  jumpToDeepLink?: any;
 
   items: IAnyContent[];
   fetchTime: number;

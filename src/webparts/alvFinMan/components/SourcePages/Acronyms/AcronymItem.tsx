@@ -3,6 +3,7 @@
 import * as React from 'react';
 
 import styles from './Acronym.module.scss';
+import stylesP from '../SourcePages.module.scss';
 
 import { Icon, IIconProps } from 'office-ui-fabric-react/lib/Icon';
 
@@ -13,7 +14,7 @@ import { getHighlightedText } from '../../Elements/HighlightedText';
 export function createAcronymRow( item: IAcronymContent , searchText: string, onClick: any ) {
 
     const row = <div className={ styles.acronymItem }>
-        <div><Icon iconName={ SearchTypes.objs[item.typeIdx].icon }></Icon></div>
+        <div className={ stylesP.itemIcon }><Icon iconName={ SearchTypes.objs[item.typeIdx].icon }></Icon></div>
 
         <div className={ styles.acronymDetails}>
         <div className={ styles.acronymRow1 } style={{cursor: item.searchHref ? 'pointer' : null }} onClick = { onClick }>

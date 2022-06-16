@@ -25,7 +25,7 @@ import { createAcronymRow } from './Acronyms/AcronymItem';
 import { createAccountRow } from './Accounts/AccountItem';
 import { createHistoryRow } from './History/HistoryItem';
 
-import { IAnyContent } from '../IAlvFinManProps';
+import { IAnyContent, IDeepLink } from '../IAlvFinManProps';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
 
@@ -38,7 +38,6 @@ const pivotStyles = {
   }};
 
 export default class SourcePages extends React.Component<ISourcePagesProps, ISourcePagesState> {
-
 
   private LastSearch = '';
 
@@ -60,16 +59,22 @@ export default class SourcePages extends React.Component<ISourcePagesProps, ISou
 public constructor(props:ISourcePagesProps){
   super(props);
 
+  let searchText = this.props.deepProps && this.props.deepProps.length >=1 && this.props.deepProps[0] ? decodeURIComponent( this.props.deepProps[0] ) : '';
+  let topSearchStr = this.props.deepProps && this.props.deepProps.length >=2 && this.props.deepProps[1] ? decodeURIComponent( this.props.deepProps[1] ) : '[]';
+  let topSearch = !topSearchStr ? [] : JSON.parse( topSearchStr );
+
+  let filtered: IAnyContent[] = this.getFilteredItems( this.props.items , searchText, topSearch, );
+
   this.state = {
     refreshId: this.props.refreshId,
-    filtered: this.props.items,
+    filtered: filtered,
     slideCount: 20,
-    topSearch: [],
+    topSearch: topSearch,
     sortNum: 'asc',
     sortName: '-',
     sortGroup: '-',
     searchTime: null,
-    searchText: '',
+    searchText: searchText,
   };
 }
 
@@ -138,12 +143,11 @@ public async updateWebInfo (   ) {
           filtered.push( createAccountRow( item, this.state.searchText, null )); break;
 
           case 'History':
-          filtered.push( createHistoryRow( item, this.state.searchText, null )); break;
+          filtered.push( createHistoryRow( item, this.state.searchText, null, this.jumpToDeepLink.bind(this) )); break;
 
         }
       }
     });
-
 
     /*https://developer.microsoft.com/en-us/fabric#/controls/web/searchbox*/
     let searchBox =  
@@ -152,6 +156,7 @@ public async updateWebInfo (   ) {
         className={stylesA.searchBox}
         styles={{ root: { maxWidth:250 } }}
         placeholder="Search"
+        value={ this.state.searchText }
         onSearch={ this._onSearchChange.bind(this) }
         onFocus={ () => console.log('this.state',  this.state) }
         onBlur={ () => console.log('onBlur called') }
@@ -163,15 +168,20 @@ public async updateWebInfo (   ) {
         { this.state.searchTime === null ? '' : ' ~ Time ' + this.state.searchTime + ' ms' }
         { /* 'Searching ' + (this.state.searchType !== 'all' ? this.state.filteredTiles.length : ' all' ) + ' items' */ }
       </div>
-      
-      <div className={ [ stylesA.searchStatus, styles.goToLink ].join(' ')} onClick={ () => { window.open( `${this.props.primarySource.webUrl}${this.props.primarySource.webRelativeLink}`,'_blank' ) ; } }>
-        Go to full list
-      </div>
-
     </div>;
+
+
+      const gotoListLink = !this.props.primarySource.webRelativeLink ? null : <div className={ [ stylesA.searchStatus, styles.goToLink ].join(' ')} onClick={ () => { window.open( `${this.props.primarySource.webUrl}${this.props.primarySource.webRelativeLink}`,'_blank' ) ; } }>
+        Go to full list
+      </div>;
 
       const debugContent = this.props.debugMode !== true ? null : <div>
         App in debugMode - Change in Web Part Properties - Page Preferences.  <b><em>Currently in {this.props.primarySource.listTitle}</em></b>
+      </div>;
+
+      const searchSourceDesc = !this.props.primarySource.searchSourceDesc ? null : <div className={ styles.searchSourceDesc }>
+        <div className={ styles.sourceDesc }>{ this.props.primarySource.searchSourceDesc }</div>
+        { gotoListLink }
       </div>;
 
       const deepHistory = this.props.debugMode !== true ? null :  
@@ -180,13 +190,16 @@ public async updateWebInfo (   ) {
     return (
       <div className={ stylesA.alvFinMan }>
         {/* <div className={ styles.container }> */}
-          <div className={ stylesA.row }>
+          <div className={ styles.storagePage }>
             {/* <div className={ styles.column }> */}
               { debugContent }
+              { searchSourceDesc }
               { this.state.searchTime }
               { searchBox }
               { topSearchContent }
               { filtered }
+
+              { deepHistory }
               {/* { componentPivot }
               { showPage }
               { userPanel } */}
@@ -325,4 +338,13 @@ public async updateWebInfo (   ) {
       this.props.bumpDeepLinks( 'Sources', this.props.primarySource.searchSource, [searchText, deepLink2 ] );
     }
   }
+
+  private jumpToDeepLink( item: IDeepLink ) {
+    if ( this.props.jumpToDeepLink ) {
+
+      //jumpToDeepLink( mainPivotKey: IMainPage, sourcePivotKey: ISourcePage, categorizedPivotKey: ICategoryPage, deepProps: string[] = [] )
+      this.props.jumpToDeepLink( item.main, item.second, '', [item.deep1, item.deep2 ] );
+    }
+  }
+
 }

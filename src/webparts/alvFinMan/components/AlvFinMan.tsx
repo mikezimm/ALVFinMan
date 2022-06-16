@@ -214,6 +214,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       processTime: 0,
       searchTextLC: searchTextLC.toLowerCase(),
       logic: logic,
+      searchTypeIdx: -1,
 
     };
 
@@ -312,6 +313,11 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
   }
 
+  //updateWebInfo ( mainPivotKey: IMainPage, sourcePivotKey: ISourcePage, categorizedPivotKey: ICategoryPage, deepProps: string[] = [] ) 
+  private jumpToDeepLink( mainPivotKey: IMainPage, sourcePivotKey: ISourcePage, categorizedPivotKey: ICategoryPage, deepProps: string[] = [] ) {
+    this.updateWebInfo ( mainPivotKey, sourcePivotKey, categorizedPivotKey, deepProps );
+  }
+
   /***
  *    d8b   db d88888b  .d8b.  d8888b.      d88888b  .d8b.  d8888b.      d88888b db      d88888b 
  *    888o  88 88'     d8' `8b 88  `8D      88'     d8' `8b 88  `8D      88'     88      88'     
@@ -394,7 +400,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       deepestPivot: this.props.defaultPivotKey,
 
       deepLinks: this.bumpDeepStateByDefaultPivotKey( this.props.defaultPivotKey ).deepLinks,
-
+      deepProps: [],
       fetchedDocs: false,
       fetchedAccounts: false,
       fetchedNews: false,
@@ -462,7 +468,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
   }
 
-  public async updateWebInfo ( mainPivotKey: IMainPage, sourcePivotKey: ISourcePage, categorizedPivotKey: ICategoryPage ) {
+  public async updateWebInfo ( mainPivotKey: IMainPage, sourcePivotKey: ISourcePage, categorizedPivotKey: ICategoryPage, deepProps: string[] = [] ) {
 
     let deepestKey: IMainPage | ISourcePage | ICategoryPage | any = mainPivotKey;
     if ( mainPivotKey === 'Sources' ) { deepestKey = sourcePivotKey ; }
@@ -556,7 +562,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     this.setState({ search: search, manual: manual, buckets: buckets, sups: sups, appLinks: appLinks,
       entities: entities, acronyms: acronyms,
       mainPivotKey: mainPivotKey, sourcePivotKey: sourcePivotKey, categorizedPivotKey: categorizedPivotKey, 
-      deepLinks: deepChange.deepLinks, deepestPivot: deepestKey,
+      deepLinks: deepChange.deepLinks, deepestPivot: deepestKey, deepProps: deepProps,
       accounts: accounts, news: news, help: help, refreshId: this.newRefreshId(),
       fetchedDocs: fetchedDocs, fetchedNews: fetchedNews, fetchedHelp: fetchedHelp, fetchedEntities: fetchedEntities,  fetchedAcronyms: fetchedAcronyms,
     
@@ -710,6 +716,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       items={ this.state.accounts }
       debugMode={ this.state.debugMode }
       bumpDeepLinks= { this.bumpDeepStateFromComponent.bind(this) }
+      deepProps={ this.state.deepProps }
     ></SourcePages>;
 
     
@@ -724,6 +731,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       items={ this.state.acronyms as IAnyContent[] }
       debugMode={ this.state.debugMode }
       bumpDeepLinks= { this.bumpDeepStateFromComponent.bind(this) }
+      deepProps={ this.state.deepProps }
     ></SourcePages>;
 
     
@@ -738,6 +746,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       items={ this.state.entities as IAnyContent[] }
       debugMode={ this.state.debugMode }
       bumpDeepLinks= { this.bumpDeepStateFromComponent.bind(this) }
+      deepProps={ this.state.deepProps }
     ></SourcePages>;
 
     const defNewsSort ={
@@ -783,6 +792,8 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       items={ this.state.deepLinks as any }
       debugMode={ this.state.debugMode }
       bumpDeepLinks= { null }
+      jumpToDeepLink = { this.jumpToDeepLink.bind(this) }
+      deepProps={ this.state.deepProps }
     ></SourcePages>;
 
 

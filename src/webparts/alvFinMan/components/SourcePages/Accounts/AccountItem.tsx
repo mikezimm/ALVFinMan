@@ -3,6 +3,7 @@
 import * as React from 'react';
 
 import styles from './Account.module.scss';
+import stylesSP from '../SourcePages.module.scss';
 
 import { Icon, IIconProps } from 'office-ui-fabric-react/lib/Icon';
 
@@ -13,7 +14,7 @@ import { getHighlightedText } from '../../Elements/HighlightedText';
 export function createAccountRow( item: IAnyContent , searchText: string, onClick: any ) {
 
     const row = <div className={ styles.accountItem }>
-        <div><Icon iconName={ SearchTypes.objs[item.typeIdx].icon }></Icon></div>
+        <div className={ stylesSP.itemIcon }><Icon iconName={ SearchTypes.objs[item.typeIdx].icon }></Icon></div>
 
         <div className={ styles.accountDetails}>
         <div className={ styles.accountRow1 } style={{cursor: item.searchHref ? 'pointer' : null }} onClick = { onClick }>
@@ -24,7 +25,7 @@ export function createAccountRow( item: IAnyContent , searchText: string, onClic
         </div>
         <div className={ styles.accountRow2}>
             <div>{  getHighlightedText( `${ item.Description }`, searchText )  }</div>
-            <div>{  getHighlightedText( `${ item['RCM'] }`, searchText )  }</div>
+            <div>{  item['RCM'] ? getHighlightedText( `${ item['RCM'] }`, searchText ) : '' }</div>
         </div>
         </div>
     </div>;

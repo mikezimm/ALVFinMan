@@ -3,6 +3,7 @@
 import * as React from 'react';
 
 import styles from './History.module.scss';
+import stylesP from '../SourcePages.module.scss';
 
 import { Icon, IIconProps } from 'office-ui-fabric-react/lib/Icon';
 
@@ -12,18 +13,18 @@ import { getHighlightedText } from '../../Elements/HighlightedText';
 
 const novalue = 'novalue';
 
-export function createHistoryRow( item: IDeepLink , searchText: string, onClick: any ) {
+export function createHistoryRow( item: IDeepLink , searchText: string, onClick: any, jumpToDeepLink: any ) {
 
     const row = <tr className={ styles.historyItem }>
-        <td><Icon iconName='History'></Icon></td>
+        <td onClick={ () => jumpToDeepLink( item )} className={ stylesP.itemIcon } style={{ cursor: 'pointer' }}><Icon iconName='History'></Icon></td>
 
         <td title="Time">{ item.timeLabel }</td>
-        <td title="Main">{ getHighlightedText( `${ item.main }`, searchText )  }</td>
-        <td title="Secondary" style={ null }>{  getHighlightedText( `${ item.second }`, searchText )  }</td>
+        <td title="Main" style={{ fontWeight: 600, color: 'darkred' }}>{ getHighlightedText( `${ item.main }`, searchText )  }</td>
+        <td title="Secondary"  style={{ fontWeight: 600, color: 'darkgreen' }}>{  getHighlightedText( `${ item.second }`, searchText )  }</td>
         <td style={{ display: 'flex' }}>
-            <div style={{paddingRight: '20px' }}>Searched:</div>
-            <div title="Search" className={styles.marginRight15}>{  !item.deep1 ? 'No text' : getHighlightedText( `${ item.deep1 }`, searchText )  }</div>
-            <div title="Button" className={ '' }>{  !item.deep2 ? 'No buttons' : getHighlightedText( `${ decodeURIComponent(item.deep2) }`, searchText )  }</div>
+            <div style={{paddingRight: '20px' }}>Filtering:</div>
+            <div title="Search Text" className={styles.marginRight15} style={{ fontWeight: 600, color: 'darkblue' }}>{  !item.deep1 ? 'No text' : getHighlightedText( `${ item.deep1 }`, searchText )  }</div>
+            <div title="Buttons" className={ '' } style={{ fontWeight: 600, color: 'darkviolet' }}>{  !item.deep2 ? 'No buttons' : getHighlightedText( `${ decodeURIComponent(item.deep2) }`, searchText )  }</div>
         </td>
 
     </tr>;

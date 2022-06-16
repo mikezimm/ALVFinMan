@@ -337,6 +337,7 @@ export interface IDeepLink {
   processTime: number;
   searchTextLC: string;
   logic: IDeepLogic;
+  searchTypeIdx: number;
 
 }
 
@@ -380,6 +381,8 @@ export interface IAlvFinManState {
   sourcePivotKey: ISourcePage;
   categorizedPivotKey: ICategoryPage;
   deepestPivot: IDefaultPage | IAltMainPage;
+  
+  deepProps: string[];  // Passed down to component as props to start with
 
   deepLinks: IDeepLink[];
 

@@ -201,7 +201,7 @@ export const SourceInfo: ISourceInfo = {
         key: 'history',
         defType: 'history',
         webUrl: `${FinManSite}Manual/`,
-        webRelativeLink: "lists/Entities",
+        webRelativeLink: "",
         searchSource: 'History',
         searchSourceDesc:  'History of your current session',
         listTitle: "History",
