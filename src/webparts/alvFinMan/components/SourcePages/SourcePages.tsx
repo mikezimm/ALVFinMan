@@ -4,6 +4,7 @@ import styles from './SourcePages.module.scss';
 
 import { ISourcePagesProps, ISourcePagesState, } from './ISourcePagesProps';
 import { escape } from '@microsoft/sp-lodash-subset';
+import { Icon, IIconProps } from 'office-ui-fabric-react/lib/Icon';
 
 import { Web, ISite } from '@pnp/sp/presets/all';
 
@@ -172,7 +173,7 @@ public async updateWebInfo (   ) {
 
 
       const gotoListLink = !this.props.primarySource.webRelativeLink ? null : <div className={ [ stylesA.searchStatus, styles.goToLink ].join(' ')} onClick={ () => { window.open( `${this.props.primarySource.webUrl}${this.props.primarySource.webRelativeLink}`,'_blank' ) ; } }>
-        Go to full list
+        Go to full list <Icon iconName='OpenInNewTab'></Icon>
       </div>;
 
       const debugContent = this.props.debugMode !== true ? null : <div>
