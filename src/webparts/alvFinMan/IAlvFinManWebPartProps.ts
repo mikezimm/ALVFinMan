@@ -184,6 +184,7 @@ export interface IAlvFinManWebPartProps {
   acronymsSearch: string;
   supsSearch: string;
   accountsSearch: string;
+  sourcePagesCount: number;
 
   loadPerformance: ILoadPerformanceALVFM;
 

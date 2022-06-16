@@ -470,6 +470,8 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
       sups:  this.properties.supsSearch ? this.properties.supsSearch.split(';') : [],
       accounts:  this.properties.accountsSearch ? this.properties.accountsSearch.split(';') : [],
 
+      sourcePagesCount: this.properties.sourcePagesCount,
+
     };
 
     let canvasOptions: ICanvasContentOptions = {

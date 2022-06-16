@@ -1,6 +1,6 @@
 import * as React from 'react';
 import stylesA from '../AlvFinMan.module.scss';
-import styles from './Entity.module.scss';
+import styles from './SourcePages.module.scss';
 
 import { ISourcePagesProps, ISourcePagesState, } from './ISourcePagesProps';
 import { escape } from '@microsoft/sp-lodash-subset';
@@ -21,6 +21,8 @@ import * as strings from 'AlvFinManWebPartStrings';
 import ReactJson from "react-json-view";
 
 import { createEntityRow } from './EntityItem';
+import { createAcronymRow } from './AcronymItem';
+
 import { IAnyContent } from '../IAlvFinManProps';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
@@ -118,6 +120,8 @@ public async updateWebInfo (   ) {
         switch ( this.props.primarySource.listTitle  ) {
           case 'Entities':
           filtered.push( createEntityRow( item, this.state.searchText, null )); break;
+          case 'Acronyms':
+          filtered.push( createAcronymRow( item, this.state.searchText, null )); break;
         }
       }
     });
@@ -296,7 +300,7 @@ public async updateWebInfo (   ) {
 
   private updateParentDeeplinks( searchText: string, topLinks: string[]) {
     var deepLink2 = encodeURIComponent(JSON.stringify( topLinks ));
-    this.props.bumpDeepLinks( 'copyLast', 'copyLast', [searchText, deepLink2 ] );
+    this.props.bumpDeepLinks( 'Sources', this.props.primarySource.searchSource, [searchText, deepLink2 ] );
   }
 
 }

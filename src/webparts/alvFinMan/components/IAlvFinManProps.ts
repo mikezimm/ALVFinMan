@@ -143,6 +143,8 @@ export interface IFinManSearch {
   sups: string[];
   accounts: string[];
 
+  sourcePagesCount: number;
+
 }
 
 import { ILayout1Page } from './Layout1Page/ILayout1PageProps';
@@ -225,7 +227,7 @@ export type IAppFormat = 'accounts' | 'manual' | 'sups' | 'appLinks' | 'news' | 
 
 export const mainDefPivots: IDefMainPage[] = [ pivotHeading0, pivotHeadingNews, pivotHeadingSourcesearch, pivotHeadingHelp, ];
 export const mainAltPivots: IAltMainPage[] = [ pivotHeadingSources, pivotHeadingCatgorized, pivotHeadingHist ];
-export const sourcePivots: ISourcePage[] = [ pivotHeadingAcc, pivotHeadingLinks, pivotHeadingManual, pivotHeadingSupporting, pivotHeadingEntities, pivotHeadingAcronyms ];
+export const sourcePivots: ISourcePage[] = [ pivotHeadingLinks, pivotHeadingEntities, pivotHeadingAcronyms, pivotHeadingAcc, pivotHeadingManual, pivotHeadingSupporting ];
 
 export const categorizedPivots: ICategoryPage[] = [ pivotHeading1, pivotHeading2, pivotHeading3, pivotHeading4, pivotHeading5,  ];
 

@@ -16,7 +16,7 @@ import { Pivot, PivotItem, IPivotItemProps, PivotLinkFormat, PivotLinkSize,} fro
 import { Dropdown, DropdownMenuItemType, IDropdownStyles, IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
 import { TextField,  IStyleFunctionOrObject, ITextFieldStyleProps, ITextFieldStyles } from "office-ui-fabric-react";
 
-import styles from './Entity.module.scss';
+import styles from './SourcePages.module.scss';
 
 import { ISearchPageProps, ISearchPageState, } from '../Search/ISearchPageProps';
 

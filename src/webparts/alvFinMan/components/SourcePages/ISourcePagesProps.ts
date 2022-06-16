@@ -11,6 +11,8 @@ export interface ISourcePagesProps {
   primarySource: ISourceProps;
   topButtons: string[];
 
+  pageWidth: number;
+
   bumpDeepLinks: any;
 
   items: IAnyContent[];

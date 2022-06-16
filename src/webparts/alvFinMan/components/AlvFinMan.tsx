@@ -237,7 +237,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
       let updateLast: any = false;
 
-      if ( prevDeep.main !== newDeep.main && prevDeep.second !== newDeep.second ) {
+      if ( prevDeep.main !== newDeep.main || prevDeep.second !== newDeep.second ) {
         hasChanged = true;
 
       } else {//main and second are both equal, check for deeper updates
@@ -715,21 +715,25 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     ></AlvAccounts>;
 
     
-    const acronyms = this.state.mainPivotKey !== 'Sources' || this.state.sourcePivotKey !== 'Acronyms' ? null : <Acronyms
+    const acronyms = this.state.mainPivotKey !== 'Sources' || this.state.sourcePivotKey !== 'Acronyms' ? null : <SourcePages
       source={ SourceInfo }
       search={ this.state.search }
       primarySource={ SourceInfo.acronyms }
+      pageWidth={ 1000 }
+      topButtons={ this.props.search.acronyms }
       refreshId={ this.state.refreshId }
       fetchTime={ 797979 }
-      items={ this.state.acronyms }
+      items={ this.state.acronyms as IAnyContent[] }
       debugMode={ this.state.debugMode }
-    ></Acronyms>;
+      bumpDeepLinks= { this.bumpDeepStateFromComponent.bind(this) }
+    ></SourcePages>;
 
     
     const entities = this.state.mainPivotKey !== 'Sources' || this.state.sourcePivotKey !== 'Entities' ? null : <SourcePages
       source={ SourceInfo }
       search={ this.state.search }
       primarySource={ SourceInfo.entities }
+      pageWidth={ 1000 }
       topButtons={ this.props.search.entities }
       refreshId={ this.state.refreshId }
       fetchTime={ 797979 }
