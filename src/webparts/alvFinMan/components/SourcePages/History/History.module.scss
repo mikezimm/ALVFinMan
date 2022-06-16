@@ -1,0 +1,20 @@
+@import '~office-ui-fabric-react/dist/sass/References.scss';
+
+.historyItem {
+
+    //This is the same styling that should be in Search listItem
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding-top: 20px;
+
+    td {
+        margin-right: 30px;
+    }
+
+    .marginRight15 {
+        margin-right: 15px;
+      }
+
+}
+

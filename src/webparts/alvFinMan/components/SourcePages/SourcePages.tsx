@@ -20,8 +20,10 @@ import * as strings from 'AlvFinManWebPartStrings';
 
 import ReactJson from "react-json-view";
 
-import { createEntityRow } from './EntityItem';
-import { createAcronymRow } from './AcronymItem';
+import { createEntityRow } from './Entities/EntityItem';
+import { createAcronymRow } from './Acronyms/AcronymItem';
+import { createAccountRow } from './Accounts/AccountItem';
+import { createHistoryRow } from './History/HistoryItem';
 
 import { IAnyContent } from '../IAlvFinManProps';
 
@@ -76,10 +78,17 @@ public componentDidMount() {
 }
 
 
-public componentDidUpdate(prevProps){
+public componentDidUpdate(prevProps: ISourcePagesProps){
     //Just rebuild the component
-    if ( this.props.refreshId !== prevProps.refreshId ) {
-      this.setState({ refreshId: this.props.refreshId });
+    if ( this.props.primarySource !== prevProps.primarySource ) {
+      this.setState({ refreshId: this.props.refreshId, filtered: this.props.items });
+
+    } else if ( this.props.items.length !== prevProps.items.length ) {
+      this.setState({ refreshId: this.props.refreshId, filtered: this.props.items });
+
+    } else if ( this.props.refreshId !== prevProps.refreshId || this.props.pageWidth !== prevProps.pageWidth || this.props.topButtons.length !== prevProps.topButtons.length ) {
+      this.setState({ refreshId: this.props.refreshId, });
+      
     }
 }
 
@@ -118,10 +127,19 @@ public async updateWebInfo (   ) {
     this.state.filtered.map( item => {
       if ( filtered.length < this.state.slideCount ) {
         switch ( this.props.primarySource.listTitle  ) {
+
           case 'Entities':
           filtered.push( createEntityRow( item, this.state.searchText, null )); break;
+
           case 'Acronyms':
           filtered.push( createAcronymRow( item, this.state.searchText, null )); break;
+
+          case 'Accounts':
+          filtered.push( createAccountRow( item, this.state.searchText, null )); break;
+
+          case 'History':
+          filtered.push( createHistoryRow( item, this.state.searchText, null )); break;
+
         }
       }
     });
@@ -141,7 +159,7 @@ public async updateWebInfo (   ) {
         onClear={ this._onSearchChange.bind(this) }
       />
       <div className={stylesA.searchStatus}>
-        { 'Searching ' + this.state.filtered.length + ' entities' }
+        { 'Searching ' + this.state.filtered.length + ' items' }
         { this.state.searchTime === null ? '' : ' ~ Time ' + this.state.searchTime + ' ms' }
         { /* 'Searching ' + (this.state.searchType !== 'all' ? this.state.filteredTiles.length : ' all' ) + ' items' */ }
       </div>
@@ -155,6 +173,9 @@ public async updateWebInfo (   ) {
       const debugContent = this.props.debugMode !== true ? null : <div>
         App in debugMode - Change in Web Part Properties - Page Preferences.  <b><em>Currently in {this.props.primarySource.listTitle}</em></b>
       </div>;
+
+      const deepHistory = this.props.debugMode !== true ? null :  
+        <ReactJson src={ this.state.filtered } name={ this.props.primarySource.listTitle } collapsed={ false } displayDataTypes={ false } displayObjectSize={ false } enableClipboard={ true } style={{ padding: '20px 0px' }} theme= { 'rjv-default' } indentWidth={ 2}/>;
 
     return (
       <div className={ stylesA.alvFinMan }>
@@ -299,8 +320,9 @@ public async updateWebInfo (   ) {
   }
 
   private updateParentDeeplinks( searchText: string, topLinks: string[]) {
-    var deepLink2 = encodeURIComponent(JSON.stringify( topLinks ));
-    this.props.bumpDeepLinks( 'Sources', this.props.primarySource.searchSource, [searchText, deepLink2 ] );
+    if ( this.props.bumpDeepLinks ) {
+      var deepLink2 = encodeURIComponent(JSON.stringify( topLinks ));
+      this.props.bumpDeepLinks( 'Sources', this.props.primarySource.searchSource, [searchText, deepLink2 ] );
+    }
   }
-
 }

@@ -31,7 +31,7 @@ import { IFMSearchType, SearchTypes } from '../DataInterface';
 import { IAnyContent, ISearchObject } from '../IAlvFinManProps';
 import { NoItems } from '@mikezimm/npmfunctions/dist/Icons/iconNames';
 import { getHighlightedText } from '../Elements/HighlightedText';
-import { createAccountRow } from '../Accounts/AccountItem';
+import { createAccountRow } from '../SourcePages/Accounts/AccountItem';
 import { getSearchTypeIcon } from '../Elements/FileTypeIcon';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //

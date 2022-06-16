@@ -54,16 +54,12 @@ import { createCacheTableSmall, createPerformanceTableSmall,  } from './Performa
 
 import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfunctions/dist/Lists/getFunctions';
 
-import AlvAccounts from './Accounts/Accounts';
 import Layout1Page from './Layout1Page/Layout1Page';
 import Layout2Page from './Layout2Page/Layout2Page';
 import SearchPage from './Search/SearchPage';
 import ModernPages from './ModernPages/ModernPages';
 
-import Entities from './Entities/Entity';
 import SourcePages from './SourcePages/SourcePages';
-
-import Acronyms from './Acronyms/Acronym';
 
 import { SourceInfo, ISourceInfo, ISourceProps } from './DataInterface';
 import {  updateSearchCounts, updateSearchTypes, getALVFinManContent, } from './DataFetch';
@@ -73,7 +69,6 @@ import {  createEmptyBuckets,  updateBuckets } from './DataProcess';
 import { gitRepoALVFinManSmall } from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
 
 import { allMainPivots, sourcePivots, categorizedPivots } from './IAlvFinManProps';
-import History from './History/History';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
 
@@ -704,15 +699,18 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       debugMode={ this.state.debugMode }
     ></SearchPage>;
 
-    const accounts = this.state.mainPivotKey !== 'Sources' || this.state.sourcePivotKey !== 'Accounts' ? null : <AlvAccounts
+    const accounts = this.state.mainPivotKey !== 'Sources' || this.state.sourcePivotKey !== 'Accounts' ? null : <SourcePages
       source={ SourceInfo }
       search={ this.state.search }
       primarySource={ SourceInfo.accounts }
+      pageWidth={ 1000 }
+      topButtons={ this.props.search.accounts }
       refreshId={ this.state.refreshId }
       fetchTime={ 797979 }
       items={ this.state.accounts }
       debugMode={ this.state.debugMode }
-    ></AlvAccounts>;
+      bumpDeepLinks= { this.bumpDeepStateFromComponent.bind(this) }
+    ></SourcePages>;
 
     
     const acronyms = this.state.mainPivotKey !== 'Sources' || this.state.sourcePivotKey !== 'Acronyms' ? null : <SourcePages
@@ -741,9 +739,6 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       debugMode={ this.state.debugMode }
       bumpDeepLinks= { this.bumpDeepStateFromComponent.bind(this) }
     ></SourcePages>;
-
-    const deepHistory = this.state.mainPivotKey !== 'History' ? null : 
-      <ReactJson src={ this.state.deepLinks } name={ 'History' } collapsed={ false } displayDataTypes={ false } displayObjectSize={ false } enableClipboard={ true } style={{ padding: '20px 0px' }} theme= { 'rjv-default' } indentWidth={ 2}/>;
 
     const defNewsSort ={
       prop: 'Title',
@@ -776,13 +771,19 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       debugMode={ this.state.debugMode }
     ></ModernPages>;
 
-    const history = this.state.mainPivotKey !== 'History' ? null : <History
+    const history = this.state.mainPivotKey !== 'History' ? null : <SourcePages
+
+      source={ SourceInfo }
       search={ this.state.search }
+      primarySource={ SourceInfo.history }
+      pageWidth={ 1000 }
+      topButtons={ this.props.search.history }
       refreshId={ this.state.refreshId }
       fetchTime={ 797979 }
-      items={ this.state.deepLinks }
+      items={ this.state.deepLinks as any }
       debugMode={ this.state.debugMode }
-    ></History>;
+      bumpDeepLinks= { null }
+    ></SourcePages>;
 
 
       /***
@@ -875,7 +876,6 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
             { SearchContent }
             { help }
             { history }
-            { deepHistory }
             {/* </div> */}
           </div>
         </div>

@@ -222,8 +222,7 @@ export type ICategoryPage = ILayout1Page | ILayoutSPage;
 
 export type IDefaultPage = IDefMainPage | ISourcePage | ICategoryPage;
 
-
-export type IAppFormat = 'accounts' | 'manual' | 'sups' | 'appLinks' | 'news' | 'help' | 'entities' | 'acronyms' ;
+export type IAppFormat = 'accounts' | 'manual' | 'sups' | 'appLinks' | 'news' | 'help' | 'entities' | 'acronyms' | 'history' ;
 
 export const mainDefPivots: IDefMainPage[] = [ pivotHeading0, pivotHeadingNews, pivotHeadingSourcesearch, pivotHeadingHelp, ];
 export const mainAltPivots: IAltMainPage[] = [ pivotHeadingSources, pivotHeadingCatgorized, pivotHeadingHist ];

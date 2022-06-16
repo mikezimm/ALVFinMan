@@ -31,9 +31,9 @@ export const LookupColumns: string[] = ['Functions/Title', 'Topics/Title', 'ALGr
 export const ExtraFetchClassicWiki = ['WikiField'];
 export const ExtraFetchModernPage = ['WikiField','CanvasContent1','LayoutsWebpartsContent'];
 
-export type IDefSourceType = 'link' | 'news' | 'help' | 'account' | 'std' | 'manual' | 'SupportDocuments' | 'entity' | 'acronym' ;
+export type IDefSourceType = 'link' | 'news' | 'help' | 'account' | 'std' | 'manual' | 'SupportDocuments' | 'entity' | 'acronym' | 'history' ;
 
-export type ISearchSource = 'AppLinks' | 'News' | 'Help' | 'Accounts' | 'SupportDocs' | 'Manual' | 'Standards' | 'Policies' | 'Instructions' | 'Entities' | 'Acronyms' ;
+export type ISearchSource = 'AppLinks' | 'News' | 'Help' | 'Accounts' | 'SupportDocs' | 'Manual' | 'Standards' | 'Policies' | 'Instructions' | 'Entities' | 'Acronyms' | 'History' ;
 
 export interface ISourceProps {
     key: IAppFormat;
@@ -67,7 +67,7 @@ export interface ISourceInfo {
     // stds: ISourceProps;
     sups: ISourceProps;
     accounts: ISourceProps;
-
+    history: ISourceProps;
 
 }
 
@@ -193,6 +193,21 @@ export const SourceInfo: ISourceInfo = {
         columns: [ ...libraryColumns, ...LookupColumns ],
         searchProps: [ ...libraryColumns, ...LookupColumns ],
         selectThese: [ ...['*'], ...libraryColumns, ...LookupColumns ],
+        isModern: true,
+        defSearchButtons: [],
+    },
+
+    history: {
+        key: 'history',
+        defType: 'history',
+        webUrl: `${FinManSite}Manual/`,
+        webRelativeLink: "lists/Entities",
+        searchSource: 'History',
+        searchSourceDesc:  'History of your current session',
+        listTitle: "History",
+        columns: [ ], //,'StandardDocuments/Title'
+        searchProps: [ ], //'StandardDocuments/Title'
+        orderBy: { prop: 'Title', asc: false },
         isModern: true,
         defSearchButtons: [],
     },
