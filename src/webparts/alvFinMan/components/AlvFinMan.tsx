@@ -59,7 +59,10 @@ import Layout1Page from './Layout1Page/Layout1Page';
 import Layout2Page from './Layout2Page/Layout2Page';
 import SearchPage from './Search/SearchPage';
 import ModernPages from './ModernPages/ModernPages';
+
 import Entities from './Entities/Entity';
+import SourcePages from './SourcePages/SourcePages';
+
 import Acronyms from './Acronyms/Acronym';
 
 import { SourceInfo, ISourceInfo, ISourceProps } from './DataInterface';
@@ -723,16 +726,17 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     ></Acronyms>;
 
     
-    const entities = this.state.mainPivotKey !== 'Sources' || this.state.sourcePivotKey !== 'Entities' ? null : <Entities
+    const entities = this.state.mainPivotKey !== 'Sources' || this.state.sourcePivotKey !== 'Entities' ? null : <SourcePages
       source={ SourceInfo }
       search={ this.state.search }
       primarySource={ SourceInfo.entities }
+      topButtons={ this.props.search.entities }
       refreshId={ this.state.refreshId }
       fetchTime={ 797979 }
-      items={ this.state.entities }
+      items={ this.state.entities as IAnyContent[] }
       debugMode={ this.state.debugMode }
       bumpDeepLinks= { this.bumpDeepStateFromComponent.bind(this) }
-    ></Entities>;
+    ></SourcePages>;
 
     const deepHistory = this.state.mainPivotKey !== 'History' ? null : 
       <ReactJson src={ this.state.deepLinks } name={ 'History' } collapsed={ false } displayDataTypes={ false } displayObjectSize={ false } enableClipboard={ true } style={{ padding: '20px 0px' }} theme= { 'rjv-default' } indentWidth={ 2}/>;

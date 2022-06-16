@@ -2,7 +2,7 @@ import * as React from 'react';
 import stylesA from '../AlvFinMan.module.scss';
 import styles from './Entity.module.scss';
 
-import { IEntitysProps, IEntitysState, } from './IEntityProps';
+import { ISourcePagesProps, ISourcePagesState, } from './ISourcePagesProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 
 import { Web, ISite } from '@pnp/sp/presets/all';
@@ -21,7 +21,7 @@ import * as strings from 'AlvFinManWebPartStrings';
 import ReactJson from "react-json-view";
 
 import { createEntityRow } from './EntityItem';
-import { IEntityContent } from '../IAlvFinManProps';
+import { IAnyContent } from '../IAlvFinManProps';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
 
@@ -33,7 +33,7 @@ const pivotStyles = {
   //   textAlign: "center"
   }};
 
-export default class AlvEntitys extends React.Component<IEntitysProps, IEntitysState> {
+export default class SourcePages extends React.Component<ISourcePagesProps, ISourcePagesState> {
 
 
   private LastSearch = '';
@@ -53,7 +53,7 @@ export default class AlvEntitys extends React.Component<IEntitysProps, IEntitysS
  //Standards are really site pages, supporting docs are files
 
 
-public constructor(props:IEntitysProps){
+public constructor(props:ISourcePagesProps){
   super(props);
 
   this.state = {
@@ -98,13 +98,13 @@ public async updateWebInfo (   ) {
  *                                                                                         
  */
 
-  public render(): React.ReactElement<IEntitysProps> {
+  public render(): React.ReactElement<ISourcePagesProps> {
 
-    const search = this.props.search;
+    const topButtons = this.props.topButtons;
     
     let topSearch: any[] = [];  //All major future to be grid components
 
-    search.entities.map( searchObject => {
+    topButtons.map( searchObject => {
       let classNames = [ styles.button ];
       if ( this.state.topSearch.indexOf( searchObject ) > -1 ) { classNames.push( styles.isSelected ) ; }
       topSearch.push( <div className={ classNames.join(' ') } style={ null }  onClick={ this._clickTop.bind( this, searchObject )}>{ searchObject }</div> );
@@ -113,10 +113,12 @@ public async updateWebInfo (   ) {
     const topSearchContent = <div className={ styles.topSearch } style={ { background : this.props.debugMode === true ? 'pink' : null }} >{ topSearch }</div>;
 
     let filtered = [];
-    this.state.filtered.map( entity => {
+    this.state.filtered.map( item => {
       if ( filtered.length < this.state.slideCount ) {
-        filtered.push( createEntityRow( entity, this.state.searchText, null ));
-
+        switch ( this.props.primarySource.listTitle  ) {
+          case 'Entities':
+          filtered.push( createEntityRow( item, this.state.searchText, null )); break;
+        }
       }
     });
 
@@ -147,7 +149,7 @@ public async updateWebInfo (   ) {
     </div>;
 
       const debugContent = this.props.debugMode !== true ? null : <div>
-        App in debugMode - Change in Web Part Properties - Page Preferences.  <b><em>Currently in EntitysPage</em></b>
+        App in debugMode - Change in Web Part Properties - Page Preferences.  <b><em>Currently in {this.props.primarySource.listTitle}</em></b>
       </div>;
 
     return (
@@ -175,8 +177,8 @@ public async updateWebInfo (   ) {
     let selected: string[] = this.toggleSearchInArray( this.state.topSearch, item , event.ctrlKey === true ? 'multi' : 'single' );
     console.log('_clickTop:', item, selected );
 
-    let startingItems: IEntityContent[] = this.props.items;
-    let filtered: IEntityContent[] = this.getFilteredItems( startingItems, this.state.searchText, selected, );
+    let startingItems: IAnyContent[] = this.props.items;
+    let filtered: IAnyContent[] = this.getFilteredItems( startingItems, this.state.searchText, selected, );
 
     this.setState({ topSearch: selected , filtered: filtered });
 
@@ -204,9 +206,9 @@ public async updateWebInfo (   ) {
   }
 
   
-  private getFilteredItems( startingItems: IEntityContent[], text: string, top: string[]  ) {
+  private getFilteredItems( startingItems: IAnyContent[], text: string, top: string[]  ) {
 
-    let filteredItems : IEntityContent[] = [];
+    let filteredItems : IAnyContent[] = [];
 
     startingItems.map( item => {
 
@@ -277,7 +279,7 @@ public async updateWebInfo (   ) {
       this.updateParentDeeplinks( SearchValue, this.state.topSearch );
     // }, 1000);
 
-    let filtered: IEntityContent[] = this.getFilteredItems( this.props.items, NewSearch.target.value, this.state.topSearch, );
+    let filtered: IAnyContent[] = this.getFilteredItems( this.props.items, NewSearch.target.value, this.state.topSearch, );
 
     let endTime = new Date();
     let totalTime = endTime.getTime() - startTime.getTime();
