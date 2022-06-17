@@ -9,11 +9,11 @@ import "@pnp/sp/items";
 
 import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfunctions/dist/Lists/getFunctions';
 
-import { ILayoutGPage, ILayoutSPage, ILayoutAPage, IFMBuckets, IPagesContent, ICanvasContentOptions,   } from '../IAlvFinManProps';
+import { ILayoutGPage, ILayoutSPage, ILayoutAPage, IFMBuckets, IPagesContent, ICanvasContentOptions,   } from '../../IAlvFinManProps';
 
 
 
-import { ISourceProps, LookupColumns, SourceInfo } from '../DataInterface';
+import { ISourceProps, LookupColumns, SourceInfo } from '../../DataInterface';
 
   
   //Standards are really site pages, supporting docs are files

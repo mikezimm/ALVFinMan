@@ -28,8 +28,6 @@ import { createHistoryRow } from './History/HistoryItem';
 
 import { IAnyContent, IDeepLink } from '../IAlvFinManProps';
 
-export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
-
 const pivotStyles = {
   root: {
     whiteSpace: "normal",

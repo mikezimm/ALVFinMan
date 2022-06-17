@@ -34,9 +34,12 @@ import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfu
 import { LookupColumns, SourceInfo } from '../DataInterface';
 import { divide, stubFalse } from 'lodash';
 import { makeToggleJSONCmd } from '../Elements/CmdButton';
-import { getDocWiki } from './getModernContent';
-import { getModernHumanReadable } from './processModernContent';
+import { getDocWiki } from './SinglePage/getModernContent';
+import { getModernHumanReadable } from './SinglePage/processModernContent';
 
+import SinglePage from './SinglePage/SingleModernPage';
+
+//  NOTE:   linkNoLeadingTarget is used in Layouts1, Layouts2 and Modern Pages... maybe consolidate
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
 
 const consoleLineItemBuild: boolean = false;

@@ -1,6 +1,7 @@
 
 import { replaceHTMLEntities } from '@mikezimm/npmfunctions/dist/Services/Strings/html';
 
+export const imgSrcRegex = /<iframe[\s\S]*>/gi;
 
 /**
  *
@@ -130,20 +131,41 @@ export function getModernHumanReadable( result: any ) {
                             }
                         }
                         }
-                        let parseThisObject = JSON.parse( parseMe );
+
+                        let parseThisObject = null;
+
+                        if ( parseMe.indexOf('544dd15b-cf3c-441b-96da-004d5a8cea1d') > -1 ) {
+                            let iframes = parseMe.match(imgSrcRegex);
+                            //This is the youtube video... add some things manually
+                            if ( iframes.length > 0 ) {
+                                parseMe = parseMe.replace( iframes[0], '' );
+                            }
+                            parseThisObject = JSON.parse( parseMe );
+                            parseThisObject.properties.cachedEmbedCode = iframes[0];
+
+                        } else {
+                            parseThisObject = JSON.parse( parseMe );
+                        }
+
                         let startContent = part.indexOf( '"><' ) + 2;
                         let endContent = part.lastIndexOf('</div>');
                         let thisContent = part.substring(startContent,endContent);
                         if ( thisContent.indexOf('<div data-sp-rte="">') > -1 ) {
-                        //This is common Text WebPart
-                        parseThisObject.title = 'OOTB Text Web Part';
+                            //This is common Text WebPart
+                            parseThisObject.title = 'OOTB Text Web Part';
                         } else {
-                        //This is not OOTB Text Web Part so trim props from beginning of string
-                        thisContent = thisContent.substring( thisContent.indexOf( '"><' ) + 2) ;
+                            //This is not OOTB Text Web Part so trim props from beginning of string
+                            thisContent = thisContent.substring( thisContent.indexOf( '"><' ) + 2) ;
                         }
+
+
+
                         parseThisObject.content = thisContent;
-                        result.HumanJSON_ContentWebparts.push( { parseMe:  parseThisObject } ) ;
+                        result.HumanJSON_ContentWebparts.push( parseThisObject ) ;
+
+
                     } catch (e) {
+
                         result.HumanJSON_ContentWebparts.push( { part: part, errorText: errCanvasWebParts, parseMe: parseMe, error: e } );
                     }
                 }

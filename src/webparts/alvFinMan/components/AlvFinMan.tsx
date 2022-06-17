@@ -70,25 +70,6 @@ import { gitRepoALVFinManSmall } from '@mikezimm/npmfunctions/dist/Links/LinksRe
 
 import { allMainPivots, sourcePivots, categorizedPivots } from './IAlvFinManProps';
 
-export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
-
-const consoleLineItemBuild: boolean = false;
-
-// const AccountSearch = [ 'Title', 'Description', 'ALGroup', 'Name1' ];
-
-// const thisSelect = ['*','ID','FileRef','FileLeafRef','Author/Title','Editor/Title','Author/Name','Editor/Name','Modified','Created','CheckoutUserId','HasUniqueRoleAssignments','Title','FileSystemObjectType','FileSizeDisplay','FileLeafRef','LinkFilename','OData__UIVersion','OData__UIVersionString','DocIcon'];
-
-// const sitePagesColumns: string[] = [ "ID", "Title0", "Author/Title", "File/ServerRelativeUrl", "FileRef", ]; //Do not exist on old SitePages library:   "Descritpion","BannerImageUrl.Url", "ServerRelativeUrl"
-// const libraryColumns: string[] = [ 'ID','FileRef','FileLeafRef','Author/Title','Editor/Title','Author/Name','Editor/Name','Modified','Created','CheckoutUserId','HasUniqueRoleAssignments','Title','FileSystemObjectType','FileSizeDisplay','FileLeafRef','LinkFilename','OData__UIVersion','OData__UIVersionString','DocIcon'];
-
-// const appLinkColumns: string[] = [ 'ID','Title','Tab','SortOrder','LinkColumn','RichTextPanel','Author/Title','Editor/Title','Author/Name','Editor/Name','Modified','Created','HasUniqueRoleAssignments','OData__UIVersion','OData__UIVersionString'];
-
-// const FinManSite: string ="/sites/ALVFMTest/";
-// const StandardsLib: string = "StandardDocuments";
-// const SupportingLib: string = "SupportDocuments";
-// const AppLinksList: string = "ALVFMAppLinks";
-// const LookupColumns: string[] = ['Functions/Title', 'Topics/Title', 'ALGroup/Title', 'Sections/Title','Processes/Title' ];
-// const AccountsList: string = "HFMAccounts";
 
 const mainPivotStyles = {
   root: {

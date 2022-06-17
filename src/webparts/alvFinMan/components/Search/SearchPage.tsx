@@ -34,9 +34,6 @@ import { getHighlightedText } from '../Elements/HighlightedText';
 import { createAccountRow } from '../SourcePages/Accounts/AccountItem';
 import { getSearchTypeIcon } from '../Elements/FileTypeIcon';
 
-export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
-
-
 const pivotStyles = {
   root: {
     whiteSpace: "normal",
