@@ -38,6 +38,7 @@ import { getDocWiki } from './SinglePage/getModernContent';
 import { getModernHumanReadable } from './SinglePage/processModernContent';
 
 import SinglePage from './SinglePage/SingleModernPage';
+import SingleModernPage from './SinglePage/SingleModernPage';
 
 //  NOTE:   linkNoLeadingTarget is used in Layouts1, Layouts2 and Modern Pages... maybe consolidate
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
@@ -55,84 +56,7 @@ const ignoreThesePages: string[] = [
 
 export default class ModernPages extends React.Component<IModernPagesProps, IModernPagesState> {
 
-  private cke_editable = this.props.canvasOptions.addCkeEditToDiv !== false ? 'cke_editable' : '';
   private imageStyle = '';
-
-  private ToggleJSONCmd = makeToggleJSONCmd( this._toggleJSON.bind( this ) );
-
-  private buildPagesList( News: IPagesContent[], sortProp: ISeriesSort, order: ISeriesSort, showItem: IPagesContent, showCanvasContent1: boolean ) {
-    console.log('buildPagesList:', News );
-
-    let pagesList : any[] = [];
-
-    // debugger;
-
-    let SortedPages: IPagesContent[] = sortObjectArrayByNumberKey( News, order, sortProp );
-
-    SortedPages.map( item => {
-      let classNames = [ stylesM.titleListItem, styles.leftFilter ];
-      if ( showItem && ( item.ID == showItem.ID ) ) { classNames.push( stylesM.isSelected ) ; }
-      //Make sure page has Title and is not a dud, also check it's not a common page that does not belong in this component
-      if ( item.Title && ignoreThesePages.indexOf( item.Title ) < 0 ) {
-        pagesList.push( <li className={ classNames.join( ' ' ) } onClick= { this.clickNewsItem.bind( this, item.ID, 'pages', item  )} style={ null }>
-        { item.Title } </li>  );
-      }
-    });
-
-    let showArticle: IPagesContent = showItem ? showItem : null;
-
-    const articleTitle = showArticle ? showArticle.Title : 'Select pages to show...';
-    let articleDesc: any  = showArticle ? showArticle.Description : '';
-
-    const imageUrl = showArticle ? showArticle.BannerImageUrl : null;
-
-    const CanvasContent1 = !showArticle || showCanvasContent1 !== true ? null :
-      <div className={ ['', this.cke_editable].join(' ') }>
-        {/* <h2>CanvasContent1</h2> */}
-        <div dangerouslySetInnerHTML={{ __html: showArticle.CanvasContent1Str }} />
-      </div>;
-
-    if ( CanvasContent1 ) { articleDesc = null ; } //Remove Description because full article is shown below
-
-    let ClickInstructions = showCanvasContent1 === true ? null : 
-    <div style={{ paddingTop: '15px'}}>
-      <div>To go to article: <span style={{ cursor: 'pointer', color: 'darkblue' }}onClick={ this.openArticleNewTab.bind( this, showArticle )}>click here</span></div>
-      <div>To open article in NEW full-size tab: <b>CTRL-Click the Title</b> </div>
-      <div>To show it right here: <b>CTRL-ALT-Click the Title</b></div>
-      <div>To show it in a side panel: <b>ALT-Click the Title</b></div>
-    </div>;
-
-    if ( showArticle && showArticle['OData__OriginalSourceUrl'] && showArticle['OData__OriginalSourceUrl'].indexOf( window.location.origin ) < 0 ) {
-      //Link is external...  Use different instructions
-      ClickInstructions =
-      <div style={{ paddingTop: '15px'}}>
-        <div style={{ paddingBottom: '10px', fontWeight: 600 }}>To go to article: <span style={{ cursor: 'pointer', color: 'darkblue' }}onClick={ this.openThisLink.bind( this, showArticle['OData__OriginalSourceUrl'] )}>click here</span></div>
-        <div style={{ color: 'red', }}>Security check :)  This is the full link you will be clicking on</div>
-        <div>{ showArticle['OData__OriginalSourceUrl'] } </div>
-      </div>;
-    }
-
-    if ( !showItem && SortedPages.length > 0 ) { showArticle = SortedPages[0]; }
-    const image = !showItem || !imageUrl ? null : 
-    <img src={ imageUrl.Url } height="100px" width="100%" style={{ objectFit: "cover" }} title={ imageUrl.Url }></img>;
-
-    let page = <div className={ [ stylesM.modernPage, this.props.debugMode === true ? stylesM.debugMode : null ].join(' ') } style={{  }} >
-      {/* <div className={ styles.titleList }> <ul>{ pagesList }</ul></div> */}
-      <div className={ stylesM.titleList }>
-        <h3>{this.props.source.searchSource}</h3>
-        <div className= { stylesM.pageDescription }>{this.props.source.searchSourceDesc}</div>
-         { pagesList } </div>
-      <div className={ [stylesM.article, '' ].join(' ') }>
-        { image }
-        <h3>{ articleTitle }</h3>
-         { articleDesc }
-         { ClickInstructions }
-         { CanvasContent1 }
-      </div>
-    </div>;
-    return page;
-
-  }
 
   public constructor(props:IModernPagesProps){
     super(props);
@@ -180,10 +104,12 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
   public componentDidUpdate(prevProps){
     //Just rebuild the component
     if ( this.props.refreshId !== prevProps.refreshId ) {
+
       console.log('componentDidUpdate: refreshId', prevProps.refreshId, this.props.refreshId  );
       let showThisItem: IPagesContent = this.state.showThisItem;
       if ( !showThisItem && this.props.pages.length > 0 ) showThisItem = this.props.pages[0];
       this.setState({ refreshId: this.props.refreshId, showThisItem: showThisItem });
+
     } else if ( JSON.stringify( this.props.canvasOptions) !== JSON.stringify( prevProps.canvasOptions ) ) {
       console.log('ModernPages style update: ', this.imageStyle );
       this.setState({ refreshId: this.props.refreshId, });
@@ -198,32 +124,39 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
     } else {
       console.log('ModernPages: ReactElement', this.props.refreshId  );
 
-      const showPage = <div> { this.buildPagesList( this.props.pages, this.state.sort.prop, this.state.sort.order, this.state.showThisItem, this.state.showCanvasContent1 ) } </div>; 
+      let pagesList : any[] = [];
   
-      if ( this.state.showThisItem && this.state.showThisItem.WikiField ) {
-        // const replaceString = '<a onClick=\"console.log(\'Going to\',this.href);window.open(this.href,\'_blank\')\" style="pointer-events:none" href=';
-        const replaceString = '<a onClick=\"window.open(this.href,\'_blank\')\" href=';
-        this.state.showThisItem.WikiField = this.state.showThisItem.WikiField.replace(linkNoLeadingTarget,replaceString);
-      }
+      let SortedPages: IPagesContent[] = sortObjectArrayByNumberKey( this.props.pages, this.state.sort.order, this.state.sort.prop );
+  
+      SortedPages.map( item => {
+        let classNames = [ stylesM.titleListItem, styles.leftFilter ];
+        if ( this.state.showThisItem && ( item.ID == this.state.showThisItem.ID ) ) { classNames.push( stylesM.isSelected ) ; }
+        //Make sure page has Title and is not a dud, also check it's not a common page that does not belong in this component
+        if ( item.Title && ignoreThesePages.indexOf( item.Title ) < 0 ) {
+          pagesList.push( <li className={ classNames.join( ' ' ) } onClick= { this.clickNewsItem.bind( this, item.ID, 'pages', item  )} style={ null }>
+          { item.Title } </li>  );
+        }
+      });
 
-      //CanvasContent1,LayoutsWebpartsContent'
-      const CanvasContent1 = !this.state.showThisItem || !this.state.showThisItem.CanvasContent1Str ? null : 
-      <div className={ ['', this.cke_editable].join(' ') }>
-        <h2>CanvasContent1</h2>
-        <div dangerouslySetInnerHTML={{ __html: this.state.showThisItem.CanvasContent1Str }} />
+      let page = <div className={ [ stylesM.modernPage, this.props.debugMode === true ? stylesM.debugMode : null ].join(' ') } style={{  }} >
+        {/* <div className={ styles.titleList }> <ul>{ pagesList }</ul></div> */}
+        <div className={ stylesM.titleList }>
+          <h3>{this.props.source.searchSource}</h3>
+          <div className= { stylesM.pageDescription }>{this.props.source.searchSourceDesc}</div>
+           { pagesList }
+        </div>
+        <SingleModernPage 
+          page= { this.state.showThisItem }
+          showCanvasContent1= { this.state.showCanvasContent1 }
+          source= { this.props.source }
+          refreshId= { this.props.refreshId  }
+          canvasOptions= { this.props.canvasOptions }
+          imageStyle= { this.imageStyle }
+          debugMode= { this.props.debugMode }
+        ></SingleModernPage>
       </div>;
 
-      const LayoutsWebpartsContent = !this.state.showThisItem || !this.state.showThisItem.LayoutsWebpartsContent ? null : 
-      <div>
-        <h2>LayoutsWebpartsContent</h2>
-        <div dangerouslySetInnerHTML={{ __html: this.state.showThisItem.LayoutsWebpartsContent }} />
-      </div>;
-
-      const panelContent = this.state.showPanelJSON !== true ? null : <div>
-        <ReactJson src={ this.state.showThisItem } name={ 'Summary' } collapsed={ false } displayDataTypes={ true } displayObjectSize={ true } enableClipboard={ true } style={{ padding: '20px 0px' }}/>
-      </div>;
-
-      const userPanel = <div><Panel
+      const userPanel = this.state.showItemPanel !== true ? null : <div><Panel
         isOpen={ this.state.showItemPanel === true ? true : false }
         // this prop makes the panel non-modal
         isBlocking={true}
@@ -232,10 +165,15 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
         type = { PanelType.large }
         isLightDismiss = { true }
         >
-          { CanvasContent1 }
-          { LayoutsWebpartsContent }
-          { this.ToggleJSONCmd }
-          { panelContent }
+        <SingleModernPage 
+          page= { this.state.showThisItem }
+          showCanvasContent1= { true }
+          source= { this.props.source }
+          refreshId= { this.props.refreshId  }
+          canvasOptions= { this.props.canvasOptions }
+          imageStyle= { this.imageStyle }
+          debugMode= { this.props.debugMode }
+        ></SingleModernPage>
       </Panel></div>;
 
       const debugContent = this.props.debugMode !== true ? null : <div>
@@ -250,7 +188,7 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
             {/* <div className={ styles.row }> */}
               {/* <div className={ styles.column }> */}
                 { debugContent }
-                { showPage }
+                { page }
                 { userPanel }
               {/* </div> */}
             {/* </div> */}
@@ -271,15 +209,6 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
       showThisItem: item });
 
   }
-
-  private openArticleNewTab( item: IPagesContent ) {
-    window.open( item.File.ServerRelativeUrl , '_blank' );
-  }
-
-  private openThisLink( link:string ) {
-    window.open( link , '_blank' );
-  }
-
   private clickNewsItem( ID: number, category: string, item: IPagesContent, e: any ) {  //this, item.ID, 'pages', item
     console.log('clickNewsItem:', ID, item );
     // debugger;
@@ -302,20 +231,11 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
       window.open( item.File.ServerRelativeUrl , '_blank' );
         this.setState({ showThisItem: item, showItemPanel: newState });
 
-    }
+      } else {
+        this.setState({ showThisItem: item, showItemPanel: newState });
+      }
 
 
-  }
-
-
-
-  private _toggleJSON( ) {
-    let newState = this.state.showPanelJSON === true ? false : true;
-
-    let result = this.state.showThisItem;
-    result = getModernHumanReadable( result );
-
-    this.setState( { showThisItem: result , showPanelJSON: newState });
   }
 
   private _onClosePanel( ) {
