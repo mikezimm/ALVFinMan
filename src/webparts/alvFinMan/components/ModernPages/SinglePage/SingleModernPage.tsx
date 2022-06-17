@@ -80,19 +80,57 @@ export default class SingleModernPage extends React.Component<ISingleModernPageP
       return ( null );
 
     } else {
-      const CanvasContent1 = !this.state.showThisItem || !this.state.showThisItem.CanvasContent1Str ? null : 
+
+      const { showCanvasContent1, page } = this.props;
+      const { showThisItem, } = this.state;
+
+      const articleTitle = showThisItem ? showThisItem.Title : 'Select pages to show...';
+      let articleDesc: any  = showThisItem ? showThisItem.Description : '';
+
+      const imageUrl = showThisItem ? showThisItem.BannerImageUrl : null;
+
+
+      const CanvasContent1 = !showThisItem || !showThisItem.CanvasContent1Str ? null : 
       <div className={ ['', this.cke_editable].join(' ') }>
         <h2>CanvasContent1</h2>
-        <div dangerouslySetInnerHTML={{ __html: this.state.showThisItem.CanvasContent1Str }} />
+        <div dangerouslySetInnerHTML={{ __html: showThisItem.CanvasContent1Str }} />
       </div>;
 
+
+      if ( CanvasContent1 ) { articleDesc = null ; } //Remove Description because full article is shown below
+
+      let ClickInstructions = showCanvasContent1 === true ? null : 
+      <div style={{ paddingTop: '15px'}}>
+        <div>To go to article: <span style={{ cursor: 'pointer', color: 'darkblue' }}onClick={ this.openArticleNewTab.bind( this, showThisItem )}>click here</span></div>
+        <div>To open article in NEW full-size tab: <b>CTRL-Click the Title</b> </div>
+        <div>To show it right here: <b>CTRL-ALT-Click the Title</b></div>
+        <div>To show it in a side panel: <b>ALT-Click the Title</b></div>
+      </div>;
+
+      //Add warning to link outside of our system.
+      if ( showThisItem && showThisItem['OData__OriginalSourceUrl'] && showThisItem['OData__OriginalSourceUrl'].indexOf( window.location.origin ) < 0 ) {
+        //Link is external...  Use different instructions
+        ClickInstructions =
+        <div style={{ paddingTop: '15px'}}>
+          <div style={{ paddingBottom: '10px', fontWeight: 600 }}>To go to article: <span style={{ cursor: 'pointer', color: 'darkblue' }}onClick={ this.openThisLink.bind( this, showThisItem['OData__OriginalSourceUrl'] )}>click here</span></div>
+          <div style={{ color: 'red', }}>Security check :)  This is the full link you will be clicking on</div>
+          <div>{ showThisItem['OData__OriginalSourceUrl'] } </div>
+        </div>;
+      }
+
+      const image = !showThisItem || !imageUrl ? null : 
+        <img src={ imageUrl.Url } height="100px" width="100%" style={{ objectFit: "cover" }} title={ imageUrl.Url }></img>;
+
       const jsonContent = this.state.showPanelJSON !== true ? null : <div>
-        <ReactJson src={ this.state.showThisItem } name={ 'Summary' } collapsed={ false } displayDataTypes={ true } displayObjectSize={ true } enableClipboard={ true } style={{ padding: '20px 0px' }}/>
+        <ReactJson src={ showThisItem } name={ 'Summary' } collapsed={ false } displayDataTypes={ true } displayObjectSize={ true } enableClipboard={ true } style={{ padding: '20px 0px' }}/>
       </div>;
 
 return (
         // <div className={ styles.alvFinMan }>
         <div className={ null }>
+          { image }
+          <h3>{ articleTitle }</h3>
+          { articleDesc }
           { CanvasContent1 }
           { this.ToggleJSONCmd }
           { jsonContent }
@@ -111,6 +149,10 @@ return (
 
   private openArticleNewTab( item: IPagesContent ) {
     window.open( item.File.ServerRelativeUrl , '_blank' );
+  }
+
+  private openThisLink( link:string ) {
+    window.open( link , '_blank' );
   }
 
   private _toggleJSON( ) {

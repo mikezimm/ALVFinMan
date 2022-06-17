@@ -10,6 +10,8 @@ export interface ISingleModernPageProps {
   page: IPagesContent;
 
   showCanvasContent1: boolean;
+  showArticle: boolean;
+  
   showPanelJSON: boolean;
 
   source: ISourceProps;
