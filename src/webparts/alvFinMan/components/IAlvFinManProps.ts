@@ -295,7 +295,10 @@ export interface IPagesContent extends Partial<IAnyContent> {
   File: {
     ServerRelativeUrl: string;
   };
-
+  fetchError: string;
+  CanvasContent1: any;
+  CanvasContent1Str: any;
+  
 }
 
 export interface IEntityContent extends Partial<IAnyContent> {
