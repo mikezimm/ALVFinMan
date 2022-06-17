@@ -1,0 +1,164 @@
+@import '~office-ui-fabric-react/dist/sass/References.scss';
+
+  
+.storagePage {
+    padding: 10px 20px 20px 20px;
+    margin: 0 -8px;
+
+}
+
+.searchSourceDesc {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 12px;
+}
+
+.sourceDesc {
+    font-size: larger;
+    font-weight: 600;
+}
+
+.goToLink {
+    text-decoration: none;
+    padding-left: 50px;
+    // color: ;
+    cursor: pointer;
+}
+
+.topSearch {
+    // background: pink;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+
+    // padding: 10px;
+    .button {
+        cursor: pointer;
+        padding: 7px 10px;
+        height: 16px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        // max-width: 50px;
+        margin-right: 10px;
+        margin-top: 10px;
+
+        text-decoration: none;
+        text-align: center;
+
+        // Primary Button
+        min-width: 50px;
+        background-color: lightgray;
+        border-color: lightgray;
+        color: black;
+    }
+
+    .button.isSelected {
+        background-color: $ms-color-themePrimary;
+        border-color: $ms-color-themePrimary;
+        color: $ms-color-white;
+        font-weight: bolder;
+      }
+
+
+}
+
+.itemIcon {
+    font-size: 20px;
+}
+
+.entityItem {
+
+    //This is the same styling that should be in Search listItem
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 99%;
+    padding-top: 20px;
+
+    i {
+      padding-right: 15px;
+    }
+
+    .entityDetails {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .entityRow1 {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        div {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        div:nth-child(1) { //This is the Entity ID (Number)
+            color: darkblue;
+            width: 35px;
+            font-weight: 600;
+            padding-right: 15px;
+        }
+        div:nth-child(2) { //This is the Entity Parent
+            color: darkred;
+            width: 225px;
+            font-weight: 600;
+        }
+
+        div:nth-child(3) { //This is the Entity OSCode
+            color: darkgreen;
+            width: 350px;
+            font-weight: 600;
+        }
+
+        div:nth-child(4) { //This is the Entity HFMCode
+            color: darkviolet;
+            width: 350px;
+            width: calc(100%-450px);
+            font-weight: 600;
+        }
+    }
+
+    .entityRow2 {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        overflow: hidden;
+
+        
+        div:nth-child(1) { //This is the Controller1
+            // color: darkblue;
+            width: 235px;
+            // font-weight: 600;
+            padding-right: 15px;
+        }
+        div:nth-child(2) { //This is the Controller2
+            // color: darkred;
+            // width: 225px;
+            // font-weight: 600;
+        }
+
+    }
+
+}
+

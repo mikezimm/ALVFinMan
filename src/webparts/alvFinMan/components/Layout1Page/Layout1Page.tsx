@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styles from '../AlvFinMan.module.scss';
-import { ILayoutGPage, ILayoutSPage, ILayoutAll, ILayoutAPage, IFMBuckets, IAnyContent,   } from '../IAlvFinManProps';
+import { ILayoutGPage, ILayoutSPage, ILayoutAPage, IFMBuckets, IAnyContent,   } from '../IAlvFinManProps';
 import { ILayout1PageProps, ILayout1PageState, ILayout1Page, Layout1PageValues, } from './ILayout1PageProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 
@@ -27,7 +27,6 @@ import ReactJson from "react-json-view";
 
 import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfunctions/dist/Lists/getFunctions';
 
-import AlvAccounts from '../Accounts/Accounts';
 import { ISourceInfo, ISourceProps, LookupColumns, SourceInfo } from '../DataInterface';
 import { IFMSearchType, SearchTypes } from '../DataInterface';
 import { getSearchTypeIcon } from '../Elements/FileTypeIcon';
@@ -66,9 +65,9 @@ const consoleLineItemBuild: boolean = false;
 // const pivotHeading3 : ILayout1Page = 'Processes';
 // const pivotHeading4 : ILayout1Page = 'Functions';
 // const pivotHeading5 : ILayout1Page = 'Topics';
-// const pivotHeading6 : ILayoutAPage = 'Accounts';
+// const sourcePivotKey : ILayoutAPage = 'Accounts';
 
-// const allPivots: ILayoutAll[] = [ pivotHeading0, pivotHeading1, pivotHeading2, pivotHeading3, pivotHeading4, pivotHeading5, pivotHeading6 ];
+// const allPivots: IAllPages[] = [ pivotHeading0, pivotHeading1, pivotHeading2, pivotHeading3, pivotHeading4, pivotHeading5, sourcePivotKey ];
 // const layout1Pivots : ILayout1Page[] = [ pivotHeading2, pivotHeading3, pivotHeading4, pivotHeading5,  ];
 
 // const pivotTitles = allPivots.map( pivot => { return pivot.split('|')[0] ; } );
@@ -77,7 +76,7 @@ const consoleLineItemBuild: boolean = false;
 //   return <PivotItem headerText={ pivotTitles[idx] } ariaLabel={pivotTitles[idx]} title={pivotTitles[idx]} itemKey={ key } ></PivotItem>;
 // });
 
-// const pivotHeading6 = 'Function';
+// const sourcePivotKey = 'Function';
 
 export default class Layout1Page extends React.Component<ILayout1PageProps, ILayout1PageState> {
   private FPSWindow: any = window;

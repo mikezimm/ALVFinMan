@@ -92,6 +92,11 @@ export const PresetEverywhere : IPreConfigSettings = {
         allSectionMaxWidth: 2500,
 
         debugMode: false,
+        entitiesSearch: 'AAM;AAS;ACH;AEU;ALV_Corp;ALVGO;ALVTC;NDC',
+        historySearch: 'News;Help;Accounts;Links;Standards;SupportDocs;Entities;Acronyms',
+        acronymsSearch: 'AB;CM;MPV;NPH;PS;RDE;Systems;Above;Below',
+
+        sourcePagesCount: 20,
 
     }
 };
@@ -114,6 +119,8 @@ export const ForceFinancialManual : IPreConfigSettings = {
         bannerTitle: 'ALV Financial Manual App',
 
         homeParentGearAudience: 'Everyone',
+
+        entitiesSearch: 'AAM;AAS;ACH;AEU;ALV_Corp;ALVGO;ALVTC;NDC',
     }
 };
 

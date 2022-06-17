@@ -1,14 +1,24 @@
 import { ISourceInfo, ISourceProps } from "../DataInterface";
-import { IAnyContent } from "../IAlvFinManProps";
+import { IAnyContent, IFinManSearch } from "../IAlvFinManProps";
 
-export interface IAlvAccountsProps {
+export interface ISourcePagesProps {
 
   refreshId: string;
 
+  search: IFinManSearch ;
+
   source: ISourceInfo;
   primarySource: ISourceProps;
+  topButtons: string[];
 
-  accounts: IAnyContent[];
+  pageWidth: number;
+
+  deepProps: string[];
+
+  bumpDeepLinks: any;
+  jumpToDeepLink?: any;
+
+  items: IAnyContent[];
   fetchTime: number;
 
   debugMode?: boolean; //Option to display visual ques in app like special color coding and text
@@ -17,10 +27,12 @@ export interface IAlvAccountsProps {
 
 export type ISort = 'asc' | 'dec' | '-';
 
-export interface IAlvAccountsState {
+export interface ISourcePagesState {
   // description: string;
 
   filtered: any[];
+  topSearch: string[];
+  
   slideCount: number;
   sortNum: ISort;
   sortName: ISort;

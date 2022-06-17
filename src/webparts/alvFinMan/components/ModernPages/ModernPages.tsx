@@ -1,8 +1,8 @@
 import * as React from 'react';
 import styles from '../AlvFinMan.module.scss';
 import stylesM from './ModernPages.module.scss';
-import { ILayoutGPage, ILayoutSPage, ILayoutAll, ILayoutAPage, IFMBuckets, IPagesContent,   } from '../IAlvFinManProps';
-import { IModernPagesProps, IModernPagesState, } from './IModernPagesProps';
+import { ILayoutGPage, ILayoutSPage, ILayoutAPage, IFMBuckets, IPagesContent,   } from '../IAlvFinManProps';
+import { IModernPagesProps, IModernPagesState, ModernPageValues, } from './IModernPagesProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 
 import { Web, ISite } from '@pnp/sp/presets/all';
@@ -31,7 +31,6 @@ import { ILabelColor, ICSSChartTypes, CSSChartTypes, ISeriesSort, ICSSChartSerie
 
 import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfunctions/dist/Lists/getFunctions';
 
-import AlvAccounts from '../Accounts/Accounts';
 import { LookupColumns, SourceInfo } from '../DataInterface';
 import { divide, stubFalse } from 'lodash';
 import { makeToggleJSONCmd } from '../Elements/CmdButton';
@@ -200,7 +199,7 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
 
   public render(): React.ReactElement<IModernPagesProps> {
 
-    if ( this.props.mainPivotKey !== 'News' && this.props.mainPivotKey !== 'Help' ) {
+    if ( ModernPageValues.indexOf( this.props.mainPivotKey )< 0  ) {
       return ( null );
 
     } else {

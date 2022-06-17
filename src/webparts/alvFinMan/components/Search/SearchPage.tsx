@@ -31,7 +31,7 @@ import { IFMSearchType, SearchTypes } from '../DataInterface';
 import { IAnyContent, ISearchObject } from '../IAlvFinManProps';
 import { NoItems } from '@mikezimm/npmfunctions/dist/Icons/iconNames';
 import { getHighlightedText } from '../Elements/HighlightedText';
-import { createAccountRow } from '../Accounts/AccountItem';
+import { createAccountRow } from '../SourcePages/Accounts/AccountItem';
 import { getSearchTypeIcon } from '../Elements/FileTypeIcon';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
@@ -52,7 +52,7 @@ const pivotStyles = {
 // const pivotHeading4 : ILayout1Page = 'Functions';
 // const pivotHeading5 : ILayout1Page = 'Topics';
 
-// const allPivots: ILayoutAll[] = [ pivotHeading0, pivotHeading1, pivotHeading2, pivotHeading3, pivotHeading4, pivotHeading5 ];
+// const allPivots: IAllPages[] = [ pivotHeading0, pivotHeading1, pivotHeading2, pivotHeading3, pivotHeading4, pivotHeading5 ];
 // const layout1Pivots : ILayout1Page[] = [ pivotHeading2, pivotHeading3, pivotHeading4, pivotHeading5 ];
 
 // const pivotTitles = allPivots.map( pivot => { return pivot.split('|')[0] ; } );
@@ -61,7 +61,7 @@ const pivotStyles = {
 //   return <PivotItem headerText={ pivotTitles[idx] } ariaLabel={pivotTitles[idx]} title={pivotTitles[idx]} itemKey={ key } ></PivotItem>;
 // });
 
-// const pivotHeading6 = 'Function';
+// const sourcePivotKey = 'Function';
 
 export default class SearchPage extends React.Component<ISearchPageProps, ISearchPageState> {
 

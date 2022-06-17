@@ -1,6 +1,6 @@
 import { IAnyContent, IFMBuckets,IFMBucketItems, IFinManSearch, ICanvasContentOptions } from "../IAlvFinManProps";
 import { ILayout1Page,  } from "../Layout1Page/ILayout1PageProps";
-import { ILayoutAll,  } from "../IAlvFinManProps";
+import { IMainPage,  } from "../IAlvFinManProps";
 import * as React from "react";
 
 export interface ISearchPageProps {
@@ -9,7 +9,7 @@ export interface ISearchPageProps {
   search: IFinManSearch ;
 
   appLinks: IAnyContent[];
-  mainPivotKey: ILayoutAll;
+  mainPivotKey: IMainPage;
   manual: IAnyContent[];
   // stds: IAnyContent[]; //This is currently not used.... Originally considered it as Standards since the library was 'Standard Docs'.  Maybe could be list of relavant standards in the future?
   sups: IAnyContent[];

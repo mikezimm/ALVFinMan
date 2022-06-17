@@ -6,7 +6,6 @@ import { IAppFormat } from "./IAlvFinManProps";
 
 // //Constants
 // import { SourceInfo, thisSelect, SearchTypes } from './DataInterface';
-
 //Classic Financial manual
 export const FinManSitePieces1 = ['/sites','/au','tol','iv','finan','cialmanual/']; //Just so this is not searchable easily 
 
@@ -32,9 +31,9 @@ export const LookupColumns: string[] = ['Functions/Title', 'Topics/Title', 'ALGr
 export const ExtraFetchClassicWiki = ['WikiField'];
 export const ExtraFetchModernPage = ['WikiField','CanvasContent1','LayoutsWebpartsContent'];
 
-export type IDefSourceType = 'link' | 'news' | 'help' | 'account' | 'std' | 'manual' | 'SupportDocuments' | 'entities';
+export type IDefSourceType = 'link' | 'news' | 'help' | 'account' | 'std' | 'manual' | 'SupportDocuments' | 'entity' | 'acronym' | 'history' ;
 
-export type ISearchSource = 'AppLinks' | 'News' | 'Help' | 'Accounts' | 'SupportDocs' | 'Manual' | 'Standards' | 'Policies' | 'Instructions' | 'Entities';
+export type ISearchSource = 'AppLinks' | 'News' | 'Help' | 'Accounts' | 'SupportDocs' | 'Manual' | 'Standards' | 'Policies' | 'Instructions' | 'Entities' | 'Acronyms' | 'History' ;
 
 export interface ISourceProps {
     key: IAppFormat;
@@ -54,6 +53,7 @@ export interface ISourceProps {
         prop: string;
         asc: boolean;
     };
+    defSearchButtons: string[];  //These are default buttons always on that source page.  Use case for Manual:  Policy, Instruction etc...
 
 }
 export interface ISourceInfo {
@@ -62,10 +62,12 @@ export interface ISourceInfo {
     help: ISourceProps;
     appLinks: ISourceProps;
     entities: ISourceProps;
+    acronyms: ISourceProps;
     // docs: ISourceProps;
     // stds: ISourceProps;
     sups: ISourceProps;
     accounts: ISourceProps;
+    history: ISourceProps;
 
 }
 
@@ -85,6 +87,7 @@ export const SourceInfo: ISourceInfo = {
         selectThese: [ ...['*'], ...ModernSitePagesColumns, ...LookupColumns ],
         isModern: true,
         restFilter: "Id ne 'X' and ContentTypeId ne '0x012000F6C75276DBE501468CA3CC575AD8E159' and Title ne 'Home'",
+        defSearchButtons: [ 'Policy', 'Instructions', ],
     },
 
     news: {
@@ -100,6 +103,7 @@ export const SourceInfo: ISourceInfo = {
         itemFetchCol: ExtraFetchModernPage,
         isModern: true,
         restFilter: "Id ne 'X' and ContentTypeId ne '0x012000F6C75276DBE501468CA3CC575AD8E159' and Title ne 'Home'",
+        defSearchButtons: [ 'Last30Days', 'Last90Days' ],
     },
 
     help: {
@@ -115,6 +119,7 @@ export const SourceInfo: ISourceInfo = {
         itemFetchCol: ExtraFetchModernPage,
         isModern: true,
         restFilter: "Id ne 'X' and ContentTypeId ne '0x012000F6C75276DBE501468CA3CC575AD8E159' and Title ne 'Home'",
+        defSearchButtons: [],
     },
 
     appLinks: {
@@ -129,6 +134,7 @@ export const SourceInfo: ISourceInfo = {
         searchProps: [ 'Title', 'LinkColumn','RichTextPanel', 'SearchWords','StandardDocuments/Title' ], //'StandardDocuments/Title'
         orderBy: { prop: 'Title', asc: false },
         isModern: true,
+        defSearchButtons: [],
     },
 
     accounts: {
@@ -143,65 +149,40 @@ export const SourceInfo: ISourceInfo = {
         searchProps: [ 'Title', 'Description', 'ALGroup', 'Name1','RCM','SubCategory', 'HFMAccount' ],
         selectThese: [ '*', 'ID','ALGroup','Description','Name1','RCM','SubCategory', 'HFMAccount' ],
         isModern: true,
+        defSearchButtons: [],
     },
 
-    
     entities: {
         key: 'entities',
-        defType: 'entities',
+        defType: 'entity',
         webUrl: `${FinManSite}Manual/`,
         webRelativeLink: "lists/Entities",
         searchSource: 'Entities',
         searchSourceDesc:  'Entities list in Manual Subsite',
         listTitle: "Entities",
-        columns: [ '*','ID','Title','OSCode', 'HFMCode', 'Controller1', 'Controller2', 'Parent', 'Author/Title','Editor/Title','Author/Name','Editor/Name','Modified','Created','OData__UIVersion','OData__UIVersionString'], //,'StandardDocuments/Title'
-        searchProps: [ 'Title', 'OSCode', 'HFMCode', 'Controller1', 'Controller2', 'Parent' ], //'StandardDocuments/Title'
+        columns: [ '*','ID','Title','OSCode', 'HFMCode', 'Controller1/Title', 'Controller2/Title', 'Parent', 'Author/Title','Editor/Title','Author/Name','Editor/Name','Modified','Created','OData__UIVersion','OData__UIVersionString'], //,'StandardDocuments/Title'
+        searchProps: [ 'Title', 'OSCode', 'HFMCode', 'Controller1/Title', 'Controller2/Title', 'Parent' ], //'StandardDocuments/Title'
         orderBy: { prop: 'Title', asc: false },
         isModern: true,
+        defSearchButtons: [],
     },
 
-    //Do not get * columns when using standards so you don't pull WikiFields
-    // let selectThese = library === StandardsLib ? [ ...columns, ...selColumns].join(",") : '*,' + [ ...columns, ...selColumns].join(",");
+    acronyms: {
+        key: 'acronyms',
+        defType: 'acronym',
+        webUrl: `${FinManSite}Manual/`,
+        webRelativeLink: "lists/Acronyms",
+        searchSource: 'Acronyms',
+        searchSourceDesc:  'Acronyms list in Manual Subsite',
+        listTitle: "Acronyms",
+        columns: [ '*','ID','Title','Description', 'SearchWords', 'LongDefinition', 'Official', 'StandardDocuments/ID', 'StandardDocuments/Title', 'Author/Title','Editor/Title','Author/Name','Editor/Name','Modified','Created','OData__UIVersion','OData__UIVersionString'], //,'StandardDocuments/Title'
+        searchProps: [ 'Title', 'Description', 'SearchWords', 'LongDefinition', 'StandardDocuments/Title', ], //'StandardDocuments/Title'
+        orderBy: { prop: 'Title', asc: false },
+        isModern: true,
+        defSearchButtons: [],
+    },
 
-    // stds: {
-    //     key: 'stds',
-    //     defType: 'std',
-    //     webUrl: `${FinManSite}Manual/`,
-    //     webRelativeLink: "SitePages",
-    //     searchSource: 'Manual',
-    //     searchSourceDesc:  'Site Pages library in Manual Subsite',
-    //     listTitle: "Site Pages",
-    //     columns: [ ...ModernSitePagesColumns, ...LookupColumns ],
-    //     itemFetchCol: ExtraFetchModernPage,
-    //     searchProps: [ ...ModernSitePagesColumns, ...LookupColumns ],
-    //     selectThese: [ ...['*'], ...ModernSitePagesColumns, ...LookupColumns ],
-    //     isModern: true,
-
-    // },
-
-    //Do not get * columns when using standards so you don't pull WikiFields
-    // let selectThese = library === StandardsLib ? [ ...columns, ...selColumns].join(",") : '*,' + [ ...columns, ...selColumns].join(",");
-
-    // docs: {
-    //     key: 'docs',
-    //     defType: 'std',
-    //     webUrl: `${FinManSite}Manual/`,
-    //     webRelativeLink: "SitePages",
-    //     searchSource: 'Manual',
-    //     searchSourceDesc:  'Site Pages library in Manual Subsite',
-    //     listTitle: "Site Pages",
-    //     columns: [ ...ModernSitePagesColumns, ...LookupColumns ],
-    //     itemFetchCol: ExtraFetchModernPage,
-    //     searchProps: [ ...ModernSitePagesColumns, ...LookupColumns ],
-    //     selectThese: [ ...['*'], ...ModernSitePagesColumns, ...LookupColumns ],
-    //     isModern: true,
-
-    // },
-
-    //Do not get * columns when using standards so you don't pull WikiFields
-    // let selectThese = library === StandardsLib ? [ ...columns, ...selColumns].join(",") : '*,' + [ ...columns, ...selColumns].join(",");
-
-    sups: {
+     sups: {
         key: 'sups',
         defType: 'SupportDocuments',
         webUrl: `${FinManSite}Manual/`,
@@ -213,6 +194,22 @@ export const SourceInfo: ISourceInfo = {
         searchProps: [ ...libraryColumns, ...LookupColumns ],
         selectThese: [ ...['*'], ...libraryColumns, ...LookupColumns ],
         isModern: true,
+        defSearchButtons: [],
+    },
+
+    history: {
+        key: 'history',
+        defType: 'history',
+        webUrl: `${FinManSite}Manual/`,
+        webRelativeLink: "",
+        searchSource: 'History',
+        searchSourceDesc:  'History of your current session',
+        listTitle: "History",
+        columns: [ ], //,'StandardDocuments/Title'
+        searchProps: [ ], //'StandardDocuments/Title'
+        orderBy: { prop: 'Title', asc: false },
+        isModern: true,
+        defSearchButtons: [],
     },
 };
 
@@ -234,7 +231,7 @@ export interface IFMSearchTypes {
 }
 
 export const SearchTypes:IFMSearchTypes  = {
-    keys: [ "account", "doc", "docx",
+    keys: [ "account", "doc", "docx", "acronym",
         "link",    "msg",
         "page",
         "pdf",    "ppt",    "pptx",
@@ -250,6 +247,7 @@ export const SearchTypes:IFMSearchTypes  = {
         { key: "account", title: "account", icon: "Bank", style: "", count: 0 }, 
         { key: "doc", title: "doc", icon: "WordDocument", style: "", count: 0 }, 
         { key: "docx", title: "doc", icon: "WordDocument", style: "", count: 0, adjust: -1 }, 
+        { key: "acronym", title: "acronym", icon: "FontColor", style: "", count: 0 }, 
 
         { key: "link", title: "Link", icon: "Link12", style: "", count: 0 }, 
         { key: "msg", title: "msg", icon: "Read", style: "", count: 0 }, 

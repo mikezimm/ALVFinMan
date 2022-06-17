@@ -1,5 +1,5 @@
 
-import { IAlvFinManProps, IAlvFinManState, IFMBuckets, ILayoutNPage, ILayoutGPage, ILayoutSPage, ILayoutAll, ILayoutAPage, ILayoutHPage, IAnyContent, IFinManSearch, IAppFormat, ISearchBucket, IPagesContent, IAllContentType } from './IAlvFinManProps';
+import { IAlvFinManProps, IAlvFinManState, IFMBuckets, ILayoutNPage, ILayoutGPage, ILayoutSPage, ILayoutAPage, ILayoutHPage, IAnyContent, IFinManSearch, IAppFormat, ISearchBucket, IPagesContent, IAllContentType } from './IAlvFinManProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 
 import { Web, ISite } from '@pnp/sp/presets/all';
@@ -39,6 +39,7 @@ export function createEmptySearchBucket () {
     items: [],
     appLinks: [],
     entities: [],
+    acronyms: [],
     accounts: [],
     manual: [],
     sups: [],
@@ -212,6 +213,7 @@ export function createEmptySearchBucket () {
         SearchCount: search.left.SearchCount[ idx ],
       };
     });
+
     search.top.Objects = search.top.Search.map( ( searchLC, idx ) => {
       return {
         Search: search.top.Search[ idx ],
@@ -327,7 +329,14 @@ export function createEmptySearchBucket () {
         } else if ( propArray.length === 2 ) {
           let hasError: boolean = false;
           try {
-            item[ sourceProps.searchProps[ idx ] ] = item[ propArray[0] ][ propArray[1] ]; //Add flattened value - item["Author/Title"]= item.Author.Title
+            if ( Array.isArray( item[ propArray[0] ] )) {
+              item[ sourceProps.searchProps[ idx ] ] = item[ propArray[0] ].map( itemX => { return itemX[ propArray[1] ] ; }); //Add flattened value - item["Author/Title"]= [ item.Author[0].Title, item.Author[1].Title]
+
+            } else {
+              item[ sourceProps.searchProps[ idx ] ] = item[ propArray[0] ][ propArray[1] ]; //Add flattened value - item["Author/Title"]= item.Author.Title
+
+            }
+
             //Manually copy ReportingSections/Title over to Reporting/Title
             if ( sourceProps.searchProps[ idx ] === 'ReportingSections/Title' ) { item[ 'Reporting/Title'] = item[ sourceProps.searchProps[ idx ] ]; }
           } catch (e) {
@@ -349,16 +358,18 @@ export function createEmptySearchBucket () {
                 result += ` || Reporting/Title=${item[ propArray[0] ][ propArray[1] ] .join(';')}`; }
               return result;
 
-            } else if ( Array.isArray( item[ propArray[0] ] )  ) {
+            } else if ( Array.isArray( item[ propArray[0] ] )  ) { //As in Controller2/Title
               /**
                * NEED TO ADD LOOP HERE TO CHECK FOR MULTI-SELECT Lookups like ReportingSections/Titles.
                * They don't get caught in the above one because the logic does not work that way
                */
 
+              if ( item[ sourceProps.searchProps[ idx ] ] ) {
+                let result = `${sourceProps.searchProps[ idx ]}=${item[ sourceProps.searchProps[ idx ] ] .join(';')}`;
+                return result;
+              }
 
             } else {
-
-
 
               let result = `${sourceProps.searchProps[ idx ]}=${item[ propArray[0] ][ propArray[1] ] }`;
               if ( sourceProps.searchProps[ idx ] === 'ReportingSections/Title' ) { 
@@ -393,8 +404,12 @@ export function createEmptySearchBucket () {
       // Create empty search arrays
       item.leftSearch = [];
       item.leftSearchLC = [];
+
       item.topSearch = [];
       item.topSearchLC = [];
+
+      item.sourceSearch = [];
+      item.sourceSearchLC = [];
 
       //update item's left search string arrays
       search.left.Search.map( ( keyWord, idx ) => {
@@ -404,6 +419,17 @@ export function createEmptySearchBucket () {
           item.leftSearchLC.push( keyWordLC );
         }
       });
+
+      //update item's top search string arrays
+      search.top.Search.map( ( keyWord, idx ) => {
+        let keyWordLC = search.top.SearchLC[ idx ];
+        if ( item.searchTextLC.indexOf( keyWordLC ) > - 1 ) {
+          item.topSearch.push( keyWord );
+          item.topSearchLC.push( keyWordLC );
+        }
+      });
+
+      //sourceProps.searchProps[ idx ]
 
       //update item's top search string arrays
       search.top.Search.map( ( keyWord, idx ) => {

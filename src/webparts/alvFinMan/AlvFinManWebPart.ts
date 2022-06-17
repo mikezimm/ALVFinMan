@@ -3,6 +3,8 @@ import * as ReactDom from 'react-dom';
 import { DisplayMode, Version } from '@microsoft/sp-core-library';
 
 import {
+  IPropertyPaneField,
+  IPropertyPaneGroup,
   IPropertyPaneConfiguration,
   PropertyPaneTextField,
   IPropertyPaneDropdownOption,
@@ -90,8 +92,8 @@ export const repoLink: IRepoLinks = links.gitRepoALVFinManSmall;
 
 import * as strings from 'AlvFinManWebPartStrings';
 import AlvFinMan from './components/AlvFinMan';
-import { allPivots } from './components/AlvFinMan';
-import { IAlvFinManProps, ICanvasContentOptions, IFinManSearch, ILayoutAll, ImageFitPrefs, IModernImageSettings, ISearchBucket, PageLoadPefs } from './components/IAlvFinManProps';
+import { defaultPivots, IDefaultPage } from './components/IAlvFinManProps';
+import { IAlvFinManProps, ICanvasContentOptions, IFinManSearch, ImageFitPrefs, IModernImageSettings, ISearchBucket, PageLoadPefs } from './components/IAlvFinManProps';
 import { IAlvFinManWebPartProps, exportIgnoreProps, importBlockProps, } from './IAlvFinManWebPartProps';
 import { baseFetchInfo, IFetchInfo } from './components/IFetchInfo';
 import { createEmptySearchBucket, } from './components/DataFetch';
@@ -101,7 +103,7 @@ const topSearchDefault = 'Capex;Inventory;Template;Policy;Weekly;Monthly;Quarter
 
 export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWebPartProps> {
 
-   private DefaultPivotChoices =  allPivots.map( ( pivot, idx ) => {
+   private DefaultPivotChoices =  defaultPivots.map( ( pivot, idx ) => {
      return { index: idx, key: pivot, text: pivot };
    });
 
@@ -158,6 +160,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
 
   };
 
+  private renderCount = 0;
   //ADDED FOR WEBPART HISTORY:  
   private thisHistoryInstance: IWebpartHistoryItem2 = null;
 
@@ -294,7 +297,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
 
       // DEFAULTS SECTION:  ALVFinMan   <<< ================================================================
       if ( !this.properties.defaultPivotKey ) { this.properties.defaultPivotKey = 'General' ; }
-      if ( allPivots.indexOf( this.properties.defaultPivotKey ) < 0 ) { this.properties.defaultPivotKey = allPivots[0] ; }
+      if ( defaultPivots.indexOf( this.properties.defaultPivotKey ) < 0 ) { this.properties.defaultPivotKey = defaultPivots[0] ; }
 
       this.renderCustomStyles( false );
       this.resetAllSearch();
@@ -420,6 +423,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
         items: [],
         appLinks: [],
         entities: [],
+        acronyms: [],
         accounts: [],
         manual: [],
         sups: [],
@@ -429,6 +433,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
         help: [],
 
       },
+
       top: {
         SearchFixed: this.properties.topSearchFixed,
         SearchStr: this.properties.topSearchStr,
@@ -440,6 +445,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
         items: [],
         appLinks: [],
         entities: [],
+        acronyms: [],
         accounts: [],
         manual: [],
         sups: [],
@@ -449,9 +455,23 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
         help: [],
 
       },
+      
       type: createEmptySearchBucket(),
       searchPlural: this.properties.searchPlural,
       searchType: this.properties.searchType,
+
+      manual: this.properties.manualSearch ? this.properties.manualSearch.split(';') : [],
+      news:  this.properties.newsSearch ? this.properties.newsSearch.split(';') : [],
+      help:  this.properties.helpSearch ? this.properties.helpSearch.split(';') : [],
+      appLinks:  this.properties.appLinksSearch ? this.properties.appLinksSearch.split(';') : [],
+      entities:  this.properties.entitiesSearch ? this.properties.entitiesSearch.split(';') : [],
+      history:  this.properties.historySearch ? this.properties.historySearch.split(';') : [],
+      acronyms:  this.properties.acronymsSearch ? this.properties.acronymsSearch.split(';') : [],
+      sups:  this.properties.supsSearch ? this.properties.supsSearch.split(';') : [],
+      accounts:  this.properties.accountsSearch ? this.properties.accountsSearch.split(';') : [],
+
+      sourcePagesCount: this.properties.sourcePagesCount,
+
     };
 
     let canvasOptions: ICanvasContentOptions = {
@@ -506,6 +526,8 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
         canvasOptions: canvasOptions,
 
         search: search,
+
+        maxDeep: 20, //      maxDeep: 20,
 
 
       }
@@ -716,6 +738,30 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
 
   }
 
+  protected buildSourceSearchProps() :IPropertyPaneGroup {
+
+    let fields: IPropertyPaneField<any>[] = [];
+    ['manual', 'news', 'help', 'appLinks', 'entities', 'acronyms', 'sups', 'accounts', 'history' ].map( item => {
+
+      fields.push(PropertyPaneTextField(`${item}Search`, {
+        label: `${item.toUpperCase()} page - Search buttons`,
+        description: `Semi-colon separated words,  Use 'hideme' to hide this feature.`,
+        disabled: false,
+      }));
+
+    });
+
+    let sourceSearch: IPropertyPaneGroup = {
+      groupName: 'Source pages search',
+      isCollapsed: false,
+      groupFields: fields,
+    };
+
+    return sourceSearch;
+
+  }
+
+
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
    return {
       pages: [
@@ -773,6 +819,8 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
 
               ]
             }, // this group
+
+            this.buildSourceSearchProps(),
 
             // imgHeight: imgHeight, //Converted to px
             // imgWidth: imgWidth, //Converted to %
@@ -1060,7 +1108,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
  *                                                                                
  */
   
-  private async saveLoadAnalytics( Title: string, Result: string, location: ILayoutAll ) {
+  private async saveLoadAnalytics( Title: string, Result: string, location: IDefaultPage ) {
 
     if ( this.sessionTabs.indexOf( location ) > -1 ) {
       //Tab was visited, determine action

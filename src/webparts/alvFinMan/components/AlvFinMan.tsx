@@ -3,8 +3,12 @@ import styles from './AlvFinMan.module.scss';
 import { Icon, IIconProps } from 'office-ui-fabric-react/lib/Icon';
 import { DisplayMode, Version } from '@microsoft/sp-core-library';
 
-import { IAlvFinManProps, IAlvFinManState, IFMBuckets, ILayoutNPage, ILayoutGPage, ILayoutSPage, ILayoutAll, ILayoutAPage, ILayoutQPage, ILayoutHPage, IAnyContent, IFinManSearch, IAppFormat, ISearchBucket, IPagesContent, ILayoutLPage } from './IAlvFinManProps';
+import { IAlvFinManProps, IAlvFinManState, IFMBuckets, ILayoutNPage, ILayoutGPage, ILayoutSPage, ILayoutAPage,
+  ILayoutQPage, ILayoutHPage, IAnyContent, IFinManSearch, IAppFormat, ISearchBucket,
+  IPagesContent, ILayoutLPage, ILayoutEPage, ILayoutSourcesPage, ISourcePage, ICategoryPage, ILayoutCategorizedPage, ILayoutStdPage, ILayoutSupPage, IDeepLink, IMainPage, IDefaultPage, IDefMainPage, mainDefPivots, pivotHeadingCatgorized, pivotHeadingSources, IEntityContent, IAllContentType, IAcronymContent, IDeepLogic } from './IAlvFinManProps';
+
 import { ILayout1Page, ILayout1PageProps, Layout1PageValues } from './Layout1Page/ILayout1PageProps';
+import { ILayout2Page,  } from './Layout2Page/ILayout2Props';
 import { escape } from '@microsoft/sp-lodash-subset';
 
 import { Web, ISite } from '@pnp/sp/presets/all';
@@ -50,11 +54,12 @@ import { createCacheTableSmall, createPerformanceTableSmall,  } from './Performa
 
 import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfunctions/dist/Lists/getFunctions';
 
-import AlvAccounts from './Accounts/Accounts';
 import Layout1Page from './Layout1Page/Layout1Page';
 import Layout2Page from './Layout2Page/Layout2Page';
 import SearchPage from './Search/SearchPage';
 import ModernPages from './ModernPages/ModernPages';
+
+import SourcePages from './SourcePages/SourcePages';
 
 import { SourceInfo, ISourceInfo, ISourceProps } from './DataInterface';
 import {  updateSearchCounts, updateSearchTypes, getALVFinManContent, } from './DataFetch';
@@ -62,6 +67,8 @@ import {  updateSearchCounts, updateSearchTypes, getALVFinManContent, } from './
 
 import {  createEmptyBuckets,  updateBuckets } from './DataProcess';
 import { gitRepoALVFinManSmall } from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
+
+import { allMainPivots, sourcePivots, categorizedPivots } from './IAlvFinManProps';
 
 export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
 
@@ -83,7 +90,7 @@ const consoleLineItemBuild: boolean = false;
 // const LookupColumns: string[] = ['Functions/Title', 'Topics/Title', 'ALGroup/Title', 'Sections/Title','Processes/Title' ];
 // const AccountsList: string = "HFMAccounts";
 
-const pivotStyles = {
+const mainPivotStyles = {
   root: {
     whiteSpace: "normal",
     marginTop: '30px',
@@ -91,37 +98,46 @@ const pivotStyles = {
   //   textAlign: "center"
   }};
 
-  
-const pivotHeadingA : ILayoutNPage = 'News';
-const pivotHeading0 : ILayoutGPage = 'General';
-
-const pivotHeading1 : ILayoutSPage = 'Statements';
-// const pivotHeading2 : ILayout1Page = 'Reporting|Sections';
-const pivotHeading2 : ILayout1Page = 'Reporting';
-const pivotHeading3 : ILayout1Page = 'Processes';
-const pivotHeading4 : ILayout1Page = 'Functions';
-const pivotHeading5 : ILayout1Page = 'Topics';
-const pivotHeading6 : ILayoutAPage = 'Accounts';
-
-const pivotHeading9 : ILayoutQPage = 'Search';
-const pivotHeadingZ : ILayoutHPage = 'Help';
-const pivotHeadingY : ILayoutLPage = 'Links';
+  const secondaryPivotStyles = {
+    root: {
+      whiteSpace: "normal",
+      marginTop: '5px',
+      color: 'white',
+    //   textAlign: "center"
+    }};
 
 
-export const allPivots: ILayoutAll[] = [ pivotHeading0, pivotHeadingA, pivotHeading1, pivotHeading2, pivotHeading3, pivotHeading4, pivotHeading5, pivotHeading6, pivotHeading9, pivotHeadingY, pivotHeadingZ ];
-const layout1Pivots : ILayout1Page[] = [ pivotHeading2, pivotHeading3, pivotHeading4, pivotHeading5,  ];
+//Original mainPivots before Sources and Categories
 
-const pivotTitles = allPivots.map( pivot => { return pivot.split('|')[0] ; } );
-// const pivotKeys = allPivots.map( pivot => { return pivot.split('|')[1] ? pivot.split('|')[1] : pivot.split('|')[0] ; } );
-const pivotKeys = allPivots.map( pivot => { return pivot.split('|')[1] ? pivot.split('|')[1] : pivot.split('|')[0] ; } );
-const pivotItems = pivotKeys.map( ( key, idx ) => {
-  return <PivotItem headerText={ pivotTitles[idx] } ariaLabel={pivotTitles[idx]} title={pivotTitles[idx]} itemKey={ key } ></PivotItem>;
+//
+
+const mainTitles = allMainPivots.map( pivot => { return pivot.split('|')[0] ; } );
+// const mainKeys = mainPivots.map( pivot => { return pivot.split('|')[1] ? pivot.split('|')[1] : pivot.split('|')[0] ; } );
+const mainKeys = allMainPivots.map( pivot => { return pivot.split('|')[1] ? pivot.split('|')[1] : pivot.split('|')[0] ; } );
+const mainItems = mainKeys.map( ( key, idx ) => {
+  return <PivotItem headerText={ mainTitles[idx] } ariaLabel={mainTitles[idx]} title={mainTitles[idx]} itemKey={ key } ></PivotItem>;
 });
 
-// const pivotHeading6 = 'Function';
+
+const sourceKeys = sourcePivots.map( pivot => { return pivot.split('|')[1] ? pivot.split('|')[1] : pivot.split('|')[0] ; } );
+const sourceItems = sourceKeys.map( ( key, idx ) => {
+  return <PivotItem headerText={ sourcePivots[idx] } ariaLabel={sourcePivots[idx]} title={sourcePivots[idx]} itemKey={ key } ></PivotItem>;
+});
+
+const categorizedKeys = categorizedPivots.map( pivot => { return pivot.split('|')[1] ? pivot.split('|')[1] : pivot.split('|')[0] ; } );
+const categorizedItems = categorizedKeys.map( ( key, idx ) => {
+  return <PivotItem headerText={ categorizedPivots[idx] } ariaLabel={categorizedPivots[idx]} title={categorizedPivots[idx]} itemKey={ key } ></PivotItem>;
+});
+
+
+// const pivotHeadingAcc = 'Function';
 
 const FetchingSpinner = <Spinner size={SpinnerSize.large} label={"FetchingSpinner ..."} style={{ padding: 30 }} />;
 
+export interface IDeepStateChange {
+  deepLinks: IDeepLink[];
+  hasChanged: boolean;
+}
 
 export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinManState> {
 
@@ -135,6 +151,172 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
   private WebPartHelpElement = getWebPartHelpElement( this.props.sitePresets );
   private contentPages : IBannerPages = getBannerPages( this.props.bannerProps );
+
+
+  private getMainPivotKey( defaultPivotKey: IDefaultPage ) {
+
+    let mainPivotKey: IMainPage = null;
+
+    //Covers Category pages
+    if ( categorizedPivots.indexOf( defaultPivotKey as any ) > -1 ) {
+      mainPivotKey = pivotHeadingCatgorized;
+
+    //Covers Sources that are also Main Pivots
+    } else if ( mainDefPivots.indexOf( defaultPivotKey as any ) > -1 ) {
+      mainPivotKey = defaultPivotKey as any;
+
+    } else if ( sourcePivots.indexOf( defaultPivotKey as any ) > -1 ) {
+      mainPivotKey = pivotHeadingSources;
+
+    } else {
+      alert('No Idea what mainPivotKey is for' + defaultPivotKey );
+      mainPivotKey = 'Categorized';
+
+    }
+
+    return mainPivotKey;
+
+  }
+
+  /**
+   * bumpDeepState will add this new deepState to the this.state.deepState object and return it.
+   * NOTE:  It does not actually update the component state.  That should be done after.
+   * @param main 
+   * @param second 
+   * @param deeps 
+   * @returns 
+   */
+  private bumpDeepState( main: IMainPage | 'copyLast', second: ISourcePage | ICategoryPage | 'copyLast', deeps: string[], logic: IDeepLogic, deepLinks: IDeepLink[] ) : IDeepStateChange {
+    
+    const historyPause = 2000;
+
+    if ( main === 'History' ) { return { deepLinks: deepLinks, hasChanged: false } ; }
+
+    const newmain = deepLinks[0] && main === 'copyLast' ? deepLinks[0].main : main;
+    const newsecond = deepLinks[0] && second === 'copyLast' ? deepLinks[0].second : second;
+
+    let newDeepState : IDeepLink[] = deepLinks.map( deep => {  return deep; } );
+    let thisTime = new Date();
+    let searchTextLC: string = `${newmain} || ${newsecond} `;
+    searchTextLC += deeps.map( deep => { return `|| ${deep}` ; }).join('');
+
+    const newDeep: IDeepLink = {
+      main: main === 'copyLast' ? deepLinks[0].main : main,
+      second: second === 'copyLast' ? deepLinks[0].second : second,
+      deep1: deeps[0],
+      deep2: deeps[1],
+      deep3: deeps[2],
+      deep4: deeps[3],
+      time: thisTime,
+      timeMs: thisTime.getTime(),
+      timeLabel: thisTime.toLocaleString(),
+      deltaMs: newDeepState.length === 0 ? 0 : thisTime.getTime() - newDeepState[0].timeMs,
+      processTime: 0,
+      searchTextLC: searchTextLC.toLowerCase(),
+      logic: logic,
+      searchTypeIdx: -1,
+
+    };
+
+    let hasChanged: any = false;
+    if ( !deepLinks ) {
+      alert('deepLinks should exist here :)');
+      hasChanged = false;
+
+    } else if ( deepLinks.length === 0 ) {
+      newDeepState = [ newDeep ];
+      hasChanged = true;
+
+    } else { //There is a previous deep state item to compare to
+
+      const prevDeep = deepLinks[0];
+
+      let updateLast: any = false;
+
+      if ( prevDeep.main !== newDeep.main || prevDeep.second !== newDeep.second ) {
+        hasChanged = true;
+
+      } else {//main and second are both equal, check for deeper updates
+        [ 1,2,3,4 ].map( idx => {
+          if ( prevDeep[ 'deep' + idx ] !== newDeep[ 'deep' + idx ] ) { 
+            hasChanged = true ;
+
+            if ( logic === 'Sources' || logic === 'Accounts' ) {
+              if ( newDeep.timeMs < ( prevDeep.timeMs + historyPause ) ) {
+                //Just update last deepLink because it is likely just clicking around or typing in search
+                updateLast = true ;
+  
+              }
+            }
+          }
+        });
+      }
+
+      if ( updateLast === true ) {
+        //This will add the new delta to the previous one
+        newDeep.deltaMs = newDeepState[0].deltaMs + newDeep.deltaMs; 
+        newDeepState[0] = newDeep;
+
+      } else if ( hasChanged === true ) {
+        //Add this deep link to current history
+        newDeepState.unshift( newDeep );
+
+        //Remove the last item if the total length > than the max length
+        if ( newDeepState.length > this.props.maxDeep ) { newDeepState.pop(); }
+      }
+    }
+
+
+    this.updatePathNameDeepLink( main, second, deeps );
+
+    return { deepLinks: newDeepState, hasChanged: hasChanged };
+
+  }
+
+
+  private bumpDeepStateByDefaultPivotKey( defaultPivotKey: IDefaultPage ) {
+    let mainPivotKey = this.getMainPivotKey( defaultPivotKey );
+    let secondKey = mainDefPivots.indexOf( mainPivotKey as any ) > -1 ? '' : defaultPivotKey;
+
+    //Watchout for this one where I had to set secondKey as any...
+    let deepChange : IDeepStateChange = this.bumpDeepState( mainPivotKey, secondKey as any, [], '',  this.state ? this.state.deepLinks : [] );
+
+    return deepChange;
+
+  }
+
+  private updatePathNameDeepLink( primary: string, secondary: string, remaining: string[] ) {
+
+    if ( primary === 'copyLast' ) { primary = this.state.mainPivotKey; }
+    if ( secondary === 'copyLast' ) { secondary = this.state.deepestPivot; }
+
+    let newParameters = `?primary=${primary}`;
+    newParameters = !secondary ? newParameters : `${newParameters}&secondary=${secondary}`;
+    let theRest = remaining.length === 0 ? '' : remaining.map( (link, idx) => { return `&deep${idx}=${link}`; }).join('');
+    newParameters += theRest;
+    const nextURL = window.location.pathname + newParameters;
+    const nextTitle = 'ALV Finance Manual';
+    const nextState = { additionalInformation: 'Update the Url with app deep link' };
+
+    // This will replace the current entry in the browser's history, without reloading
+    window.history.replaceState(nextState, nextTitle, nextURL);
+
+  }
+
+  private bumpDeepStateFromComponent( primary: string, secondary: string, remaining: string[] ) {
+
+    let deepChange: IDeepStateChange = this.bumpDeepState( primary as any, secondary  as any, remaining, 'Sources',  this.state.deepLinks );
+
+    if ( deepChange.hasChanged === true ) {
+      this.setState( { deepLinks: deepChange.deepLinks });
+    }
+
+  }
+
+  //updateWebInfo ( mainPivotKey: IMainPage, sourcePivotKey: ISourcePage, categorizedPivotKey: ICategoryPage, deepProps: string[] = [] ) 
+  private jumpToDeepLink( mainPivotKey: IMainPage, sourcePivotKey: ISourcePage, categorizedPivotKey: ICategoryPage, deepProps: string[] = [] ) {
+    this.updateWebInfo ( mainPivotKey, sourcePivotKey, categorizedPivotKey, deepProps );
+  }
 
   /***
  *    d8b   db d88888b  .d8b.  d8888b.      d88888b  .d8b.  d8888b.      d88888b db      d88888b 
@@ -196,8 +378,8 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
   public constructor(props:IAlvFinManProps){
     super(props);
-    console.log('pivotTitles', pivotTitles );
-    console.log('pivotKeys', pivotKeys );
+    console.log('mainTitles', mainTitles );
+    console.log('mainKeys', mainKeys );
 
     let urlVars : any = this.props.urlVars;
     let debugMode = urlVars.debug === 'true' ? true : false;
@@ -205,20 +387,31 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
     let showDevHeader = debugMode === true || isWorkbench === true ? true : false;
 
+    let mainPivotKey: IMainPage = this.getMainPivotKey( this.props.defaultPivotKey ); // IMainPage = this.props.defaultPivotKey ? this.props.defaultPivotKey : 'General';
+
     this.state = {
       showPropsHelp: false,
       showDevHeader: showDevHeader,  
       lastStateChange: '',
 
-      mainPivotKey: this.props.defaultPivotKey ? this.props.defaultPivotKey : 'General',
+      mainPivotKey: mainPivotKey,
+      sourcePivotKey: sourcePivots.indexOf( this.props.defaultPivotKey as any ) > -1 ? this.props.defaultPivotKey as any : '',
+      categorizedPivotKey: categorizedPivots.indexOf( this.props.defaultPivotKey as any ) > -1 ? this.props.defaultPivotKey as any : '',
+      deepestPivot: this.props.defaultPivotKey,
+
+      deepLinks: this.bumpDeepStateByDefaultPivotKey( this.props.defaultPivotKey ).deepLinks,
+      deepProps: [],
       fetchedDocs: false,
       fetchedAccounts: false,
       fetchedNews: false,
       fetchedHelp: false,
+      fetchedAcronyms: false,
+      fetchedEntities: false,
 
       search: JSON.parse(JSON.stringify( this.props.search )),
       appLinks: [],
       entities: [],
+      acronyms: [],
       manual: [],
       // stds: [],
       sups: [],
@@ -230,6 +423,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       buckets: createEmptyBuckets(),
       standards: createEmptyBuckets(),
       supporting: createEmptyBuckets(),
+
       docItemKey: '',
       supItemKey: '',
       showItemPanel: false,
@@ -244,9 +438,8 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
   public componentDidMount() {
     this.props.saveLoadAnalytics( 'ALV Fin Man', 'didMount');
-    this.updateWebInfo( this.state.mainPivotKey );
+    this.updateWebInfo( this.state.mainPivotKey, this.state.sourcePivotKey, this.state.categorizedPivotKey );
   }
-
 
   //        
     /***
@@ -270,17 +463,23 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     }
 
     if ( refresh === true ) {
-      this.updateWebInfo( this.state.mainPivotKey );
+      this.updateWebInfo( this.state.mainPivotKey, this.state.sourcePivotKey, this.state.categorizedPivotKey );
     }
 
   }
 
-  public async updateWebInfo ( mainPivotKey: ILayoutAll ) {
+  public async updateWebInfo ( mainPivotKey: IMainPage, sourcePivotKey: ISourcePage, categorizedPivotKey: ICategoryPage, deepProps: string[] = [] ) {
+
+    let deepestKey: IMainPage | ISourcePage | ICategoryPage | any = mainPivotKey;
+    if ( mainPivotKey === 'Sources' ) { deepestKey = sourcePivotKey ; }
+    if ( mainPivotKey === 'Categorized' ) { deepestKey = categorizedPivotKey ; }
 
     let search = JSON.parse(JSON.stringify( this.state.search ));
     let updateBucketsNow: boolean = false;
     let appLinks: IAnyContent[] = this.state.appLinks;
     let manual: IAnyContent[] = this.state.manual;
+    let acronyms: IAcronymContent[] = this.state.acronyms;
+    let entities: IEntityContent[] = this.state.entities;
     let sups: IAnyContent[] = this.state.sups;
     let news: IPagesContent[] = this.state.news;
     let help: IPagesContent[] = this.state.help;
@@ -290,6 +489,8 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     let fetchedDocs = this.state.fetchedDocs === true ? true : false;
     let fetchedNews = this.state.fetchedNews === true ? true : false;
     let fetchedHelp = this.state.fetchedHelp === true ? true : false;
+    let fetchedEntities = this.state.fetchedEntities === true ? true : false;
+    let fetchedAcronyms = this.state.fetchedAcronyms === true ? true : false;
 
     if ( appLinks.length === 0 ) {
       appLinks = await getALVFinManContent( SourceInfo.appLinks, this.props.search );
@@ -297,10 +498,24 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       updateBucketsNow = true;
     }
 
+    if ( fetchedAcronyms !== true && ( deepestKey === 'Acronyms' || deepestKey === 'Search' ) && this.state.acronyms.length === 0 ) {
+      acronyms = await getALVFinManContent( SourceInfo.acronyms, this.props.search );
+      search = updateSearchCounts( 'acronyms', acronyms as IAllContentType[], search );
+      fetchedAcronyms = true;
+      updateBucketsNow = true;
+    }
+
+    if ( fetchedEntities !== true && ( deepestKey === 'Entities' || deepestKey === 'Search' && this.state.entities.length === 0 )  ) {
+      entities = await getALVFinManContent( SourceInfo.entities, this.props.search );
+      search = updateSearchCounts( 'entities', entities as IAllContentType[], search );
+      fetchedEntities = true;
+      updateBucketsNow = true;
+    }
+
     //Check if tab requires docs and sup and is not yet loaded
     let Layout1PageValuesAny: any = Layout1PageValues;
 
-    if ( fetchedDocs !== true && ( Layout1PageValuesAny.indexOf( mainPivotKey ) > -1 || mainPivotKey === 'Search' ) ) {
+    if ( fetchedDocs !== true && ( Layout1PageValuesAny.indexOf( deepestKey ) > -1 || deepestKey === 'Search' ) ) {
       manual = await getALVFinManContent( SourceInfo.manual, this.props.search );
       search = updateSearchCounts( 'manual', manual, search );
 
@@ -312,21 +527,21 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
     }
 
-    if ( fetchedNews !== true && ( mainPivotKey === 'News' || mainPivotKey === 'Search' ) ) {
+    if ( fetchedNews !== true && ( deepestKey === 'News' || deepestKey === 'Search' ) ) {
       news = await getALVFinManContent( SourceInfo.news, this.props.search );
       search = updateSearchCounts( 'news', news, search );
       fetchedNews = true;
 
     }
 
-    if ( fetchedHelp !== true && ( mainPivotKey === 'Help' || mainPivotKey === 'Search' ) ) {
+    if ( fetchedHelp !== true && ( deepestKey === 'Help' || deepestKey === 'Search' ) ) {
       help = await getALVFinManContent( SourceInfo.help, this.props.search );
       search = updateSearchCounts( 'help', help, search );
       fetchedHelp = true;
 
     }
 
-    if ( ( mainPivotKey === 'Search' || mainPivotKey === 'Accounts' ) && this.state.accounts.length === 0 ) {
+    if ( ( deepestKey === 'Search' || deepestKey === 'Accounts' ) && this.state.accounts.length === 0 ) {
       accounts = await getALVFinManContent ( SourceInfo.accounts, this.props.search );
       search = updateSearchCounts( 'accounts', accounts, search );
 
@@ -339,9 +554,19 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     }
     // debugger;
     search = updateSearchTypes( [ ...appLinks, ...manual, ...sups, ...accounts, ], search );
+    let deepSecond = deepestKey && deepestKey !== mainPivotKey ? deepestKey : '';
+
+    let deepChange: IDeepStateChange = this.bumpDeepState( mainPivotKey, deepSecond ,  [], '',  this.state.deepLinks );
 
     console.log('state:  search', search );
-    this.setState({ search: search, manual: manual, buckets: buckets, sups: sups, appLinks: appLinks, mainPivotKey: mainPivotKey, fetchedDocs: fetchedDocs, accounts: accounts, news: news, help: help, refreshId: this.newRefreshId() });
+    this.setState({ search: search, manual: manual, buckets: buckets, sups: sups, appLinks: appLinks,
+      entities: entities, acronyms: acronyms,
+      mainPivotKey: mainPivotKey, sourcePivotKey: sourcePivotKey, categorizedPivotKey: categorizedPivotKey, 
+      deepLinks: deepChange.deepLinks, deepestPivot: deepestKey, deepProps: deepProps,
+      accounts: accounts, news: news, help: help, refreshId: this.newRefreshId(),
+      fetchedDocs: fetchedDocs, fetchedNews: fetchedNews, fetchedHelp: fetchedHelp, fetchedEntities: fetchedEntities,  fetchedAcronyms: fetchedAcronyms,
+    
+    });
 
   }
 
@@ -398,20 +623,47 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
   if ( bannerTitle === '' ) { bannerTitle = 'ALV Financial Manual' ; }
   if ( this.props.displayMode === DisplayMode.Edit ) { bannerTitle += '' ; }
 
-    let componentPivot = 
+    let mainPivot = 
     <Pivot
-        styles={ pivotStyles }
+        styles={ mainPivotStyles }
         linkFormat={PivotLinkFormat.links}
         linkSize={PivotLinkSize.normal}
         selectedKey={ this.state.mainPivotKey }
         // onLinkClick={this.pivotMainClick.bind(this)}
         onLinkClick={ this.pivotMainClick.bind(this) }
     > 
-      { pivotItems }
+      { mainItems }
 
     </Pivot>;
 
-    const showPage = <Layout1Page
+      
+    let sourcePivot = 
+    <Pivot
+        styles={ secondaryPivotStyles }
+        linkFormat={PivotLinkFormat.links}
+        linkSize={PivotLinkSize.large}
+        selectedKey={ this.state.sourcePivotKey }
+        // onLinkClick={this.pivotMainClick.bind(this)}
+        onLinkClick={ this.pivotSourceClick.bind(this) }
+    > 
+      { sourceItems }
+
+    </Pivot>;
+
+    let categorizedPivot = 
+    <Pivot
+        styles={ secondaryPivotStyles }
+        linkFormat={PivotLinkFormat.links}
+        linkSize={PivotLinkSize.large}
+        selectedKey={ this.state.categorizedPivotKey }
+        // onLinkClick={this.pivotMainClick.bind(this)}
+        onLinkClick={ this.pivotCategorizedClick.bind(this) }
+    > 
+      { categorizedItems }
+
+    </Pivot>;
+
+    const showPage1 = <Layout1Page
       source={ SourceInfo }
       refreshId={ this.state.refreshId }
       description={ this.props.description }
@@ -422,13 +674,13 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       buckets={ this.state.buckets }
       standards={ this.state.standards }
       supporting={ this.state.supporting }
-      mainPivotKey={ this.state.mainPivotKey as ILayout1Page }
+      mainPivotKey={ this.state.deepestPivot as ILayout1Page }
       canvasOptions={ this.props.canvasOptions }
       debugMode={ this.state.debugMode }
     ></Layout1Page>;
 
     const showPage2 = <Layout2Page 
-      mainPivotKey={this.state.mainPivotKey}
+      mainPivotKey={ this.state.deepestPivot as ILayout2Page }
       refreshId={ this.state.refreshId }
       source={ SourceInfo.appLinks }
       appLinks={ this.state.appLinks }
@@ -453,14 +705,49 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       debugMode={ this.state.debugMode }
     ></SearchPage>;
 
-    const accounts = this.state.mainPivotKey !== 'Accounts' ? null : <AlvAccounts
+    const accounts = this.state.mainPivotKey !== 'Sources' || this.state.sourcePivotKey !== 'Accounts' ? null : <SourcePages
       source={ SourceInfo }
+      search={ this.state.search }
       primarySource={ SourceInfo.accounts }
+      pageWidth={ 1000 }
+      topButtons={ this.props.search.accounts }
       refreshId={ this.state.refreshId }
       fetchTime={ 797979 }
-      accounts={ this.state.accounts }
+      items={ this.state.accounts }
       debugMode={ this.state.debugMode }
-    ></AlvAccounts>;
+      bumpDeepLinks= { this.bumpDeepStateFromComponent.bind(this) }
+      deepProps={ this.state.deepProps }
+    ></SourcePages>;
+
+    
+    const acronyms = this.state.mainPivotKey !== 'Sources' || this.state.sourcePivotKey !== 'Acronyms' ? null : <SourcePages
+      source={ SourceInfo }
+      search={ this.state.search }
+      primarySource={ SourceInfo.acronyms }
+      pageWidth={ 1000 }
+      topButtons={ this.props.search.acronyms }
+      refreshId={ this.state.refreshId }
+      fetchTime={ 797979 }
+      items={ this.state.acronyms as IAnyContent[] }
+      debugMode={ this.state.debugMode }
+      bumpDeepLinks= { this.bumpDeepStateFromComponent.bind(this) }
+      deepProps={ this.state.deepProps }
+    ></SourcePages>;
+
+    
+    const entities = this.state.mainPivotKey !== 'Sources' || this.state.sourcePivotKey !== 'Entities' ? null : <SourcePages
+      source={ SourceInfo }
+      search={ this.state.search }
+      primarySource={ SourceInfo.entities }
+      pageWidth={ 1000 }
+      topButtons={ this.props.search.entities }
+      refreshId={ this.state.refreshId }
+      fetchTime={ 797979 }
+      items={ this.state.entities as IAnyContent[] }
+      debugMode={ this.state.debugMode }
+      bumpDeepLinks= { this.bumpDeepStateFromComponent.bind(this) }
+      deepProps={ this.state.deepProps }
+    ></SourcePages>;
 
     const defNewsSort ={
       prop: 'Title',
@@ -484,14 +771,30 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     };
 
     const help = this.state.mainPivotKey !== 'Help' ? null : <ModernPages
-        mainPivotKey={this.state.mainPivotKey}
-        sort = { defHelpSort }
-        refreshId={ this.state.refreshId }
-        source={ SourceInfo.help }
-        pages={ this.state.help }
-        canvasOptions={ this.props.canvasOptions }
-        debugMode={ this.state.debugMode }
-      ></ModernPages>;
+      mainPivotKey={this.state.mainPivotKey}
+      sort = { defHelpSort }
+      refreshId={ this.state.refreshId }
+      source={ SourceInfo.help }
+      pages={ this.state.help }
+      canvasOptions={ this.props.canvasOptions }
+      debugMode={ this.state.debugMode }
+    ></ModernPages>;
+
+    const history = this.state.mainPivotKey !== 'History' ? null : <SourcePages
+
+      source={ SourceInfo }
+      search={ this.state.search }
+      primarySource={ SourceInfo.history }
+      pageWidth={ 1000 }
+      topButtons={ this.props.search.history }
+      refreshId={ this.state.refreshId }
+      fetchTime={ 797979 }
+      items={ this.state.deepLinks as any }
+      debugMode={ this.state.debugMode }
+      bumpDeepLinks= { null }
+      jumpToDeepLink = { this.jumpToDeepLink.bind(this) }
+      deepProps={ this.state.deepProps }
+    ></SourcePages>;
 
 
       /***
@@ -572,13 +875,18 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
             {/* <div className={ styles.column }> */}
             { devHeader }
             { Banner }
-            { componentPivot }
-            { showPage }
+            { mainPivot }
+            { this.state.mainPivotKey === 'Sources' ? sourcePivot : null }
+            { this.state.mainPivotKey === 'Categorized' ? categorizedPivot : null }
+            { showPage1 }
             { showPage2 }
             { accounts }
+            { acronyms }
+            { entities }
             { news }
             { SearchContent }
             { help }
+            { history }
             {/* </div> */}
           </div>
         </div>
@@ -589,8 +897,23 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
   private pivotMainClick( temp ) {
     console.log('pivotMainClick:', temp.props.itemKey );
 
-    this.updateWebInfo( temp.props.itemKey );
+    this.updateWebInfo( temp.props.itemKey, this.state.sourcePivotKey, this.state.categorizedPivotKey );
   }
+
+  
+  private pivotSourceClick( temp ) {
+    console.log('pivotSourceClick:', temp.props.itemKey );
+
+    this.updateWebInfo( this.state.mainPivotKey, temp.props.itemKey, this.state.categorizedPivotKey );
+  }
+
+  
+  private pivotCategorizedClick( temp ) {
+    console.log('pivotCategorizedClick:', temp.props.itemKey );
+
+    this.updateWebInfo( this.state.mainPivotKey, this.state.sourcePivotKey, temp.props.itemKey );
+  }
+
 
   private toggleDebugMode(){
     let newState = this.state.debugMode === true ? false : true;

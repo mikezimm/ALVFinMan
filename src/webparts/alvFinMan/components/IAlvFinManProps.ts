@@ -81,7 +81,9 @@ export interface IAlvFinManProps {
   //ADDED FOR WEBPART HISTORY:  
   webpartHistory: IWebpartHistory;
 
-  defaultPivotKey: ILayoutAll;
+  defaultPivotKey: IDefaultPage;
+
+  maxDeep: number;  //      maxDeep: 20,
 
   search: IFinManSearch ;
 
@@ -118,6 +120,7 @@ export interface ISearchBucket {
   accounts: IAnyContent[];
   news: IPagesContent[];
   help: IPagesContent[];
+  acronyms: IAnyContent[];
 
 }
 
@@ -130,9 +133,23 @@ export interface IFinManSearch {
   searchPlural: boolean; //Future use, basically search for the keywords specified in props but also look for ones with an s after it.
   searchType:  boolean; //Choose to also filter on type of content:
 
+  manual: string[];
+  news: string[];
+  help: string[];
+  appLinks: string[];
+  entities: string[];
+  acronyms: string[];
+  history: string[];
+  sups: string[];
+  accounts: string[];
+
+  sourcePagesCount: number;
+
 }
 
 import { ILayout1Page } from './Layout1Page/ILayout1PageProps';
+import { ILayout2Page } from './Layout2Page/ILayout2Props';
+
 
 export interface IFMBuckets {
   Functions: string[];
@@ -155,6 +172,7 @@ export interface IFMBucketItems {
 }
 
 
+export type ILayoutHistPage = 'History';
 export type ILayoutNPage = 'News';
 export type ILayoutLPage = 'Links';
 export type ILayoutGPage = 'General';
@@ -162,9 +180,59 @@ export type ILayoutSPage = 'Statements';
 export type ILayoutAPage = 'Accounts';
 export type ILayoutQPage = 'Search';
 export type ILayoutHPage = 'Help';
-export type ILayoutAll = ILayoutNPage | ILayoutLPage | ILayoutGPage | ILayout1Page | ILayoutSPage | ILayoutAPage | ILayoutQPage | ILayoutHPage;
+export type ILayoutEPage = 'Entities';
+export type ILayoutAcronymPage = 'Acronyms';
 
-export type IAppFormat = 'accounts' | 'manual' | 'sups' | 'appLinks' | 'news' | 'help' | 'entities';
+export type ILayoutStdPage = 'Standards';
+export type ILayoutSupPage = 'SupportDocs';
+export type ILayoutSourcesPage = 'Sources';
+export type ILayoutCategorizedPage = 'Categorized';
+
+export const pivotHeadingNews : ILayoutNPage = 'News';
+export const pivotHeading0 : ILayoutGPage = 'General';
+
+export const pivotHeading1 : ILayoutSPage = 'Statements';
+// const pivotHeading2 : ILayout1Page = 'Reporting|Sections';
+export const pivotHeading2 : ILayout1Page = 'Reporting';
+export const pivotHeading3 : ILayout1Page = 'Processes';
+export const pivotHeading4 : ILayout1Page = 'Functions';
+export const pivotHeading5 : ILayout1Page = 'Topics';
+export const pivotHeadingAcc : ILayoutAPage = 'Accounts';
+
+export const pivotHeadingSourcesearch : ILayoutQPage = 'Search';
+export const pivotHeadingHelp : ILayoutHPage = 'Help';
+export const pivotHeadingHist : ILayoutHistPage = 'History';
+export const pivotHeadingLinks : ILayoutLPage = 'Links';
+export const pivotHeadingEntities : ILayoutEPage = 'Entities';
+export const pivotHeadingAcronyms : ILayoutAcronymPage = 'Acronyms';
+
+export const pivotHeadingSources : ILayoutSourcesPage = 'Sources';
+
+export const pivotHeadingManual: ILayoutStdPage = 'Standards';
+export const pivotHeadingSupporting: ILayoutSupPage = 'SupportDocs';
+
+export const pivotHeadingCatgorized : ILayoutCategorizedPage = 'Categorized';
+
+export type IDefMainPage = ILayoutNPage | ILayoutGPage | ILayoutQPage | ILayoutHPage ;
+export type IAltMainPage = ILayoutSourcesPage | ILayoutCategorizedPage | ILayoutHistPage;
+export type IMainPage = IDefMainPage | IAltMainPage;
+
+export type ISourcePage = '' | ILayoutLPage | ILayoutAPage | ILayoutStdPage | ILayoutSupPage | ILayoutEPage |  ILayoutAcronymPage;
+export type ICategoryPage = ILayout1Page | ILayoutSPage;
+
+export type IDefaultPage = IDefMainPage | ISourcePage | ICategoryPage;
+
+export type IAppFormat = 'accounts' | 'manual' | 'sups' | 'appLinks' | 'news' | 'help' | 'entities' | 'acronyms' | 'history' ;
+
+export const mainDefPivots: IDefMainPage[] = [ pivotHeading0, pivotHeadingNews, pivotHeadingSourcesearch, pivotHeadingHelp, ];
+export const mainAltPivots: IAltMainPage[] = [ pivotHeadingSources, pivotHeadingCatgorized, pivotHeadingHist ];
+export const sourcePivots: ISourcePage[] = [ pivotHeadingLinks, pivotHeadingEntities, pivotHeadingAcronyms, pivotHeadingAcc, pivotHeadingManual, pivotHeadingSupporting ];
+
+export const categorizedPivots: ICategoryPage[] = [ pivotHeading1, pivotHeading2, pivotHeading3, pivotHeading4, pivotHeading5,  ];
+
+export const defaultPivots: IDefaultPage[] = [ ...mainDefPivots, ...sourcePivots, ...categorizedPivots ];
+export const allMainPivots: IMainPage[] = [ ...mainDefPivots, ...mainAltPivots, ];
+
 
 
 // leftSearchFixed: boolean; //Locks the search options
@@ -186,8 +254,12 @@ export interface IAnyContent extends Partial<any> {
   leftSearchLC: string[]; //For easy string compare
   topSearch: string[]; //For easy display of casing
   topSearchLC: string[]; //For easy string compare
-  searchSource: string; //For easy display of casing
-  searchSourceLC: string; //For easy string compare
+  searchSource: string; //For easy display of casing - For search page info
+  searchSourceLC: string; //For easy string compare - For search page info
+
+  sourceSearch: string[]; //For search buttons on Source Page 
+  sourceSearchLC: string[]; //For search buttons on Source Page 
+
   type: string;
   typeIdx: number;
   fileDisplayName: string;
@@ -226,6 +298,49 @@ export interface IPagesContent extends Partial<IAnyContent> {
 
 }
 
+export interface IEntityContent extends Partial<IAnyContent> {
+  ID: string;
+  Title: string;
+  OSCode: string;
+  HFMCode: string;
+  Parent: string;
+  Controller1: any;
+  Controller2: any;
+
+}
+
+export interface IAcronymContent extends Partial<IAnyContent> {
+  ID: string;
+  Title: string;
+  Description: string;
+  LongDefinition: string;
+  SearchWords: string;
+  Official: any;
+  StandardDocuments: string;
+  SupportDocuments: string;
+
+}
+
+export type IDeepLogic = '' | 'Sources' | 'Accounts' | 'Other';
+
+export interface IDeepLink {
+  main: IMainPage;
+  second: ISourcePage | ICategoryPage;
+  deep1: string;
+  deep2: string;
+  deep3: string;
+  deep4: string;
+  timeMs: number;
+  time: Date;
+  timeLabel: string;
+  deltaMs: number;
+  processTime: number;
+  searchTextLC: string;
+  logic: IDeepLogic;
+  searchTypeIdx: number;
+
+}
+
 export interface IAlvFinManState {
   // description: string;
 
@@ -239,7 +354,9 @@ export interface IAlvFinManState {
 
   appLinks: IAnyContent[];
 
-  entities: IAnyContent[];
+  entities: IEntityContent[];
+
+  acronyms: IAcronymContent[];
 
   manual: IAnyContent[];
   // stds: IAnyContent[]; //This is currently not used.... Originally considered it as Standards since the library was 'Standard Docs'.  Maybe could be list of relavant standards in the future?
@@ -253,11 +370,22 @@ export interface IAlvFinManState {
   fetchedDocs: boolean;
   fetchedNews: boolean;
   fetchedHelp: boolean;
+  fetchedEntities: boolean;
+  fetchedAcronyms: boolean;
+
   buckets: IFMBuckets;
   standards: IFMBucketItems;
   supporting: IFMBucketItems;
 
-  mainPivotKey: ILayoutAll;
+  mainPivotKey: IMainPage;
+  sourcePivotKey: ISourcePage;
+  categorizedPivotKey: ICategoryPage;
+  deepestPivot: IDefaultPage | IAltMainPage;
+  
+  deepProps: string[];  // Passed down to component as props to start with
+
+  deepLinks: IDeepLink[];
+
   // bucketClickKey: string;
   docItemKey: string;
   supItemKey: string;

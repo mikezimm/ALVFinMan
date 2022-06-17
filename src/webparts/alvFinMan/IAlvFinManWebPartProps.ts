@@ -10,7 +10,7 @@ import { ISupportedHost } from "@mikezimm/npmfunctions/dist/Services/PropPane/FP
 import { IPropertyFieldGroupOrPerson } from "@pnp/spfx-property-controls/lib/PropertyFieldPeoplePicker";
 
 import { IPerformanceOp, ILoadPerformanceALVFM, IHistoryPerformance } from './components/Performance/IPerformance';
-import { ILayoutAll, IPageLoadPref } from "./components/IAlvFinManProps";
+import { IDefaultPage, IMainPage, IPageLoadPref } from "./components/IAlvFinManProps";
 
   // // export interface IModernImageSettings {
   //   imgHeight: number | string;
@@ -159,7 +159,7 @@ export interface IAlvFinManWebPartProps {
 
 
   //For ALVFinancialManual
-  defaultPivotKey: ILayoutAll;
+  defaultPivotKey: IDefaultPage;
 
   leftSearchFixed: boolean; //Locks the search options
   leftSearchStr: string; // Primary/Fixed search for left side of search page
@@ -174,6 +174,17 @@ export interface IAlvFinManWebPartProps {
   searchPlural: boolean; //Future use, basically search for the keywords specified in props but also look for ones with an s after it.
   searchType:  boolean; //Choose to also filter on type of content:
   searchDefault:  boolean; //Resets all values to default and locks them.  Turning on and off resets all values
+
+  manualSearch: string;
+  newsSearch: string;
+  helpSearch: string;
+  appLinksSearch: string;
+  entitiesSearch: string;
+  historySearch: string;
+  acronymsSearch: string;
+  supsSearch: string;
+  accountsSearch: string;
+  sourcePagesCount: number;
 
   loadPerformance: ILoadPerformanceALVFM;
 

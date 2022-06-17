@@ -9,7 +9,7 @@ import { IRepoLinks } from '@mikezimm/npmfunctions/dist/Links/CreateLinks';
 
 import { convertIssuesMarkdownStringToSpan } from '@mikezimm/npmfunctions/dist/Elements/Markdown';
 
-export const panelVersionNumber = '2022-06-11 -  1.0.0.04'; //Added to show in panel
+export const panelVersionNumber = '2022-06-17 -  1.0.0.05'; //Added to show in panel
 
 export function aboutTable( repoLinks: IRepoLinks, showRepoLinks: boolean ) {
 
@@ -33,6 +33,8 @@ export function aboutTable( repoLinks: IRepoLinks, showRepoLinks: boolean ) {
      */
 
 
+     table.rows.push( createAboutRow('2022-06-17',"1.0.0.05","#93, #94, #95, #96, #97, #99 - Reorg, Start Sources and History-DeepLinks tab", showRepoLinks === true ? repoLinks : null ) );
+     table.rows.push( createAboutRow('',"","#8 - Add OS Accounts list, #87 - Add Controllers-Entities list, #101 - Add Acronyms list", showRepoLinks === true ? repoLinks : null ) );
 
     table.rows.push( createAboutRow('2022-06-11',"1.0.0.04","#57, #62, #66, #67, #68, #69, #70, #73", showRepoLinks === true ? repoLinks : null ) );
     table.rows.push( createAboutRow('',"","#56, #75, #76, #77, #79, #80, #81, #82, #84, #85, #86, #88, #89, #90", showRepoLinks === true ? repoLinks : null ) );

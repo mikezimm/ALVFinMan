@@ -2,8 +2,11 @@ import { sortStringArray, sortObjectArrayByStringKey, sortNumberArray, sortObjec
 import { ILabelColor, ICSSChartTypes, CSSChartTypes, ISeriesSort, ICSSChartSeries, IChartSeries, ICharNote, } 
     from '@mikezimm/npmfunctions/dist/CSSCharts/ICSSCharts';
 
-import { IFMBuckets, IFMBucketItems, IAnyContent, IPagesContent, ILayoutAll, ICanvasContentOptions } from "../IAlvFinManProps";
+import { IFMBuckets, IFMBucketItems, IAnyContent, IPagesContent, IMainPage, ICanvasContentOptions } from "../IAlvFinManProps";
 import { ISourceProps } from "../DataInterface";
+
+export type ILayout2Page = 'General' | 'Statements' | 'Links' | '';
+export const Layout2PageValues: ILayout2Page[] = [ 'General', 'Statements' ,'Links'  ];
 
 export interface ILayout2PageProps {
 
@@ -13,7 +16,7 @@ export interface ILayout2PageProps {
 
   // buckets: IFMBuckets;
 
-  mainPivotKey: ILayoutAll;
+  mainPivotKey: ILayout2Page;
 
   refreshId: string;
 
