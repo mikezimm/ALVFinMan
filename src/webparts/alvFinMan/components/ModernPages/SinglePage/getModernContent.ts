@@ -41,6 +41,14 @@ import { ISourceProps, LookupColumns, SourceInfo } from '../../DataInterface';
         result.BannerImageUrl = item.BannerImageUrl;
         result.fetchError = '';
         console.log('Fetched modern page');
+        result.originalContent = {};
+
+        Object.keys( item ).map( thisKey => {
+          if ( thisKey === 'originalContent' ) { }
+          else if ( result[ thisKey ] && result[ thisKey ] !== item[ thisKey ]) { result.originalContent[ thisKey ] = item[ thisKey ]; }
+          else { result[ thisKey ] = item[ thisKey ]; }
+        });
+
         callBack( result, showCanvasContent1 ) ;
 
     }).catch( e => {
@@ -49,7 +57,5 @@ import { ISourceProps, LookupColumns, SourceInfo } from '../../DataInterface';
         callBack( item, showCanvasContent1 ) ;
 
     });
-
-
 
   }

@@ -1,0 +1,100 @@
+@import '~office-ui-fabric-react/dist/sass/References.scss';
+
+.fileItem {
+
+    //This is the same styling that should be in Search listItem
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 99%;
+    padding-top: 20px;
+
+    i {
+      padding-right: 15px;
+    }
+
+    .fileDetails {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .fileRow1 {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        div {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        div:nth-child(1) { //This is the Page Id
+            color: darkblue;
+            width: 35px;
+            font-weight: 600;
+            padding-right: 10px;
+            cursor: pointer;
+        }
+        div:nth-child(2) { //This is the Page Title
+            color: darkred;
+            width: 400px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        div:nth-child(3) { //This is the Acronym Description
+            color: darkgreen;
+            width: 400px;
+            font-weight: 600;
+        }
+        div:nth-child(4) { //This is the Acronym Name
+            color: darkviolet;
+            width: calc(100%-450px);
+            font-weight: 600;
+        }
+    }
+
+    .fileRow2 {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        overflow: hidden;
+        cursor: default;
+
+        div {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        div:nth-child(1) { //This is the Page Title
+            color: $ms-color-themePrimary;;
+            width: 1200px;
+            // font-weight: 600;
+            // padding-right: 15px;
+        }
+
+        div:nth-child(2) { //This is the Acronym Title
+            color: darkviolet;
+            width: 100px;
+            font-weight: 600;
+        }
+
+    }
+
+}
+

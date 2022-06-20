@@ -1,4 +1,7 @@
 import * as React from 'react';
+
+import { Icon, IIconProps } from 'office-ui-fabric-react/lib/Icon';
+
 import styles from '../../AlvFinMan.module.scss';
 import stylesM from '../ModernPages.module.scss';
 import { ILayoutGPage, ILayoutSPage, ILayoutAPage, IFMBuckets, IPagesContent,   } from '../../IAlvFinManProps';
@@ -88,6 +91,33 @@ export default class SingleModernPage extends React.Component<ISingleModernPageP
       App in debugMode - Change in Web Part Properties - Page Preferences.  <b><em>Currently in SinglePage</em></b>
     </div>;
 
+
+    let panelHeading = null;
+    let panelTitle = 'Unknown Title';
+    if ( showThisItem.Title ) { panelTitle = showThisItem.Title ; }
+    else if ( showThisItem.Title0 ) { panelTitle = showThisItem.Title0 ; }
+    else if ( showThisItem.FileLeafRef ) { panelTitle = showThisItem.FileLeafRef ; }
+
+    panelHeading = <div className={ styles.supPanelHeader }>
+    <h2>{ panelTitle }</h2>
+    <div className={ styles.dateStamps}>
+      <div>Created</div> <div>{ showThisItem.createdLoc }</div> <div>{ showThisItem['Author/Title'] }</div>
+    </div>
+    <div className={ styles.dateStamps}>
+      <div>Modified</div> <div>{ showThisItem.modifiedLoc }</div> <div>{ showThisItem['Editor/Title'] }</div>
+    </div>
+
+    <div style={{ paddingBottom: '20px'}}>
+      <h3 style={{ cursor: 'pointer', paddingTop: '15px', marginBottom: '0px' }} 
+        onClick={ this.clickOpenInNewTab.bind( this, showThisItem.FileRef ? showThisItem.FileRef : showThisItem.searchHref ) }>
+        Click here to go to full page item ( in a new tab ) <Icon iconName='OpenInNewTab'></Icon></h3>
+      <div>File Location: { showThisItem.FileRef ? showThisItem.FileRef : showThisItem.searchHref }</div>
+    </div>
+    {/* <div className={ styles.dateStamps}>
+      <div>Version</div> <div>{ showThisItem.modifiedLoc }</div> <div>{ showThisItem['Editor/Title'] }</div>
+    </div> */}
+    </div>;
+
     const articleTitle = showThisItem ? showThisItem.Title : 'No title found';
     let articleDesc: any  = showThisItem ? showThisItem.Description : '';
 
@@ -98,9 +128,11 @@ export default class SingleModernPage extends React.Component<ISingleModernPageP
     let headerComponent = <div>
         { debugContent }
         { image }
-        <h3>{ articleTitle }</h3>
+        { panelHeading }
+        { articleDesc ? <h3>Description:</h3> : null }
         { articleDesc }
     </div>;
+
 
     if ( !showThisItem ) {
       return null;
@@ -131,7 +163,7 @@ export default class SingleModernPage extends React.Component<ISingleModernPageP
 
       const CanvasContent1 = !showThisItem || !showThisItem.CanvasContent1Str ? null : 
       <div className={ ['', this.cke_editable].join(' ') }>
-        <h2>CanvasContent1</h2>
+        <h2 style={{marginTop: '20px', textDecoration: 'underline' }}>Item Content</h2>
         <div dangerouslySetInnerHTML={{ __html: showThisItem.CanvasContent1Str }} />
       </div>;
 
@@ -141,15 +173,14 @@ export default class SingleModernPage extends React.Component<ISingleModernPageP
         <ReactJson src={ showThisItem } name={ 'Summary' } collapsed={ false } displayDataTypes={ true } displayObjectSize={ true } enableClipboard={ true } style={{ padding: '20px 0px' }}/>
       </div>;
 
+      const fileEmbed = !showThisItem || !showThisItem.ServerRedirectedEmbedUrl ? null : <iframe src={ showThisItem.ServerRedirectedEmbedUrl } height='350px' width='100%' style={{paddingTop: '20px' }}></iframe>;
 
       return (
         // <div className={ styles.alvFinMan }>
         <div className={ [stylesM.article, '' ].join(' ') }>
-          { debugContent }
-          { image }
-          <h3>{ articleTitle }</h3>
-          { articleDesc }
+          { headerComponent }
           { CanvasContent1 }
+          { fileEmbed }
           { this.ToggleJSONCmd }
           { jsonContent }
         </div>
@@ -169,6 +200,11 @@ export default class SingleModernPage extends React.Component<ISingleModernPageP
 
   private openThisLink( link:string ) {
     window.open( link , '_blank' );
+  }
+
+  private clickOpenInNewTab( href ) {
+    console.log('clickOpenInNewTab:', href );
+    window.open( href , '_blank' );
   }
 
   private _toggleJSON( ) {

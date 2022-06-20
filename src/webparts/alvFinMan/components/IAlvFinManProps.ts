@@ -341,6 +341,7 @@ export interface IDeepLink {
   searchTextLC: string;
   logic: IDeepLogic;
   searchTypeIdx: number;
+  count: number;
 
 }
 

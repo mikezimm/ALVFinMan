@@ -25,6 +25,7 @@ export function createHistoryRow( item: IDeepLink , searchText: string, onClick:
             <div style={{paddingRight: '20px' }}>Filtering:</div>
             <div title="Search Text" className={styles.marginRight15} style={{ fontWeight: 600, color: 'darkblue' }}>{  !item.deep1 ? 'No text' : getHighlightedText( `${ item.deep1 }`, searchText )  }</div>
             <div title="Buttons" className={ '' } style={{ fontWeight: 600, color: 'darkviolet' }}>{  !item.deep2 ? 'No buttons' : getHighlightedText( `${ decodeURIComponent(item.deep2) }`, searchText )  }</div>
+            <div title="Found" className={ '' } style={{ fontWeight: 600, color: 'blue', paddingLeft: '20px' }}>{  !item.count ? 'No items' : `Found ${item.count } items` }</div>
         </td>
 
     </tr>;

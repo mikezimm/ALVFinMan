@@ -167,7 +167,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
    * @param deeps 
    * @returns 
    */
-  private bumpDeepState( main: IMainPage | 'copyLast', second: ISourcePage | ICategoryPage | 'copyLast', deeps: string[], logic: IDeepLogic, deepLinks: IDeepLink[] ) : IDeepStateChange {
+  private bumpDeepState( main: IMainPage | 'copyLast', second: ISourcePage | ICategoryPage | 'copyLast', deeps: string[], logic: IDeepLogic, deepLinks: IDeepLink[], count: number ) : IDeepStateChange {
     
     const historyPause = 2000;
 
@@ -188,6 +188,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       deep2: deeps[1],
       deep3: deeps[2],
       deep4: deeps[3],
+      count: count,
       time: thisTime,
       timeMs: thisTime.getTime(),
       timeLabel: thisTime.toLocaleString(),
@@ -231,6 +232,9 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
             }
           }
         });
+        if ( prevDeep.count !== newDeep.count ) { 
+          hasChanged = true ;
+        }
       }
 
       if ( updateLast === true ) {
@@ -260,7 +264,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     let secondKey = mainDefPivots.indexOf( mainPivotKey as any ) > -1 ? '' : defaultPivotKey;
 
     //Watchout for this one where I had to set secondKey as any...
-    let deepChange : IDeepStateChange = this.bumpDeepState( mainPivotKey, secondKey as any, [], '',  this.state ? this.state.deepLinks : [] );
+    let deepChange : IDeepStateChange = this.bumpDeepState( mainPivotKey, secondKey as any, [], '',  this.state ? this.state.deepLinks : [], null );
 
     return deepChange;
 
@@ -284,9 +288,9 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
   }
 
-  private bumpDeepStateFromComponent( primary: string, secondary: string, remaining: string[] ) {
+  private bumpDeepStateFromComponent( primary: string, secondary: string, remaining: string[], count: number ) {
 
-    let deepChange: IDeepStateChange = this.bumpDeepState( primary as any, secondary  as any, remaining, 'Sources',  this.state.deepLinks );
+    let deepChange: IDeepStateChange = this.bumpDeepState( primary as any, secondary  as any, remaining, 'Sources',  this.state.deepLinks, count );
 
     if ( deepChange.hasChanged === true ) {
       this.setState( { deepLinks: deepChange.deepLinks });
@@ -456,6 +460,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     if ( mainPivotKey === 'Sources' ) { deepestKey = sourcePivotKey ; }
     if ( mainPivotKey === 'Categorized' ) { deepestKey = categorizedPivotKey ; }
 
+    let count = 0;
     let search = JSON.parse(JSON.stringify( this.state.search ));
     let updateBucketsNow: boolean = false;
     let appLinks: IAnyContent[] = this.state.appLinks;
@@ -481,23 +486,28 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       updateBucketsNow = true;
     }
 
+    if ( deepestKey === 'Acronyms' ) { count = this.state.acronyms.length ; } //Presets count in case it is already loaded
     if ( fetchedAcronyms !== true && ( deepestKey === 'Acronyms' || deepestKey === 'Search' ) && this.state.acronyms.length === 0 ) {
       acronyms = await getALVFinManContent( SourceInfo.acronyms, this.props.search );
       search = updateSearchCounts( 'acronyms', acronyms as IAllContentType[], search );
       fetchedAcronyms = true;
       updateBucketsNow = true;
+      count = acronyms.length;
     }
 
+    if ( deepestKey === 'Entities' ) { count = this.state.entities.length ; } //Presets count in case it is already loaded
     if ( fetchedEntities !== true && ( deepestKey === 'Entities' || deepestKey === 'Search' && this.state.entities.length === 0 )  ) {
       entities = await getALVFinManContent( SourceInfo.entities, this.props.search );
       search = updateSearchCounts( 'entities', entities as IAllContentType[], search );
       fetchedEntities = true;
       updateBucketsNow = true;
+      count = entities.length;
     }
 
     //Check if tab requires docs and sup and is not yet loaded
     let Layout1PageValuesAny: any = Layout1PageValues;
 
+    if ( sourcePivotKey === 'Standards' ) { count = this.state.manual.length ; } //Presets count in case it is already loaded
     let getStds = false;
     if ( fetchedStds !== true ) {
       if ( sourcePivotKey === 'Standards' ) { getStds = true ; }
@@ -507,37 +517,43 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       manual = await getALVFinManContent( SourceInfo.manual, this.props.search );
       search = updateSearchCounts( 'manual', manual, search );
       fetchedStds = true;
+      count = manual.length;
     }
 
+    if ( sourcePivotKey === 'SupportDocs' ) { count = this.state.sups.length ; } //Presets count in case it is already loaded
     let getSups = false;
     if ( fetchedSups !== true ) {
-      if ( sourcePivotKey === 'Standards' ) { getSups = true ; }
+      if ( sourcePivotKey === 'SupportDocs' ) { getSups = true ; }
       else if ( Layout1PageValuesAny.indexOf( deepestKey ) > -1 || deepestKey === 'Search' ) { getSups = true ; }
     }
     if ( getSups === true ) {
       sups = await getALVFinManContent( SourceInfo.sups, this.props.search );
       search = updateSearchCounts( 'sups', sups, search );
       fetchedSups = true;
+      count = sups.length;
     }
 
+    if ( deepestKey === 'News' ) { count = this.state.news.length ; } //Presets count in case it is already loaded
     if ( fetchedNews !== true && ( deepestKey === 'News' || deepestKey === 'Search' ) ) {
       news = await getALVFinManContent( SourceInfo.news, this.props.search );
       search = updateSearchCounts( 'news', news, search );
       fetchedNews = true;
-
+      count = news.length;
     }
 
+    if ( deepestKey === 'Help' ) { count = this.state.help.length ; } //Presets count in case it is already loaded
     if ( fetchedHelp !== true && ( deepestKey === 'Help' || deepestKey === 'Search' ) ) {
       help = await getALVFinManContent( SourceInfo.help, this.props.search );
       search = updateSearchCounts( 'help', help, search );
       fetchedHelp = true;
-
+      count = help.length;
     }
 
+    if ( deepestKey === 'Accounts' ) { count = this.state.accounts.length ; } //Presets count in case it is already loaded
     if ( ( deepestKey === 'Search' || deepestKey === 'Accounts' ) && this.state.accounts.length === 0 ) {
       accounts = await getALVFinManContent ( SourceInfo.accounts, this.props.search );
       search = updateSearchCounts( 'accounts', accounts, search );
-
+      count = accounts.length;
     }
 
     let buckets = this.state.buckets;
@@ -549,7 +565,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     search = updateSearchTypes( [ ...appLinks, ...manual, ...sups, ...accounts, ], search );
     let deepSecond = deepestKey && deepestKey !== mainPivotKey ? deepestKey : '';
 
-    let deepChange: IDeepStateChange = this.bumpDeepState( mainPivotKey, deepSecond ,  [], '',  this.state.deepLinks );
+    let deepChange: IDeepStateChange = this.bumpDeepState( mainPivotKey, deepSecond ,  [], '',  this.state.deepLinks, count );
 
     console.log('state:  search', search );
     this.setState({ search: search, manual: manual, buckets: buckets, sups: sups, appLinks: appLinks,
@@ -759,6 +775,21 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       deepProps={ this.state.deepProps }
       canvasOptions={ this.props.canvasOptions }
     ></SourcePages>;
+    
+    const supportingDocs = this.state.mainPivotKey !== 'Sources' || this.state.sourcePivotKey !== 'SupportDocs' ? null : <SourcePages
+      source={ SourceInfo }
+      search={ this.state.search }
+      primarySource={ SourceInfo.sups }
+      pageWidth={ 1000 }
+      topButtons={ this.props.search.sups }
+      refreshId={ this.state.refreshId }
+      fetchTime={ 797979 }
+      items={ this.state.sups as IAnyContent[] }
+      debugMode={ this.state.debugMode }
+      bumpDeepLinks= { this.bumpDeepStateFromComponent.bind(this) }
+      deepProps={ this.state.deepProps }
+      canvasOptions={ this.props.canvasOptions }
+    ></SourcePages>;
 
     const defNewsSort ={
       prop: 'Title',
@@ -895,6 +926,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
             { acronyms }
             { entities }
             { standards }
+            { supportingDocs }
             { news }
             { SearchContent }
             { help }

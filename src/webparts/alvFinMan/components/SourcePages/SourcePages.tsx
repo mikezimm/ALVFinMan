@@ -35,6 +35,7 @@ import { IAnyContent, IDeepLink, IPagesContent } from '../IAlvFinManProps';
 import SingleModernPage from '../ModernPages/SinglePage/SingleModernPage';
 import { getDocWiki } from '../ModernPages/SinglePage/getModernContent';
 import { getHighlightedText } from '../Elements/HighlightedText';
+import { createFileRow } from './Files/FileItem';
 
 const pivotStyles = {
   root: {
@@ -157,7 +158,11 @@ public async updateWebInfo (   ) {
 
           case 'manual':
           // filtered.push( this.createModernRowHere( item, this.state.searchText, this.clickModernItem.bind(this) )); break;
-          filtered.push( createModernRow( item, this.state.searchText, this.clickModernItem.bind(this) )); break;
+          filtered.push( createModernRow( item, this.state.searchText, this.clickModernItem.bind(this), null )); break;
+
+          case 'sups':
+          // filtered.push( this.createModernRowHere( item, this.state.searchText, this.clickModernItem.bind(this) )); break;
+          filtered.push( createFileRow( item, this.state.searchText, this.clickFileItem.bind(this) )); break;
 
           case 'accounts':
           filtered.push( createAccountRow( item, this.state.searchText, null )); break;
@@ -241,7 +246,7 @@ public async updateWebInfo (   ) {
 
               { deepHistory }
               { userPanel }
-              
+
               {/* { componentPivot }
               { showPage }
               { userPanel } */}
@@ -263,7 +268,7 @@ public async updateWebInfo (   ) {
     this.setState({ topSearch: selected , filtered: filtered });
 
     //https://stackoverflow.com/a/40493291
-    this.updateParentDeeplinks( this.state.searchText, selected );
+    this.updateParentDeeplinks( this.state.searchText, selected, filtered.length );
 
   }
 
@@ -355,11 +360,12 @@ public async updateWebInfo (   ) {
 
     //https://stackoverflow.com/a/40493291
 
+    let filtered: IAnyContent[] = this.getFilteredItems( this.props.items, NewSearch.target.value, this.state.topSearch, );
+
     // setTimeout(() => {
-      this.updateParentDeeplinks( SearchValue, this.state.topSearch );
+      this.updateParentDeeplinks( SearchValue, this.state.topSearch, filtered.length );
     // }, 1000);
 
-    let filtered: IAnyContent[] = this.getFilteredItems( this.props.items, NewSearch.target.value, this.state.topSearch, );
 
     let endTime = new Date();
     let totalTime = endTime.getTime() - startTime.getTime();
@@ -374,11 +380,14 @@ public async updateWebInfo (   ) {
 
   }
 
-  private updateParentDeeplinks( searchText: string, topLinks: string[]) {
-    if ( this.props.bumpDeepLinks ) {
-      var deepLink2 = encodeURIComponent(JSON.stringify( topLinks ));
-      this.props.bumpDeepLinks( 'Sources', this.props.primarySource.searchSource, [searchText, deepLink2 ] );
+  private updateParentDeeplinks( searchText: string, topLinks: string[], count: number ) {
+    if ( count > 0 ) {
+      if ( this.props.bumpDeepLinks ) {
+        var deepLink2 = encodeURIComponent(JSON.stringify( topLinks ));
+        this.props.bumpDeepLinks( 'Sources', this.props.primarySource.searchSource, [searchText, deepLink2 ], count );
+      }
     }
+
   }
 
   private jumpToDeepLink( item: IDeepLink ) {
@@ -397,7 +406,13 @@ public async updateWebInfo (   ) {
     console.log('clickNewsItem:', ID, item );
     // debugger;
 
-    let newState = this.state.showItemPanel;
+    getDocWiki( item , this.props.primarySource, this.props.canvasOptions, true, this.updateModernState.bind( this ) );
+
+  }
+
+  private clickFileItem( ID: number, category: string, item: IPagesContent, e: any ) {  //this, item.ID, 'files', item
+    console.log('clickNewsItem:', ID, item );
+    // debugger;
 
     getDocWiki( item , this.props.primarySource, this.props.canvasOptions, true, this.updateModernState.bind( this ) );
 

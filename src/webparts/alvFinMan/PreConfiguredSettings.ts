@@ -96,6 +96,7 @@ export const PresetEverywhere : IPreConfigSettings = {
         entitiesSearch: 'AAM;AAS;ACH;AEU;ALV_Corp;ALVGO;ALVTC;NDC',
         historySearch: 'News;Help;Accounts;Links;Standards;SupportDocs;Entities;Acronyms',
         acronymsSearch: 'AB;CM;MPV;NPH;PS;RDE;Systems;Above;Below',
+        supsSearch: 'xls;ppt;doc;pdf;Process;Instruction;Capex;Load',
 
         sourcePagesCount: 20,
 
