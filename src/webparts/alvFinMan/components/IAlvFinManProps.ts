@@ -370,7 +370,8 @@ export interface IAlvFinManState {
   help: IPagesContent[];
 
   fetchedAccounts: boolean;
-  fetchedDocs: boolean;
+  fetchedStds: boolean;
+  fetchedSups: boolean;
   fetchedNews: boolean;
   fetchedHelp: boolean;
   fetchedEntities: boolean;

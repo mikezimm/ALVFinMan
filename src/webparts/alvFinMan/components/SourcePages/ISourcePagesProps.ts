@@ -1,5 +1,5 @@
 import { ISourceInfo, ISourceProps } from "../DataInterface";
-import { IAnyContent, IFinManSearch } from "../IAlvFinManProps";
+import { IAnyContent, ICanvasContentOptions, IFinManSearch } from "../IAlvFinManProps";
 
 export interface ISourcePagesProps {
 
@@ -21,6 +21,8 @@ export interface ISourcePagesProps {
   items: IAnyContent[];
   fetchTime: number;
 
+  canvasOptions: ICanvasContentOptions;
+
   debugMode?: boolean; //Option to display visual ques in app like special color coding and text
 
 }
@@ -33,6 +35,11 @@ export interface ISourcePagesState {
   filtered: any[];
   topSearch: string[];
   
+  showItemPanel: boolean;
+  showThisItem: any;
+  showCanvasContent1: boolean;
+  showPanelJSON: boolean;
+
   slideCount: number;
   sortNum: ISort;
   sortName: ISort;

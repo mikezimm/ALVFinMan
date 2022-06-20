@@ -382,7 +382,8 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
       deepLinks: this.bumpDeepStateByDefaultPivotKey( this.props.defaultPivotKey ).deepLinks,
       deepProps: [],
-      fetchedDocs: false,
+      fetchedStds: false,
+      fetchedSups: false,
       fetchedAccounts: false,
       fetchedNews: false,
       fetchedHelp: false,
@@ -467,7 +468,8 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     // let accounts: IAnyContent[] = this.state.accounts;
     let accounts: any = this.state.accounts;
 
-    let fetchedDocs = this.state.fetchedDocs === true ? true : false;
+    let fetchedStds = this.state.fetchedStds === true ? true : false;
+    let fetchedSups = this.state.fetchedSups === true ? true : false;
     let fetchedNews = this.state.fetchedNews === true ? true : false;
     let fetchedHelp = this.state.fetchedHelp === true ? true : false;
     let fetchedEntities = this.state.fetchedEntities === true ? true : false;
@@ -496,16 +498,26 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     //Check if tab requires docs and sup and is not yet loaded
     let Layout1PageValuesAny: any = Layout1PageValues;
 
-    if ( fetchedDocs !== true && ( Layout1PageValuesAny.indexOf( deepestKey ) > -1 || deepestKey === 'Search' ) ) {
+    let getStds = false;
+    if ( fetchedStds !== true ) {
+      if ( sourcePivotKey === 'Standards' ) { getStds = true ; }
+      else if ( Layout1PageValuesAny.indexOf( deepestKey ) > -1 || deepestKey === 'Search' ) { getStds = true ; }
+    }
+    if ( getStds === true ) {
       manual = await getALVFinManContent( SourceInfo.manual, this.props.search );
       search = updateSearchCounts( 'manual', manual, search );
+      fetchedStds = true;
+    }
 
+    let getSups = false;
+    if ( fetchedSups !== true ) {
+      if ( sourcePivotKey === 'Standards' ) { getSups = true ; }
+      else if ( Layout1PageValuesAny.indexOf( deepestKey ) > -1 || deepestKey === 'Search' ) { getSups = true ; }
+    }
+    if ( getSups === true ) {
       sups = await getALVFinManContent( SourceInfo.sups, this.props.search );
       search = updateSearchCounts( 'sups', sups, search );
-
-      fetchedDocs = true;
-      updateBucketsNow = true;
-
+      fetchedSups = true;
     }
 
     if ( fetchedNews !== true && ( deepestKey === 'News' || deepestKey === 'Search' ) ) {
@@ -545,7 +557,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       mainPivotKey: mainPivotKey, sourcePivotKey: sourcePivotKey, categorizedPivotKey: categorizedPivotKey, 
       deepLinks: deepChange.deepLinks, deepestPivot: deepestKey, deepProps: deepProps,
       accounts: accounts, news: news, help: help, refreshId: this.newRefreshId(),
-      fetchedDocs: fetchedDocs, fetchedNews: fetchedNews, fetchedHelp: fetchedHelp, fetchedEntities: fetchedEntities,  fetchedAcronyms: fetchedAcronyms,
+      fetchedStds: fetchedStds, fetchedSups: fetchedSups, fetchedNews: fetchedNews, fetchedHelp: fetchedHelp, fetchedEntities: fetchedEntities,  fetchedAcronyms: fetchedAcronyms,
     
     });
 
@@ -698,6 +710,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       debugMode={ this.state.debugMode }
       bumpDeepLinks= { this.bumpDeepStateFromComponent.bind(this) }
       deepProps={ this.state.deepProps }
+      canvasOptions={ this.props.canvasOptions }
     ></SourcePages>;
 
     
@@ -713,6 +726,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       debugMode={ this.state.debugMode }
       bumpDeepLinks= { this.bumpDeepStateFromComponent.bind(this) }
       deepProps={ this.state.deepProps }
+      canvasOptions={ this.props.canvasOptions }
     ></SourcePages>;
 
     
@@ -728,6 +742,22 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       debugMode={ this.state.debugMode }
       bumpDeepLinks= { this.bumpDeepStateFromComponent.bind(this) }
       deepProps={ this.state.deepProps }
+      canvasOptions={ this.props.canvasOptions }
+    ></SourcePages>;
+    
+    const standards = this.state.mainPivotKey !== 'Sources' || this.state.sourcePivotKey !== 'Standards' ? null : <SourcePages
+      source={ SourceInfo }
+      search={ this.state.search }
+      primarySource={ SourceInfo.manual }
+      pageWidth={ 1000 }
+      topButtons={ this.props.search.manual }
+      refreshId={ this.state.refreshId }
+      fetchTime={ 797979 }
+      items={ this.state.manual as IAnyContent[] }
+      debugMode={ this.state.debugMode }
+      bumpDeepLinks= { this.bumpDeepStateFromComponent.bind(this) }
+      deepProps={ this.state.deepProps }
+      canvasOptions={ this.props.canvasOptions }
     ></SourcePages>;
 
     const defNewsSort ={
@@ -762,7 +792,6 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     ></ModernPages>;
 
     const history = this.state.mainPivotKey !== 'History' ? null : <SourcePages
-
       source={ SourceInfo }
       search={ this.state.search }
       primarySource={ SourceInfo.history }
@@ -775,6 +804,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       bumpDeepLinks= { null }
       jumpToDeepLink = { this.jumpToDeepLink.bind(this) }
       deepProps={ this.state.deepProps }
+      canvasOptions={ this.props.canvasOptions }
     ></SourcePages>;
 
 
@@ -864,6 +894,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
             { accounts }
             { acronyms }
             { entities }
+            { standards }
             { news }
             { SearchContent }
             { help }

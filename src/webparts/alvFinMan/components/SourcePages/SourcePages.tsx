@@ -1,6 +1,8 @@
 import * as React from 'react';
 import stylesA from '../AlvFinMan.module.scss';
 import styles from './SourcePages.module.scss';
+import stylesM from './Modern/Modern.module.scss';
+import stylesP from './SourcePages.module.scss';
 
 import { ISourcePagesProps, ISourcePagesState, } from './ISourcePagesProps';
 import { escape } from '@microsoft/sp-lodash-subset';
@@ -19,14 +21,20 @@ import { Panel, IPanelProps, IPanelStyleProps, IPanelStyles, PanelType } from 'o
 
 import * as strings from 'AlvFinManWebPartStrings';
 
+import { IFMSearchType, SearchTypes } from '../DataInterface';
+
 import ReactJson from "react-json-view";
 
 import { createEntityRow } from './Entities/EntityItem';
 import { createAcronymRow } from './Acronyms/AcronymItem';
 import { createAccountRow } from './Accounts/AccountItem';
 import { createHistoryRow } from './History/HistoryItem';
+import { createModernRow } from './Modern/ModernItem';
 
-import { IAnyContent, IDeepLink } from '../IAlvFinManProps';
+import { IAnyContent, IDeepLink, IPagesContent } from '../IAlvFinManProps';
+import SingleModernPage from '../ModernPages/SinglePage/SingleModernPage';
+import { getDocWiki } from '../ModernPages/SinglePage/getModernContent';
+import { getHighlightedText } from '../Elements/HighlightedText';
 
 const pivotStyles = {
   root: {
@@ -37,6 +45,9 @@ const pivotStyles = {
   }};
 
 export default class SourcePages extends React.Component<ISourcePagesProps, ISourcePagesState> {
+
+  //Copied from ModernPages
+  private imageStyle = '';
 
   private LastSearch = '';
 
@@ -74,6 +85,12 @@ public constructor(props:ISourcePagesProps){
     sortGroup: '-',
     searchTime: null,
     searchText: searchText,
+
+    showItemPanel: false,
+    showCanvasContent1: this.props.canvasOptions.pagePreference === 'canvasContent1' ? true : false,
+    showPanelJSON: false,
+    showThisItem: filtered.length > 0 ? filtered[ 0 ] : null,
+
   };
 }
 
@@ -130,18 +147,22 @@ public async updateWebInfo (   ) {
     let filtered = [];
     this.state.filtered.map( item => {
       if ( filtered.length < this.state.slideCount ) {
-        switch ( this.props.primarySource.listTitle  ) {
+        switch ( this.props.primarySource.key  ) {
 
-          case 'Entities':
+          case 'entities':
           filtered.push( createEntityRow( item, this.state.searchText, null )); break;
 
-          case 'Acronyms':
+          case 'acronyms':
           filtered.push( createAcronymRow( item, this.state.searchText, null )); break;
 
-          case 'Accounts':
+          case 'manual':
+          // filtered.push( this.createModernRowHere( item, this.state.searchText, this.clickModernItem.bind(this) )); break;
+          filtered.push( createModernRow( item, this.state.searchText, this.clickModernItem.bind(this) )); break;
+
+          case 'accounts':
           filtered.push( createAccountRow( item, this.state.searchText, null )); break;
 
-          case 'History':
+          case 'history':
           filtered.push( createHistoryRow( item, this.state.searchText, null, this.jumpToDeepLink.bind(this) )); break;
 
         }
@@ -186,6 +207,26 @@ public async updateWebInfo (   ) {
       const deepHistory = this.props.debugMode !== true ? null :  
         <ReactJson src={ this.state.filtered } name={ this.props.primarySource.listTitle } collapsed={ false } displayDataTypes={ false } displayObjectSize={ false } enableClipboard={ true } style={{ padding: '20px 0px' }} theme= { 'rjv-default' } indentWidth={ 2}/>;
 
+      const userPanel = this.state.showItemPanel !== true ? null : <div><Panel
+        isOpen={ this.state.showItemPanel === true ? true : false }
+        // this prop makes the panel non-modal
+        isBlocking={true}
+        onDismiss={ this._onClosePanel.bind(this) }
+        closeButtonAriaLabel="Close"
+        type = { PanelType.large }
+        isLightDismiss = { true }
+        >
+        <SingleModernPage 
+          page= { this.state.showThisItem }
+          showCanvasContent1= { true }
+          source= { this.props.primarySource }
+          refreshId= { this.props.refreshId  }
+          canvasOptions= { this.props.canvasOptions }
+          imageStyle= { this.imageStyle }
+          debugMode= { this.props.debugMode }
+        ></SingleModernPage>
+      </Panel></div>;
+
     return (
       <div className={ stylesA.alvFinMan }>
         {/* <div className={ styles.container }> */}
@@ -199,6 +240,8 @@ public async updateWebInfo (   ) {
               { filtered }
 
               { deepHistory }
+              { userPanel }
+              
               {/* { componentPivot }
               { showPage }
               { userPanel } */}
@@ -346,4 +389,50 @@ public async updateWebInfo (   ) {
     }
   }
 
+  private _onClosePanel( ) {
+    this.setState({ showItemPanel: false });
+  }
+
+  private clickModernItem( ID: number, category: string, item: IPagesContent, e: any ) {  //this, item.ID, 'pages', item
+    console.log('clickNewsItem:', ID, item );
+    // debugger;
+
+    let newState = this.state.showItemPanel;
+
+    getDocWiki( item , this.props.primarySource, this.props.canvasOptions, true, this.updateModernState.bind( this ) );
+
+  }
+
+  //getDocWiki( item: IPagesContent, source: ISourceProps,  canvasOptions: ICanvasContentOptions, callBack: any )
+  private updateModernState( item: IPagesContent, showCanvasContent1: boolean ) {
+
+    this.setState({ 
+      showItemPanel: true, 
+      showCanvasContent1: showCanvasContent1, 
+      showThisItem: item });
+
+  }
+
+  // private createModernRowHere( item: IPagesContent , searchText: string, onClick: any ) {
+
+  //   const row = <div className={ stylesM.modernItem }>
+  //       <div className={ stylesP.itemIcon }><Icon iconName={ SearchTypes.objs[item.typeIdx].icon }></Icon></div>
+
+  //       <div className={ stylesM.modernDetails}>
+  //           <div className={ stylesM.modernRow1 } style={{cursor: item.searchHref ? 'pointer' : null }} onClick = { () => onClick( this, item.ID, 'pages', item ) }>
+  //               <div>{ item.ID }</div>
+  //               <div title="Title">{  getHighlightedText( `${ item.Title }`, searchText )  }</div>
+
+  //           </div>
+  //           <div className={ stylesM.modernRow2}>
+  //               {/* <div title="Description">Description:&nbsp;&nbsp;{ !item.Description ? '---' : getHighlightedText( `${ item.Description }`, searchText )  }</div> */}
+  //               <div title="Description">{ !item.Description ? '---' : getHighlightedText( `${ item.Description }`, searchText )  }</div>
+  //               {/* <div title="Related to" style={{paddingLeft: '30px' }}>Related to:&nbsp;&nbsp;{ !item.SearchWords ? '' : getHighlightedText( `${ item.SearchWords }`, searchText )  }</div> */}
+  //           </div>
+  //       </div>
+  //   </div>;
+
+  //   return row;
+
+  // }
 }

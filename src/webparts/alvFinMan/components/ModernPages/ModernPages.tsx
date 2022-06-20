@@ -209,6 +209,7 @@ export default class ModernPages extends React.Component<IModernPagesProps, IMod
       showThisItem: item });
 
   }
+  
   private clickNewsItem( ID: number, category: string, item: IPagesContent, e: any ) {  //this, item.ID, 'pages', item
     console.log('clickNewsItem:', ID, item );
     // debugger;

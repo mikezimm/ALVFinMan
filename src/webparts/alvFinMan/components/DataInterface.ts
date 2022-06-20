@@ -33,7 +33,7 @@ export const ExtraFetchModernPage = ['WikiField','CanvasContent1','LayoutsWebpar
 
 export type IDefSourceType = 'link' | 'news' | 'help' | 'account' | 'std' | 'manual' | 'SupportDocuments' | 'entity' | 'acronym' | 'history' ;
 
-export type ISearchSource = 'AppLinks' | 'News' | 'Help' | 'Accounts' | 'SupportDocs' | 'Manual' | 'Standards' | 'Policies' | 'Instructions' | 'Entities' | 'Acronyms' | 'History' ;
+export type ISearchSource = 'AppLinks' | 'News' | 'Help' | 'Accounts' | 'SupportDocs' | 'Standards' | 'Policies' | 'Instructions' | 'Entities' | 'Acronyms' | 'History' ;
 
 export interface ISourceProps {
     key: IAppFormat;
@@ -79,7 +79,7 @@ export const SourceInfo: ISourceInfo = {
         webUrl: `${FinManSite}Manual/`,
         listTitle: "Site Pages",
         webRelativeLink: "SitePages",
-        searchSource: 'Manual',
+        searchSource: 'Standards',
         searchSourceDesc:  'Site Pages library in Manual Subsite',
         columns: [ ...ModernSitePagesColumns, ...LookupColumns ],
         itemFetchCol: ExtraFetchModernPage,
