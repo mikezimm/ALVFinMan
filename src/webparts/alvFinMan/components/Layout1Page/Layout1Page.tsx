@@ -34,7 +34,8 @@ import { makeToggleJSONCmd } from '../Elements/CmdButton';
 import { IFramePanel } from '@pnp/spfx-controls-react';
 import { IFPSUser } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterfaces';
 
-export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
+//  NOTE:   linkNoLeadingTarget is used in Layouts1, Layouts2 and Modern Pages... maybe consolidate
+export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   
 
 const consoleLineItemBuild: boolean = false;
 

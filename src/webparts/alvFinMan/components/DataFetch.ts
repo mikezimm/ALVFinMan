@@ -22,9 +22,6 @@ import { warnMutuallyExclusive } from 'office-ui-fabric-react';
 
 import { getHelpfullErrorV2 } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
 
-export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
-
-
 
 export function createEmptySearchBucket () {
 

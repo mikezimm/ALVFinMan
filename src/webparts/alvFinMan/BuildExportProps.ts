@@ -59,6 +59,7 @@ import { IAlvFinManWebPartProps, exportIgnoreProps, importBlockProps, changeCanv
 import { changeBannerBasics, changeBannerNav, changeBannerTheme, changeBannerOther, } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/ImportProps';
 
 
+import { changeSearchPage, changeSourceSearch,  } from './IAlvFinManWebPartProps';
 import { changeVisitor, changeExpando, changeBanner, changefpsOptions1, changefpsOptions2, } from './IAlvFinManWebPartProps';
 import { ILoadPerformanceALVFM, IPerformanceOp } from './components/Performance/IPerformance';
 
@@ -111,6 +112,9 @@ import { ILoadPerformanceALVFM, IPerformanceOp } from './components/Performance/
     exportStructure.changeCanvasImages = changeCanvasImages;
     exportStructure.changeCanvasNoAnalytics = changeCanvasNoAnalytics;
     exportStructure.changeCanvasOptions = changeCanvasOptions;
+
+    exportStructure.changeSearchPage = changeSearchPage;
+    exportStructure.changeSourceSearch = changeSourceSearch;
 
     // exportStructure.Script = changeScript;
 

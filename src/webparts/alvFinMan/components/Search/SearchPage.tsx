@@ -34,9 +34,6 @@ import { getHighlightedText } from '../Elements/HighlightedText';
 import { createAccountRow } from '../SourcePages/Accounts/AccountItem';
 import { getSearchTypeIcon } from '../Elements/FileTypeIcon';
 
-export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;   //
-
-
 const pivotStyles = {
   root: {
     whiteSpace: "normal",
@@ -161,7 +158,7 @@ public async updateWebInfo (   ) {
         leftSearch.push( <div className={ classNames.join(' ') } style={ null } onClick={ this._clickLeft.bind( this, searchObject )}>{ searchObject.Search }</div> );
       });
 
-      const leftSearchContent = <div className={ stylesS.leftSearch } style={ null } >{ leftSearch }</div>;
+      const leftSearchContent = <div className={  [ stylesS.leftSearch, this.props.debugMode === true ? stylesS.debugMode : '' ].join( ' ' ) } style={ null } >{ leftSearch }</div>;
 
       search.top.Objects.map( searchObject => {
         let classNames = [ stylesS.button ];
@@ -169,7 +166,7 @@ public async updateWebInfo (   ) {
         topSearch.push( <div className={ classNames.join(' ') } style={ null }  onClick={ this._clickTop.bind( this, searchObject )}>{ searchObject.Search }</div> );
       });
 
-      const topSearchContent = <div className={ stylesS.topSearch } style={ null } >{ topSearch }</div>;
+      const topSearchContent = <div className={ [ stylesS.topSearch, this.props.debugMode === true ? stylesS.debugMode : '' ].join( ' ' ) } style={ null } >{ topSearch }</div>;
 
       let cmdButtonCSS = JSON.parse(JSON.stringify( this.props.cmdButtonCSS ));
 
@@ -186,7 +183,7 @@ public async updateWebInfo (   ) {
 
       });
 
-      const typeSearchContent = <div className={ stylesS.typeSearch } style={ null } >{ typeSearch }</div>;
+      const typeSearchContent = <div className={  [ stylesS.typeSearch, this.props.debugMode === true ? stylesS.debugMode : '' ].join( ' ' ) } style={ null } >{ typeSearch }</div>;
 
       /*https://developer.microsoft.com/en-us/fabric#/controls/web/searchbox*/
       let searchBox =  

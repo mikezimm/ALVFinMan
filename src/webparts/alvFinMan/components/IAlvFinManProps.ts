@@ -295,7 +295,10 @@ export interface IPagesContent extends Partial<IAnyContent> {
   File: {
     ServerRelativeUrl: string;
   };
-
+  fetchError: string;
+  CanvasContent1: any;
+  CanvasContent1Str: any;
+  
 }
 
 export interface IEntityContent extends Partial<IAnyContent> {
@@ -338,6 +341,7 @@ export interface IDeepLink {
   searchTextLC: string;
   logic: IDeepLogic;
   searchTypeIdx: number;
+  count: number;
 
 }
 
@@ -367,7 +371,8 @@ export interface IAlvFinManState {
   help: IPagesContent[];
 
   fetchedAccounts: boolean;
-  fetchedDocs: boolean;
+  fetchedStds: boolean;
+  fetchedSups: boolean;
   fetchedNews: boolean;
   fetchedHelp: boolean;
   fetchedEntities: boolean;
