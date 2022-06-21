@@ -9,7 +9,7 @@ import { IRepoLinks } from '@mikezimm/npmfunctions/dist/Links/CreateLinks';
 
 import { convertIssuesMarkdownStringToSpan } from '@mikezimm/npmfunctions/dist/Elements/Markdown';
 
-export const panelVersionNumber = '2022-06-21 -  1.0.0.06'; //Added to show in panel
+export const panelVersionNumber = '2022-06-2X -  1.0.0.07'; //Added to show in panel
 
 export function aboutTable( repoLinks: IRepoLinks, showRepoLinks: boolean ) {
 
@@ -31,6 +31,8 @@ export function aboutTable( repoLinks: IRepoLinks, showRepoLinks: boolean ) {
      * 
      * WARNING:  DO NOT add any CDNs to Global Warn or Approve unless you want it to apply to JS as well.
      */
+
+     table.rows.push( createAboutRow('2022-06-2X',"1.0.0.07","#110 - Fetch Spinner, #111 - no Categorized items, ", showRepoLinks === true ? repoLinks : null ) );
 
      table.rows.push( createAboutRow('2022-06-21',"1.0.0.06","Add Standards and SupportDocs to Source tab, #98, #104, #105, #107 - Deep Links", showRepoLinks === true ? repoLinks : null ) );
      table.rows.push( createAboutRow('',"","#31, #92, #93, ", showRepoLinks === true ? repoLinks : null ) );

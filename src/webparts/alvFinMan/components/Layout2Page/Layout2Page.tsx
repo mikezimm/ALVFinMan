@@ -45,7 +45,6 @@ export default class Layout2Page extends React.Component<ILayout2PageProps, ILay
 
   private ToggleJSONCmd = makeToggleJSONCmd( this._toggleJSON.bind( this ) );
 
-  
   private _toggleJSON( ) {
     let newState = this.state.showPanelJSON === true ? false : true;
     this.setState( { showPanelJSON: newState });

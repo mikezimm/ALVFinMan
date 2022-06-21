@@ -400,4 +400,5 @@ export interface IAlvFinManState {
 
   debugMode: boolean; //Option to display visual ques in app like special color coding and text  DeviceBug
 
+  showSpinner: boolean;
 }
