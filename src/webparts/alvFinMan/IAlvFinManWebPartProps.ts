@@ -34,6 +34,10 @@ export const changeCanvasImages = [ 'imgHeight', 'imgWidth', 'imgObjectFit', 'im
 export const changeCanvasNoAnalytics = [ 'imgStyle',  ];
 export const changeCanvasOptions = [ 'canPagePreference', 'canAddCkeEditToDiv', 'canh1Styles', 'canh2Styles', 'canh3Styles', ];
 
+export const changeSearchPage = [ 'topSearchFixed', 'topSearchStr', 'topSearch', 'searchPlural', 'searchType', 'searchDefault' ];
+
+export const changeSourceSearch = [ 'manualSearch', 'newsSearch', 'helpSearch', 'appLinksSearch', 'entitiesSearch', 'historySearch', 'acronymsSearch', 'supsSearch', 'accountsSearch', 'sourcePagesCount' ];
+
 export const changeExpando = [ 
   'enableExpandoramic','expandoDefault','expandoStyle', 'expandoPadding', 'expandoAudience',
   ];

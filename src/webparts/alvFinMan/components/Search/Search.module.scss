@@ -19,10 +19,14 @@
   
     // Primary Button
     min-width: 80px;
-    background-color: $ms-color-white;
-    border-color: $ms-color-white;
-    color: $ms-color-themePrimary;
+    // background-color: $ms-color-white;
+    // border-color: $ms-color-white;
+    // color: $ms-color-themePrimary;
   
+    background-color: lightgray;
+    border-color: lightgray;
+    color: black;
+
     // Basic Button
     outline: transparent;
     position: relative;
@@ -99,11 +103,12 @@
 
   //   }
 
+
   .topSearch {
-    background: pink;
+
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
     flex-wrap: wrap;
     // padding: 10px;
     .button {
@@ -116,8 +121,13 @@
     }
   }
 
+  .topSearch.debugMode {
+    // @include md {
+      background: pink;
+    // }
+  }
+
   .leftSearch {
-    background: aquamarine;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -133,12 +143,32 @@
       overflow: hidden;
       text-overflow: ellipsis;
       max-width: 50px;
+      background-color: lightgray;
+      border-color: lightgray;
+      color: black;
+    }
 
+    .button.isSelected {
+      background-color: $ms-color-themePrimary;
+      border-color: $ms-color-themePrimary;
+      color: $ms-color-white;
+      font-weight: bolder;
     }
   }
   
+  .leftSearch.debugMode {
+    // @include md {
+      background: aquamarine;
+    // }
+  }
+
+  .typeSearch.debugMode {
+    // @include md {
+      background: yellowgreen;
+    // }
+  }
+
   .typeSearch {
-    background: yellowgreen;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -166,16 +196,26 @@
       // border-color: $ms-color-themePrimary;
       // color: $ms-color-white;
 
-      background-color: $ms-color-white;
-      border-color: $ms-color-white;
-      color: $ms-color-themePrimary;
+      // background-color: $ms-color-white;
+      // border-color: $ms-color-white;
+      // color: $ms-color-themePrimary;
+
+      background-color: lightgray;
+      border-color: lightgray;
+      color: black;
 
       font-size: large;
       margin: 5px;
 
       cursor: pointer;
     }
-      
+    // .cmdButton.isSelected {
+    //   background-color: $ms-color-themePrimary;
+    //   border-color: $ms-color-themePrimary;
+    //   color: $ms-color-white;
+    //   font-weight: bolder;
+    // }
+
     .cmdButton.isSelected i{
       background-color: $ms-color-themePrimary;
       border-color: $ms-color-themePrimary;
