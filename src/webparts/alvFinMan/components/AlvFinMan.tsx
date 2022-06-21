@@ -26,7 +26,7 @@ import { Panel, IPanelProps, IPanelStyleProps, IPanelStyles, PanelType } from 'o
 import { Pivot, PivotItem, IPivotItemProps, PivotLinkFormat, PivotLinkSize,} from 'office-ui-fabric-react/lib/Pivot';
 import { Dropdown, DropdownMenuItemType, IDropdownStyles, IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
 import { TextField,  IStyleFunctionOrObject, ITextFieldStyleProps, ITextFieldStyles } from "office-ui-fabric-react";
-import { Spinner, SpinnerSize, } from 'office-ui-fabric-react/lib/Spinner';
+import { ISpinnerStyles, Spinner, SpinnerSize, } from 'office-ui-fabric-react/lib/Spinner';
 
 
 import WebpartBanner from "@mikezimm/npmfunctions/dist/HelpPanelOnNPM/banner/onLocal/component";
@@ -109,11 +109,6 @@ const categorizedKeys = categorizedPivots.map( pivot => { return pivot.split('|'
 const categorizedItems = categorizedKeys.map( ( key, idx ) => {
   return <PivotItem headerText={ categorizedPivots[idx] } ariaLabel={categorizedPivots[idx]} title={categorizedPivots[idx]} itemKey={ key } ></PivotItem>;
 });
-
-
-// const pivotHeadingAcc = 'Function';
-
-const FetchingSpinner = <Spinner size={SpinnerSize.large} label={"FetchingSpinner ..."} style={{ padding: 30 }} />;
 
 export interface IDeepStateChange {
   deepLinks: IDeepLink[];
@@ -417,7 +412,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       refreshId: '',
 
       debugMode: this.props.debugMode,
-
+      showSpinner: true,
     };
   }
 
@@ -517,6 +512,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       manual = await getALVFinManContent( SourceInfo.manual, this.props.search );
       search = updateSearchCounts( 'manual', manual, search );
       fetchedStds = true;
+      updateBucketsNow = true;
       count = manual.length;
     }
 
@@ -530,6 +526,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       sups = await getALVFinManContent( SourceInfo.sups, this.props.search );
       search = updateSearchCounts( 'sups', sups, search );
       fetchedSups = true;
+      updateBucketsNow = true;
       count = sups.length;
     }
 
@@ -574,7 +571,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       deepLinks: deepChange.deepLinks, deepestPivot: deepestKey, deepProps: deepProps,
       accounts: accounts, news: news, help: help, refreshId: this.newRefreshId(),
       fetchedStds: fetchedStds, fetchedSups: fetchedSups, fetchedNews: fetchedNews, fetchedHelp: fetchedHelp, fetchedEntities: fetchedEntities,  fetchedAcronyms: fetchedAcronyms,
-    
+      showSpinner: false,
     });
 
   }
@@ -699,6 +696,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
     const SearchContent = <SearchPage
       refreshId={ this.state.refreshId }
+      showSpinner={ this.state.showSpinner }
       search={ this.state.search }
       appLinks={ this.state.appLinks }
       accounts={ this.state.accounts }
@@ -909,7 +907,10 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     ></WebpartBanner>;
 
     let devHeader = this.state.showDevHeader === true ? <div><b>Props: </b> { 'this.props.lastPropChange' + ', ' + 'this.props.lastPropDetailChange' } - <b>State: lastStateChange: </b> { this.state.lastStateChange  } </div> : null ;
-    
+
+    const spinnerStyles : ISpinnerStyles = { label: {fontSize: '20px', fontWeight: '600',  }};
+    const FetchingSpinner = this.state.showSpinner === false ? null : <Spinner size={SpinnerSize.large} label={"Fetching Information ..."} style={{ padding: 30 }} styles={ spinnerStyles } />;
+
     return (
       <div className={ styles.alvFinMan }>
         <div className={ styles.container }>
@@ -931,6 +932,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
             { SearchContent }
             { help }
             { history }
+            { FetchingSpinner }
             {/* </div> */}
           </div>
         </div>
@@ -940,29 +942,32 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
   private pivotMainClick( temp ) {
     console.log('pivotMainClick:', temp.props.itemKey );
-
-    this.updateWebInfo( temp.props.itemKey, this.state.sourcePivotKey, this.state.categorizedPivotKey );
+    //This will force state update first, to show spinner, then will update the info.   https://stackoverflow.com/a/38245851
+    this.setState({ showSpinner: true , mainPivotKey: temp.props.itemKey,
+      }, () => this.updateWebInfo( temp.props.itemKey, this.state.sourcePivotKey, this.state.categorizedPivotKey ) // using `data` would work as well...
+    );
   }
 
-  
   private pivotSourceClick( temp ) {
     console.log('pivotSourceClick:', temp.props.itemKey );
-
-    this.updateWebInfo( this.state.mainPivotKey, temp.props.itemKey, this.state.categorizedPivotKey );
+    //This will force state update first, to show spinner, then will update the info.   https://stackoverflow.com/a/38245851
+    this.setState({ showSpinner: true , sourcePivotKey: temp.props.itemKey,
+      }, () => this.updateWebInfo( this.state.mainPivotKey, temp.props.itemKey, this.state.categorizedPivotKey ) // using `data` would work as well...
+    );
   }
 
-  
   private pivotCategorizedClick( temp ) {
     console.log('pivotCategorizedClick:', temp.props.itemKey );
 
-    this.updateWebInfo( this.state.mainPivotKey, this.state.sourcePivotKey, temp.props.itemKey );
+    //This will force state update first, to show spinner, then will update the info.   https://stackoverflow.com/a/38245851
+    this.setState({ showSpinner: true , categorizedPivotKey: temp.props.itemKey,
+      }, () => this.updateWebInfo( this.state.mainPivotKey, this.state.sourcePivotKey, temp.props.itemKey ) // using `data` would work as well...
+    );
   }
-
 
   private toggleDebugMode(){
     let newState = this.state.debugMode === true ? false : true;
     this.setState( { debugMode: newState });
   }
-
 
 }

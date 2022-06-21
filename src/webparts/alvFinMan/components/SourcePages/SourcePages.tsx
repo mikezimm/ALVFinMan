@@ -8,6 +8,8 @@ import { ISourcePagesProps, ISourcePagesState, } from './ISourcePagesProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 import { Icon, IIconProps } from 'office-ui-fabric-react/lib/Icon';
 
+import { Spinner, SpinnerSize, } from 'office-ui-fabric-react/lib/Spinner';
+
 import { Web, ISite } from '@pnp/sp/presets/all';
 
 import "@pnp/sp/webs";
@@ -232,6 +234,8 @@ public async updateWebInfo (   ) {
         ></SingleModernPage>
       </Panel></div>;
 
+    // const FetchingSpinner = this.props.items.length > 0 ? null : <Spinner size={SpinnerSize.large} label={"Fetching Page ..."} style={{ padding: 30 }} />;
+
     return (
       <div className={ stylesA.alvFinMan }>
         {/* <div className={ styles.container }> */}
@@ -243,7 +247,7 @@ public async updateWebInfo (   ) {
               { searchBox }
               { topSearchContent }
               { filtered }
-
+              {/* { FetchingSpinner } */}
               { deepHistory }
               { userPanel }
 
