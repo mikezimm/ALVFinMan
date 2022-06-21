@@ -5,7 +5,8 @@ import * as React from "react";
 
 export interface ISearchPageProps {
   refreshId: string;
-
+  showSpinner: boolean;
+  
   search: IFinManSearch ;
 
   appLinks: IAnyContent[];

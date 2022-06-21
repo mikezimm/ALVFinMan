@@ -7,6 +7,7 @@ import { escape } from '@microsoft/sp-lodash-subset';
 
 import { Web, ISite } from '@pnp/sp/presets/all';
 
+import { Spinner, SpinnerSize, ISpinnerStyles } from 'office-ui-fabric-react/lib/Spinner';
 
 import "@pnp/sp/webs";
 import "@pnp/sp/lists";
@@ -111,7 +112,7 @@ public componentDidMount() {
 
 public componentDidUpdate(prevProps){
     //Just rebuild the component
-    if ( this.props.refreshId !== prevProps.refreshId ) {
+    if ( this.props.refreshId !== prevProps.refreshId || this.props.showSpinner !== this.props.showSpinner ) {
       let filtered = [ ...this.props.appLinks, ...this.props.manual, ...this.props.sups, ...this.props.accounts, ];
       this.setState({ refreshId: this.props.refreshId, filtered: filtered });
     }
@@ -183,6 +184,13 @@ public async updateWebInfo (   ) {
 
       });
 
+
+      // const FetchingSpinner = this.props.showSpinner === false ? null : <div style={{display: 'inline'}}><Spinner size={SpinnerSize.large} label={"Fetching more information ..."} style={{ padding: 30 }} /></div>;
+      const spinnerStyles : ISpinnerStyles = { label: {fontSize: '20px', fontWeight: '600',  }};
+      const FetchingSpinner =  this.props.showSpinner === false ? null : <div style={{display: 'inline', top: -10, position: 'relative'}}>
+        <Spinner size={SpinnerSize.medium} label={"Fetching more information ..."} labelPosition= 'right' 
+        style={{ paddingBottom: 10, backgroundColor: 'lightyellow' }} styles={ spinnerStyles }/></div>;
+
       const typeSearchContent = <div className={  [ stylesS.typeSearch, this.props.debugMode === true ? stylesS.debugMode : '' ].join( ' ' ) } style={ null } >{ typeSearch }</div>;
 
       /*https://developer.microsoft.com/en-us/fabric#/controls/web/searchbox*/
@@ -202,6 +210,7 @@ public async updateWebInfo (   ) {
           { this.state.searchTime === null ? '' : ' ~ Time ' + this.state.searchTime + ' ms' }
           { /* 'Searching ' + (this.state.searchType !== 'all' ? this.state.filteredTiles.length : ' all' ) + ' items' */ }
         </div>
+        { FetchingSpinner }
       </div>;
 
       let filtered = [];

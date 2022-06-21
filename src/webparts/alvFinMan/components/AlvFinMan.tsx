@@ -26,7 +26,7 @@ import { Panel, IPanelProps, IPanelStyleProps, IPanelStyles, PanelType } from 'o
 import { Pivot, PivotItem, IPivotItemProps, PivotLinkFormat, PivotLinkSize,} from 'office-ui-fabric-react/lib/Pivot';
 import { Dropdown, DropdownMenuItemType, IDropdownStyles, IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
 import { TextField,  IStyleFunctionOrObject, ITextFieldStyleProps, ITextFieldStyles } from "office-ui-fabric-react";
-import { Spinner, SpinnerSize, } from 'office-ui-fabric-react/lib/Spinner';
+import { ISpinnerStyles, Spinner, SpinnerSize, } from 'office-ui-fabric-react/lib/Spinner';
 
 
 import WebpartBanner from "@mikezimm/npmfunctions/dist/HelpPanelOnNPM/banner/onLocal/component";
@@ -696,6 +696,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
     const SearchContent = <SearchPage
       refreshId={ this.state.refreshId }
+      showSpinner={ this.state.showSpinner }
       search={ this.state.search }
       appLinks={ this.state.appLinks }
       accounts={ this.state.accounts }
@@ -907,7 +908,8 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
     let devHeader = this.state.showDevHeader === true ? <div><b>Props: </b> { 'this.props.lastPropChange' + ', ' + 'this.props.lastPropDetailChange' } - <b>State: lastStateChange: </b> { this.state.lastStateChange  } </div> : null ;
 
-    const FetchingSpinner = this.state.showSpinner === false ? null : <Spinner size={SpinnerSize.large} label={"Fetching Information ..."} style={{ padding: 30 }} />;
+    const spinnerStyles : ISpinnerStyles = { label: {fontSize: '20px', fontWeight: '600',  }};
+    const FetchingSpinner = this.state.showSpinner === false ? null : <Spinner size={SpinnerSize.large} label={"Fetching Information ..."} style={{ padding: 30 }} styles={ spinnerStyles } />;
 
     return (
       <div className={ styles.alvFinMan }>
