@@ -52,7 +52,7 @@ export default class SingleModernPage extends React.Component<ISingleModernPageP
 
   public async updateWebInfo ( webUrl: string, listChangeOnly : boolean ) {
     console.log('updateWebInfo:',   );
-    if ( this.props.showCanvasContent1 === true ) {
+    if ( this.props.page && this.props.showCanvasContent1 === true ) {
       getDocWiki( this.props.page , this.props.source, this.props.canvasOptions, this.props.showCanvasContent1, this.updateModernState.bind( this ) );
     }
   }
@@ -82,6 +82,9 @@ export default class SingleModernPage extends React.Component<ISingleModernPageP
 
     } else if ( JSON.stringify( this.props.canvasOptions) !== JSON.stringify( prevProps.canvasOptions ) ) {
       this.setState({ showThisItem: this.props.page, });
+
+    } else if ( this.props.page === null ) {
+      //Do nothing if page is null
 
     } else if ( this.props.page.ID !== prevProps.page.ID ) {
       this.setState({ showThisItem: this.props.page, });
