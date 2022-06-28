@@ -995,12 +995,12 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
   private presetCollectionDefaults() {
     
     this.sitePresets = getThisSitesPreConfigProps( PreConfiguredProps, this.properties, this.context.pageContext.web.serverRelativeUrl );
-
+    
     this.sitePresets.presets.map( setting => {
       if ( this.properties[setting.prop] === setting.value ) { 
         setting.status = 'valid';
 
-      } else if ( !this.properties[setting.prop] ) { 
+      } else if ( this.properties[setting.prop] === undefined || this.properties[setting.prop] === null ) { //Changed from just !this... because if value was 'false' it would set to true
         this.properties[setting.prop] = setting.value ;
         setting.status = 'preset';
 
