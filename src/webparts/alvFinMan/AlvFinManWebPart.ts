@@ -851,7 +851,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
               isCollapsed: true,
               groupFields: [
                 PropertyPaneDropdown('canPagePreference', <IPropertyPaneDropdownProps>{
-                  label: 'News and Help page load',
+                  label: 'On click behavior',
                   options: this.PageLoadPrefsChoices,
                 }),
 

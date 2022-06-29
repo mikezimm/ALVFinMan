@@ -105,6 +105,10 @@ export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps ) {
 
           <div className={ 'fps-pph-topic' }>ALV Finance Manual Search</div>
           <div>This group applies specifically to setting up preferences on the Search Tab.</div>
+          <div>You can configure the buttons on the left and top sides of the search page.</div>
+          <div>Set toggle to Default to use default settings for this app.</div>
+          <div>Set toggle to Custom and enter semi-colon ; separated words.</div>
+
           {/* <div>Bla bla bla must be like this:  <b>/sites/SecureCDN/<span style={{ color: 'red', fontWeight: 600 }}>YourCodeStorageSite</span>/</b></div>
           <div><mark><b>NOTE:</b></mark> {RequestStorageHere}</div> */}
           
@@ -113,15 +117,16 @@ export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps ) {
           <div>This group applies to all other pages which can configure your own search buttons.</div>
           <div>For each type of page, you can type in semi-colon ; separated words that you commonly use on that page.</div>
           <div>The words turn into Search buttons for those page.</div>
-          <div>Benefits of configuring search buttons:</div>
+
+          <div className={ 'fps-pph-topic' }>Benefits of configuring search buttons:</div>
           <ul>
-            <li>Easier to find things that are most important for you.</li>
-            <li>Search buttons are quicker to use and quicker for the app to find.</li>
-            <li>Eliminates commonly spelling errors.</li>
+            <li>Easier to find things that are most important to you and your team.</li>
+            <li>Search buttons are quicker to use and improve speed of search.</li>
+            <li>Eliminates common spelling errors.</li>
             <li>Your entire team can benefit by using the buttons created by the page owner.</li>
           </ul>
 
-          <div><mark><b>Suggestions:</b></mark></div>
+          <div className={ 'fps-pph-topic' }><mark>Search button Suggestions:</mark></div>
           <ul>
             <li>Use single words:  less cluttery, easier to find what is most important</li>
             <li>Do not use phrases if possible - long buttons will start wrapping on the page</li>
@@ -130,6 +135,8 @@ export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps ) {
             <li>Upper and Lower case do not matter.  Searching 'AHO', will find all items with 'AHO', 'Aho', 'aho', 'AhO'.</li>
             <li>You can filter on any text including acronyms, names, partial words</li>
             <li>Search looks for any instance of the word.  If you have a button called 'Count', it will also find any items that have 'account'.</li>
+            <li>To reset search, either re-install the web part on the page, add to another page and copy settings</li>
+            <li>You can also click on the 'Sheild' tab in this page to see all of the preset values</li>
           </ul>
 
         </div>
@@ -138,14 +145,15 @@ export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps ) {
       <PivotItem headerText={ 'Page Prefs' } > 
         <div className={ 'fps-pph-content' }>
 
-          <div className={ 'fps-pph-topic' }>Page preferences group applies to some tabs that load Site Pages</div>
-          <div>Includes:  General, News, Help and some places where you see Standards.</div>
+          <div className={ 'fps-pph-topic' }>This group applies to some tabs that load Site Pages</div>
+          <div>Includes:  <b>General, News, Help</b> and some places where you see <b>Standards</b>.</div>
 
-          <div className={ 'fps-pph-topic' }>News and Help page load</div>
+          <div className={ 'fps-pph-topic' }>On click behavior</div>
           <div>When you see a list of pages on the left side, this determines what happens when you click on the item title.</div>
 
-          <div className={ 'fps-pph-topic' }>Image fit</div>
-          <div>Determines how you want to see images found on the page.  NOTE these pages are limited function versions of the page so it shows all images in the same shape and size.</div>
+          <div className={ 'fps-pph-topic' }>How to fit images on the page</div>
+          <div>Determines how you want to see images found on the page.</div>
+          <div><mark><b>NOTE:</b></mark> site pages shown in this app may not show all web parts so this gives you control of how to display images in the same shape and size.</div>
 
           <div className={ 'fps-pph-topic' }>Image Height</div>
           <div>How tall you want images to be in the app.  This gives you control to make them shorter if you use smaller devices.</div>
@@ -154,7 +162,7 @@ export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps ) {
           <div>How wide you want the image to be.  Recommended 100%.</div>
 
           <div className={ 'fps-pph-topic' }>Debug Mode</div>
-          <div>Maybe be used by Support.</div>
+          <div>Maybe be used by tech Support.</div>
         </div>
       </PivotItem>
 

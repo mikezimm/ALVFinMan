@@ -32,7 +32,7 @@ export function aboutTable( repoLinks: IRepoLinks, showRepoLinks: boolean ) {
      * WARNING:  DO NOT add any CDNs to Global Warn or Approve unless you want it to apply to JS as well.
      */
 
-    table.rows.push( createAboutRow('2022-06-2X',"1.0.0.09","#120 - Add ReportingForms, #122 - Office Doc search", showRepoLinks === true ? repoLinks : null ) );
+    table.rows.push( createAboutRow('2022-06-2X',"1.0.0.09","#120 - Add ReportingForms, #122 - Office Doc search, #83, #121", showRepoLinks === true ? repoLinks : null ) );
 
     table.rows.push( createAboutRow('2022-06-22',"1.0.0.08","#110 - Fetch Spinner, #111 - no Categorized items, #112 & #113 - News Load Error ", showRepoLinks === true ? repoLinks : null ) );
 
