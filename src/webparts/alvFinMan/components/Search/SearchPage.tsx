@@ -219,22 +219,6 @@ public async updateWebInfo (   ) {
           if ( item.type === 'account' ) {
             filtered.push( 
               createAccountRow( item , this.state.searchText, this._onClickItem.bind( this, item ) )
-            //   <div className={ stylesS.listItem }>
-            //   <div><Icon iconName={ SearchTypes.objs[item.typeIdx].icon }></Icon></div>
-
-            //   <div className={ stylesS.accountDetails}>
-            //     <div className={ stylesS.accountRow1 } style={{cursor: item.searchHref ? 'pointer' : null }} onClick = { this._onClickItem.bind( this, item ) }>
-            //       <div title="Account Number">{ getHighlightedText( `${ item.Title }`, this.state.searchText )  }</div>
-            //       <div title="ALGroup">{ getHighlightedText( `${ item.ALGroup }`, this.state.searchText )  }</div>
-            //       <div title="SubCategory">{ getHighlightedText( `${ item.SubCategory }`, this.state.searchText )  }</div>
-            //       <div title="Name">{ getHighlightedText( `${ item.Name1 }`, this.state.searchText )  }</div>
-            //     </div>
-            //     <div className={ stylesS.accountRow2}>
-            //       <div>{ getHighlightedText( `${ item.Description }`, this.state.searchText )  }</div>
-            //       <div>{ getHighlightedText( `${ item['RCM'] }`, this.state.searchText )  }</div>
-            //     </div>
-            //   </div>
-            // </div>
             );
           } else {
             filtered.push( <div className={ stylesS.listItem }>

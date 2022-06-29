@@ -39,46 +39,6 @@ export const linkNoLeadingTarget = /<a[\s\S]*?href=/gim;
 
 const consoleLineItemBuild: boolean = false;
 
-// const AccountSearch = [ 'Title', 'Description', 'ALGroup', 'Name1' ];
-
-// const thisSelect = ['*','ID','FileRef','FileLeafRef','Author/Title','Editor/Title','Author/Name','Editor/Name','Modified','Created','CheckoutUserId','HasUniqueRoleAssignments','Title','FileSystemObjectType','FileSizeDisplay','FileLeafRef','LinkFilename','OData__UIVersion','OData__UIVersionString','DocIcon'];
-
-// const sitePagesColumns: string[] = [ "ID", "Title0", "Author/Title", "File/ServerRelativeUrl", "FileRef", ]; //Do not exist on old SitePages library:   "Descritpion","BannerImageUrl.Url", "ServerRelativeUrl"
-// const libraryColumns: string[] = [ 'ID','FileRef','FileLeafRef','Author/Title','Editor/Title','Author/Name','Editor/Name','Modified','Created','CheckoutUserId','HasUniqueRoleAssignments','Title','FileSystemObjectType','FileSizeDisplay','FileLeafRef','LinkFilename','OData__UIVersion','OData__UIVersionString','DocIcon'];
-
-// const FinManSite: string ="/sites/ALVFMTest/";
-// const StandardsLib: string = "StandardDocuments";
-// const SupportingLib: string = "SupportDocuments";
-// const LookupColumns: string[] = ['Functions/Title', 'Topics/Title', 'ALGroup/Title', 'Sections/Title','Processes/Title' ];
-// const AccountsList: string = "HFMAccounts";
-
-// const pivotStyles = {
-//   root: {
-//     whiteSpace: "normal",
-//     marginTop: '30px',
-//     color: 'white',
-//   //   textAlign: "center"
-//   }};
-
-// const pivotHeading0 : ILayoutMPage = 'Main';
-// const pivotHeading1 : ILayoutSPage = 'Statements';
-// const pivotHeading2 : ILayout1Page = 'Reporting';
-// const pivotHeading3 : ILayout1Page = 'Processes';
-// const pivotHeading4 : ILayout1Page = 'Functions';
-// const pivotHeading5 : ILayout1Page = 'Topics';
-// const sourcePivotKey : ILayoutAPage = 'Accounts';
-
-// const allPivots: IAllPages[] = [ pivotHeading0, pivotHeading1, pivotHeading2, pivotHeading3, pivotHeading4, pivotHeading5, sourcePivotKey ];
-// const layout1Pivots : ILayout1Page[] = [ pivotHeading2, pivotHeading3, pivotHeading4, pivotHeading5,  ];
-
-// const pivotTitles = allPivots.map( pivot => { return pivot.split('|')[0] ; } );
-// const pivotKeys = allPivots.map( pivot => { return pivot.split('|')[1] ? pivot.split('|')[1] : pivot.split('|')[0] ; } );
-// const pivotItems = pivotKeys.map( ( key, idx ) => {
-//   return <PivotItem headerText={ pivotTitles[idx] } ariaLabel={pivotTitles[idx]} title={pivotTitles[idx]} itemKey={ key } ></PivotItem>;
-// });
-
-// const sourcePivotKey = 'Function';
-
 export default class Layout1Page extends React.Component<ILayout1PageProps, ILayout1PageState> {
   private FPSWindow: any = window;
   private FPSUser: IFPSUser = this.FPSWindow.FPSUser ? this.FPSWindow.FPSUser : null;

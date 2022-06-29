@@ -32,6 +32,7 @@ import { createAcronymRow } from './Acronyms/AcronymItem';
 import { createAccountRow } from './Accounts/AccountItem';
 import { createHistoryRow } from './History/HistoryItem';
 import { createModernRow } from './Modern/ModernItem';
+import { createFormRow } from './Forms/FormItem';
 
 import { IAnyContent, IDeepLink, IPagesContent } from '../IAlvFinManProps';
 import SingleModernPage from '../ModernPages/SinglePage/SingleModernPage';
@@ -157,6 +158,9 @@ public async updateWebInfo (   ) {
 
           case 'acronyms':
           filtered.push( createAcronymRow( item, this.state.searchText, null )); break;
+
+          case 'forms':
+          filtered.push( createFormRow( item, this.state.searchText, null )); break;
 
           case 'manual':
           // filtered.push( this.createModernRowHere( item, this.state.searchText, this.clickModernItem.bind(this) )); break;

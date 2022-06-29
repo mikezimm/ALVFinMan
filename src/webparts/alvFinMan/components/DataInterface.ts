@@ -31,9 +31,9 @@ export const LookupColumns: string[] = ['Functions/Title', 'Topics/Title', 'ALGr
 export const ExtraFetchClassicWiki = ['WikiField'];
 export const ExtraFetchModernPage = ['WikiField','CanvasContent1','LayoutsWebpartsContent'];
 
-export type IDefSourceType = 'link' | 'news' | 'help' | 'account' | 'std' | 'manual' | 'SupportDocuments' | 'entity' | 'acronym' | 'history' ;
+export type IDefSourceType = 'link' | 'news' | 'help' | 'account' | 'std' | 'manual' | 'SupportDocuments' | 'entity' | 'acronym' | 'history' | 'forms' ;
 
-export type ISearchSource = 'AppLinks' | 'News' | 'Help' | 'Accounts' | 'SupportDocs' | 'Standards' | 'Policies' | 'Instructions' | 'Entities' | 'Acronyms' | 'History' ;
+export type ISearchSource = 'AppLinks' | 'News' | 'Help' | 'Accounts' | 'SupportDocs' | 'Standards' | 'Policies' | 'Instructions' | 'Entities' | 'Acronyms' | 'History' | 'ReportingForms'  ;
 
 export interface ISourceProps {
     key: IAppFormat;
@@ -56,7 +56,9 @@ export interface ISourceProps {
     defSearchButtons: string[];  //These are default buttons always on that source page.  Use case for Manual:  Policy, Instruction etc...
 
 }
+
 export interface ISourceInfo {
+    forms: ISourceProps;
     manual: ISourceProps;
     news: ISourceProps;
     help: ISourceProps;
@@ -72,6 +74,23 @@ export interface ISourceInfo {
 }
 
 export const SourceInfo: ISourceInfo = {
+
+    forms: {
+        key: 'forms',
+        defType: 'forms',
+        webUrl: `${FinManSite}Manual/`,
+        listTitle: "ReportingForms",
+        webRelativeLink: "lists/ReportingForms",
+        searchSource: 'ReportingForms',
+        searchSourceDesc:  'List in Manual Subsite',
+        columns: [ 'ID','Title', 'Description', 'RelatedForms/Title', ],
+        searchProps: [ 'Title', 'Description', 'RelatedForms/Title',  ],
+        selectThese: [ '*', 'ID','Title', 'Description', 'RelatedForms/Title', ],
+        itemFetchCol: [],
+        isModern: true,
+        restFilter: "",
+        defSearchButtons: [ 'Internal', 'External', 'Reconciliation' ],
+    },
 
     manual: {
         key: 'manual',
@@ -240,6 +259,7 @@ export const SearchTypes:IFMSearchTypes  = {
         "xls", "xlsm",  "xlsx",
         "news", "help",
         "entity",
+        "forms",
         "unknown" ],
     objs:
         [
@@ -265,10 +285,11 @@ export const SearchTypes:IFMSearchTypes  = {
         { key: "xlsm", title: "xls", icon: "ExcelDocument", style: "", count: 0, adjust: -1 }, 
         { key: "xlsx", title: "xls", icon: "ExcelDocument", style: "", count: 0, adjust: -2 }, 
 
-        { key: "news", title: "news", icon: "News", style: "", count: 0 }, 
-        { key: "help", title: "help", icon: "Help", style: "", count: 0 }, 
+        { key: "news", title: "news", icon: "News", style: "", count: 0 },
+        { key: "help", title: "help", icon: "Help", style: "", count: 0 },
 
         { key: "entity", title: "entity", icon: "JoinOnlineMeeting", style: "", count: 0 }, 
+        { key: "forms", title: "forms", icon: "BulletedList2", style: "", count: 0 }, 
 
         { key: "unknown", title: "unkown", icon: "Help", style: "", count: 0 }, 
     ]

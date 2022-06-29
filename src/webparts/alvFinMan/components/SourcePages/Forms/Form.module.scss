@@ -1,0 +1,76 @@
+@import '~office-ui-fabric-react/dist/sass/References.scss';
+
+.formItem {
+
+    //This is the same styling that should be in Search listItem
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 99%;
+    padding-top: 20px;
+
+    i {
+      padding-right: 15px;
+    }
+
+    .formDetails {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .formRow1 {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        div {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        div:nth-child(1) { //This is the Form ID (Number)
+            color: darkblue;
+            width: 25px;
+            font-weight: 600;
+            padding-right: 15px;
+        }
+        div:nth-child(2) { //This is the Form Title
+            color: darkred;
+            width: 400px;
+            font-weight: 600;
+        }
+        div:nth-child(3) { //This is the Form Description
+            color: darkgreen;
+            width: 400px;
+            font-weight: 600;
+        }
+        div:nth-child(4) { //This is the Related Forms
+            color: darkviolet;
+            width: calc(100%-450px);
+            font-weight: 600;
+        }
+    }
+    .formRow2 {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+}
+

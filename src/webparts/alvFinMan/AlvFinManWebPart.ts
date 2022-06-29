@@ -431,6 +431,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
 
         news: [],
         help: [],
+        forms: [],
 
       },
 
@@ -453,6 +454,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
         
         news: [],
         help: [],
+        forms: [],
 
       },
       
@@ -469,6 +471,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
       acronyms:  this.properties.acronymsSearch ? this.properties.acronymsSearch.split(';') : [],
       sups:  this.properties.supsSearch ? this.properties.supsSearch.split(';') : [],
       accounts:  this.properties.accountsSearch ? this.properties.accountsSearch.split(';') : [],
+      forms:  this.properties.formsSearch ? this.properties.formsSearch.split(';') : [],
 
       sourcePagesCount: this.properties.sourcePagesCount,
 
