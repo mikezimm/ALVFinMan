@@ -571,7 +571,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       buckets = updateBuckets( buckets, sups, true );
     }
     // debugger;
-    search = updateSearchTypes( [ ...appLinks, ...manual, ...sups, ...accounts, ], search );
+    search = updateSearchTypes( [ ...appLinks, ...manual, ...sups, ...accounts, ...forms ], search );
     let deepSecond = deepestKey && deepestKey !== mainPivotKey ? deepestKey : '';
 
     let deepChange: IDeepStateChange = this.bumpDeepState( mainPivotKey, deepSecond ,  [], '',  this.state.deepLinks, count );
@@ -714,6 +714,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       appLinks={ this.state.appLinks }
       accounts={ this.state.accounts }
       manual={ this.state.manual }
+      forms={ this.state.forms as IAnyContent[] }
       // stds={ this.state.stds }
       sups={ this.state.sups }
       buckets={ this.state.buckets }
