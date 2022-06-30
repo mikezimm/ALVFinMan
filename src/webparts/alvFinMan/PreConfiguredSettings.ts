@@ -97,6 +97,7 @@ export const PresetEverywhere : IPreConfigSettings = {
         historySearch: 'News;Help;Accounts;Links;Standards;SupportDocs;Entities;Acronyms',
         acronymsSearch: 'AB;CM;MPV;NPH;PS;RDE;Systems;Above;Below',
         supsSearch: 'xls;ppt;doc;pdf;Process;Instruction;Capex;Load',
+        formsSearch: 'Internal;External;Reconciliation',
 
         sourcePagesCount: 20,
 
@@ -123,6 +124,7 @@ export const ForceFinancialManual : IPreConfigSettings = {
         homeParentGearAudience: 'Everyone',
 
         entitiesSearch: 'AAM;AAS;ACH;AEU;ALV_Corp;ALVGO;ALVTC;NDC',
+
     }
 };
 

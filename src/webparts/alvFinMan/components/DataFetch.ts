@@ -44,6 +44,7 @@ export function createEmptySearchBucket () {
 
     news: [],
     help: [],
+    forms: [],
   };
 
   return result;

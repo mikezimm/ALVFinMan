@@ -36,7 +36,7 @@ export const changeCanvasOptions = [ 'canPagePreference', 'canAddCkeEditToDiv', 
 
 export const changeSearchPage = [ 'topSearchFixed', 'topSearchStr', 'topSearch', 'searchPlural', 'searchType', 'searchDefault' ];
 
-export const changeSourceSearch = [ 'manualSearch', 'newsSearch', 'helpSearch', 'appLinksSearch', 'entitiesSearch', 'historySearch', 'acronymsSearch', 'supsSearch', 'accountsSearch', 'sourcePagesCount' ];
+export const changeSourceSearch = [ 'manualSearch', 'newsSearch', 'helpSearch', 'appLinksSearch', 'entitiesSearch', 'historySearch', 'acronymsSearch', 'supsSearch', 'accountsSearch', 'formsSearch', 'sourcePagesCount' ];
 
 export const changeExpando = [ 
   'enableExpandoramic','expandoDefault','expandoStyle', 'expandoPadding', 'expandoAudience',
@@ -185,6 +185,7 @@ export interface IAlvFinManWebPartProps {
   appLinksSearch: string;
   entitiesSearch: string;
   historySearch: string;
+  formsSearch: string;
   acronymsSearch: string;
   supsSearch: string;
   accountsSearch: string;

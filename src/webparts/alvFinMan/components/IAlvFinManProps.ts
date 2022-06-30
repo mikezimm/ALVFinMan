@@ -121,6 +121,7 @@ export interface ISearchBucket {
   news: IPagesContent[];
   help: IPagesContent[];
   acronyms: IAnyContent[];
+  forms: IFormContent[];
 
 }
 
@@ -142,6 +143,8 @@ export interface IFinManSearch {
   history: string[];
   sups: string[];
   accounts: string[];
+
+  forms: string[];
 
   sourcePagesCount: number;
 
@@ -182,6 +185,7 @@ export type ILayoutQPage = 'Search';
 export type ILayoutHPage = 'Help';
 export type ILayoutEPage = 'Entities';
 export type ILayoutAcronymPage = 'Acronyms';
+export type IFormsPage = 'Forms';
 
 export type ILayoutStdPage = 'Standards';
 export type ILayoutSupPage = 'SupportDocs';
@@ -205,6 +209,7 @@ export const pivotHeadingHist : ILayoutHistPage = 'History';
 export const pivotHeadingLinks : ILayoutLPage = 'Links';
 export const pivotHeadingEntities : ILayoutEPage = 'Entities';
 export const pivotHeadingAcronyms : ILayoutAcronymPage = 'Acronyms';
+export const pivotReportingForms : IFormsPage = 'Forms';
 
 export const pivotHeadingSources : ILayoutSourcesPage = 'Sources';
 
@@ -217,16 +222,16 @@ export type IDefMainPage = ILayoutNPage | ILayoutGPage | ILayoutQPage | ILayoutH
 export type IAltMainPage = ILayoutSourcesPage | ILayoutCategorizedPage | ILayoutHistPage;
 export type IMainPage = IDefMainPage | IAltMainPage;
 
-export type ISourcePage = '' | ILayoutLPage | ILayoutAPage | ILayoutStdPage | ILayoutSupPage | ILayoutEPage |  ILayoutAcronymPage;
+export type ISourcePage = '' | ILayoutLPage | ILayoutAPage | ILayoutStdPage | ILayoutSupPage | ILayoutEPage |  ILayoutAcronymPage | IFormsPage;
 export type ICategoryPage = ILayout1Page | ILayoutSPage;
 
 export type IDefaultPage = IDefMainPage | ISourcePage | ICategoryPage;
 
-export type IAppFormat = 'accounts' | 'manual' | 'sups' | 'appLinks' | 'news' | 'help' | 'entities' | 'acronyms' | 'history' ;
+export type IAppFormat = 'accounts' | 'manual' | 'sups' | 'appLinks' | 'news' | 'help' | 'entities' | 'acronyms' | 'history' | 'forms' ;
 
 export const mainDefPivots: IDefMainPage[] = [ pivotHeading0, pivotHeadingNews, pivotHeadingSourcesearch, pivotHeadingHelp, ];
 export const mainAltPivots: IAltMainPage[] = [ pivotHeadingSources, pivotHeadingCatgorized, pivotHeadingHist ];
-export const sourcePivots: ISourcePage[] = [ pivotHeadingLinks, pivotHeadingEntities, pivotHeadingAcronyms, pivotHeadingAcc, pivotHeadingManual, pivotHeadingSupporting ];
+export const sourcePivots: ISourcePage[] = [ pivotHeadingLinks, pivotHeadingEntities, pivotHeadingAcronyms, pivotHeadingAcc, pivotHeadingManual, pivotHeadingSupporting, pivotReportingForms ];
 
 export const categorizedPivots: ICategoryPage[] = [ pivotHeading1, pivotHeading2, pivotHeading3, pivotHeading4, pivotHeading5,  ];
 
@@ -248,12 +253,16 @@ export const allMainPivots: IMainPage[] = [ ...mainDefPivots, ...mainAltPivots, 
 
 export interface IAnyContent extends Partial<any> {
   format: IAppFormat; //This represents the key of the SourceType
+
   searchText: string;
   searchTextLC: string;
+
   leftSearch: string[]; //For easy display of casing
   leftSearchLC: string[]; //For easy string compare
+
   topSearch: string[]; //For easy display of casing
   topSearchLC: string[]; //For easy string compare
+
   searchSource: string; //For easy display of casing - For search page info
   searchSourceLC: string; //For easy string compare - For search page info
 
@@ -324,6 +333,14 @@ export interface IAcronymContent extends Partial<IAnyContent> {
 
 }
 
+export interface IFormContent extends Partial<IAnyContent> {
+  ID: string;
+  Title: string;
+  Description: string;
+  RelatedForms: any[];
+
+}
+
 export type IDeepLogic = '' | 'Sources' | 'Accounts' | 'Other';
 
 export interface IDeepLink {
@@ -370,6 +387,8 @@ export interface IAlvFinManState {
   news: IPagesContent[];
   help: IPagesContent[];
 
+  forms: IFormContent[];
+
   fetchedAccounts: boolean;
   fetchedStds: boolean;
   fetchedSups: boolean;
@@ -377,6 +396,7 @@ export interface IAlvFinManState {
   fetchedHelp: boolean;
   fetchedEntities: boolean;
   fetchedAcronyms: boolean;
+  fetchedForms: boolean;
 
   buckets: IFMBuckets;
   standards: IFMBucketItems;
@@ -386,7 +406,7 @@ export interface IAlvFinManState {
   sourcePivotKey: ISourcePage;
   categorizedPivotKey: ICategoryPage;
   deepestPivot: IDefaultPage | IAltMainPage;
-  
+
   deepProps: string[];  // Passed down to component as props to start with
 
   deepLinks: IDeepLink[];

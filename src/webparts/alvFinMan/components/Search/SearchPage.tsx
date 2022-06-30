@@ -86,7 +86,7 @@ public constructor(props:ISearchPageProps){
   // console.log('pivotTitles', pivotTitles );
   // console.log('pivotKeys', pivotKeys );
 
-  let filtered = [ ...this.props.appLinks, ...this.props.manual, ...this.props.sups, ...this.props.accounts, ];
+  let filtered = [ ...this.props.appLinks, ...this.props.manual, ...this.props.sups, ...this.props.accounts, ...this.props.forms ];
 
   this.state = {
     refreshId: this.props.refreshId,
@@ -113,7 +113,7 @@ public componentDidMount() {
 public componentDidUpdate(prevProps){
     //Just rebuild the component
     if ( this.props.refreshId !== prevProps.refreshId || this.props.showSpinner !== this.props.showSpinner ) {
-      let filtered = [ ...this.props.appLinks, ...this.props.manual, ...this.props.sups, ...this.props.accounts, ];
+      let filtered = [ ...this.props.appLinks, ...this.props.manual, ...this.props.sups, ...this.props.accounts, ...this.props.forms ];
       this.setState({ refreshId: this.props.refreshId, filtered: filtered });
     }
 }
@@ -219,22 +219,6 @@ public async updateWebInfo (   ) {
           if ( item.type === 'account' ) {
             filtered.push( 
               createAccountRow( item , this.state.searchText, this._onClickItem.bind( this, item ) )
-            //   <div className={ stylesS.listItem }>
-            //   <div><Icon iconName={ SearchTypes.objs[item.typeIdx].icon }></Icon></div>
-
-            //   <div className={ stylesS.accountDetails}>
-            //     <div className={ stylesS.accountRow1 } style={{cursor: item.searchHref ? 'pointer' : null }} onClick = { this._onClickItem.bind( this, item ) }>
-            //       <div title="Account Number">{ getHighlightedText( `${ item.Title }`, this.state.searchText )  }</div>
-            //       <div title="ALGroup">{ getHighlightedText( `${ item.ALGroup }`, this.state.searchText )  }</div>
-            //       <div title="SubCategory">{ getHighlightedText( `${ item.SubCategory }`, this.state.searchText )  }</div>
-            //       <div title="Name">{ getHighlightedText( `${ item.Name1 }`, this.state.searchText )  }</div>
-            //     </div>
-            //     <div className={ stylesS.accountRow2}>
-            //       <div>{ getHighlightedText( `${ item.Description }`, this.state.searchText )  }</div>
-            //       <div>{ getHighlightedText( `${ item['RCM'] }`, this.state.searchText )  }</div>
-            //     </div>
-            //   </div>
-            // </div>
             );
           } else {
             filtered.push( <div className={ stylesS.listItem }>
@@ -316,7 +300,9 @@ public async updateWebInfo (   ) {
       }
 
       if ( type.length > 0 && passMe === true ) { 
-        if ( type.indexOf( item.type ) < 0 ) { passMe = false; }
+        // Close https://github.com/mikezimm/ALVFinMan/issues/122
+        let typeObj = SearchTypes.objs[item.typeIdx];
+        if ( type.indexOf( typeObj.key ) < 0 ) { passMe = false; }
 
       }
 
@@ -379,7 +365,7 @@ private toggleSearchInArray( searchArray: string[], value: string, doThis: 'mult
     let selected: string[] = this.toggleSearchInArray( this.state.leftSearch, item.Search , event.ctrlKey === true ? 'multi' : 'single' );
     console.log('_clickLeft: selected', selected );
 
-    let startingItems: IAnyContent[] = [ ...this.props.appLinks, ...this.props.manual, ...this.props.sups, ...this.props.accounts, ];
+    let startingItems: IAnyContent[] = [ ...this.props.appLinks, ...this.props.manual, ...this.props.sups, ...this.props.accounts, ...this.props.forms ];
     let filtered: IAnyContent[] = this.getFilteredItems( startingItems, this.state.searchText, this.state.topSearch, selected, this.state.typeSearch );
     this.setState({ leftSearch: selected , filtered: filtered });
   }
@@ -389,7 +375,7 @@ private toggleSearchInArray( searchArray: string[], value: string, doThis: 'mult
     console.log('clickBucketItem:', item );
     let selected: string[] = this.toggleSearchInArray( this.state.topSearch, item.Search , event.ctrlKey === true ? 'multi' : 'single' );
 
-    let startingItems: IAnyContent[] = [ ...this.props.appLinks, ...this.props.manual, ...this.props.sups, ...this.props.accounts, ];
+    let startingItems: IAnyContent[] = [ ...this.props.appLinks, ...this.props.manual, ...this.props.sups, ...this.props.accounts, ...this.props.forms ];
     let filtered: IAnyContent[] = this.getFilteredItems( startingItems, this.state.searchText, selected, this.state.leftSearch, this.state.typeSearch );
 
     this.setState({ topSearch: selected , filtered: filtered });
@@ -400,7 +386,7 @@ private toggleSearchInArray( searchArray: string[], value: string, doThis: 'mult
     console.log('clickBucketItem:', item );
     let selected: string[] = this.toggleSearchInArray( this.state.typeSearch, item.key , event.ctrlKey === true ? 'multi' : 'single' );
 
-    let startingItems: IAnyContent[] = [ ...this.props.appLinks, ...this.props.manual, ...this.props.sups, ...this.props.accounts, ];
+    let startingItems: IAnyContent[] = [ ...this.props.appLinks, ...this.props.manual, ...this.props.sups, ...this.props.accounts, ...this.props.forms ];
     let filtered: IAnyContent[] = this.getFilteredItems( startingItems, this.state.searchText, this.state.topSearch, this.state.leftSearch, selected );
 
     this.setState({ typeSearch: selected , filtered: filtered });
@@ -452,7 +438,7 @@ private toggleSearchInArray( searchArray: string[], value: string, doThis: 'mult
 
   private _onSearchChange ( NewSearch ){
   
-    let startingItems: IAnyContent[] = [ ...this.props.appLinks, ...this.props.manual, ...this.props.sups, ...this.props.accounts, ];
+    let startingItems: IAnyContent[] = [ ...this.props.appLinks, ...this.props.manual, ...this.props.sups, ...this.props.accounts, ...this.props.forms, ];
     let filtered: IAnyContent[] = [];
     let totalTime: number = 0;
 

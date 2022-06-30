@@ -431,6 +431,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
 
         news: [],
         help: [],
+        forms: [],
 
       },
 
@@ -453,6 +454,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
         
         news: [],
         help: [],
+        forms: [],
 
       },
       
@@ -469,6 +471,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
       acronyms:  this.properties.acronymsSearch ? this.properties.acronymsSearch.split(';') : [],
       sups:  this.properties.supsSearch ? this.properties.supsSearch.split(';') : [],
       accounts:  this.properties.accountsSearch ? this.properties.accountsSearch.split(';') : [],
+      forms:  this.properties.formsSearch ? this.properties.formsSearch.split(';') : [],
 
       sourcePagesCount: this.properties.sourcePagesCount,
 
@@ -741,10 +744,17 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
   protected buildSourceSearchProps() :IPropertyPaneGroup {
 
     let fields: IPropertyPaneField<any>[] = [];
-    ['manual', 'news', 'help', 'appLinks', 'entities', 'acronyms', 'sups', 'accounts', 'history' ].map( item => {
+    [ 'news', 'help', 'appLinks', 'entities', 'acronyms', 'accounts', 'manual', 'sups', 'forms', 'history' ].map( item => {
+      let label = `${item}`;
+      if ( label === 'sups' ) { label = 'Supporting Docs' ; }
+      else if ( label === 'manual' ) { label = 'Standards' ; }
+      else if ( label === 'appLinks' ) { label = 'Links' ; }
+      else if ( label === 'forms' ) { label = 'Reporting Forms' ; }
+
+
 
       fields.push(PropertyPaneTextField(`${item}Search`, {
-        label: `${item.toUpperCase()} page - Search buttons`,
+        label: `${label.toUpperCase()} page - Search buttons`,
         description: `Semi-colon separated words,  Use 'hideme' to hide this feature.`,
         disabled: false,
       }));
@@ -753,7 +763,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
 
     let sourceSearch: IPropertyPaneGroup = {
       groupName: 'Source pages search',
-      isCollapsed: false,
+      isCollapsed: true,
       groupFields: fields,
     };
 
@@ -773,7 +783,7 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
           groups: [
             WebPartInfoGroup( links.gitRepoALVFinManSmall, 'Modern ALV Finance Manual' ),
             {
-              groupName: 'ALV Financial Manual - Basic',
+              groupName: 'ALV Finance Manual - Basic',
               groupFields: [
                 PropertyPaneDropdown('defaultPivotKey', <IPropertyPaneDropdownProps>{
                   label: 'Default Finance Manual Tab',
@@ -783,8 +793,8 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
               ]
             }, // this group
             {
-              groupName: 'ALV Financial Manual Search',
-              isCollapsed: false,
+              groupName: 'ALV Finance Manual Search',
+              isCollapsed: true,
               groupFields: [
                 PropertyPaneToggle("leftSearchFixed", {
                   label: "Use Default Left Search categories",
@@ -841,12 +851,12 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
               isCollapsed: true,
               groupFields: [
                 PropertyPaneDropdown('canPagePreference', <IPropertyPaneDropdownProps>{
-                  label: 'News and Help page load',
+                  label: 'On click behavior',
                   options: this.PageLoadPrefsChoices,
                 }),
 
                 PropertyPaneDropdown('imgObjectFit', <IPropertyPaneDropdownProps>{
-                  label: 'News and Help page load',
+                  label: 'How to fit images on the page',
                   options: this.ImageFitPrefsChoices,
                 }),
 
@@ -995,12 +1005,12 @@ export default class AlvFinManWebPart extends BaseClientSideWebPart<IAlvFinManWe
   private presetCollectionDefaults() {
     
     this.sitePresets = getThisSitesPreConfigProps( PreConfiguredProps, this.properties, this.context.pageContext.web.serverRelativeUrl );
-
+    
     this.sitePresets.presets.map( setting => {
       if ( this.properties[setting.prop] === setting.value ) { 
         setting.status = 'valid';
 
-      } else if ( !this.properties[setting.prop] ) { 
+      } else if ( this.properties[setting.prop] === undefined || this.properties[setting.prop] === null ) { //Changed from just !this... because if value was 'false' it would set to true
         this.properties[setting.prop] = setting.value ;
         setting.status = 'preset';
 

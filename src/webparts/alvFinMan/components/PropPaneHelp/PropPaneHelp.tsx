@@ -90,14 +90,79 @@ export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps ) {
         //   selectedKey={ null }
         >
 
-      <PivotItem headerText={ 'Financial Manual' } > 
+      <PivotItem headerText={ 'Basic' } > 
         <div className={ 'fps-pph-content' }>
 
-          <div className={ 'fps-pph-topic' }>TBD To fill out</div>
-          <div>Bla bla bla.</div>
-          <div>Bla bla bla must be like this:  <b>/sites/SecureCDN/<span style={{ color: 'red', fontWeight: 600 }}>YourCodeStorageSite</span>/</b></div>
-          <div><mark><b>NOTE:</b></mark> {RequestStorageHere}</div>
+          <div className={ 'fps-pph-topic' }>Basic propeties group</div>
+          <div>Select the tab you always want to load first when loading the page.</div>
+          <div><mark><b>NOTE:</b></mark> The app may over-ride this in cases where important news or time-sensitive inforamtion is being announced.</div>
           
+        </div>
+      </PivotItem>
+
+      <PivotItem headerText={ 'Search' } > 
+        <div className={ 'fps-pph-content' }>
+
+          <div className={ 'fps-pph-topic' }>ALV Finance Manual Search</div>
+          <div>This group applies specifically to setting up preferences on the Search Tab.</div>
+          <div>You can configure the buttons on the left and top sides of the search page.</div>
+          <div>Set toggle to Default to use default settings for this app.</div>
+          <div>Set toggle to Custom and enter semi-colon ; separated words.</div>
+
+          {/* <div>Bla bla bla must be like this:  <b>/sites/SecureCDN/<span style={{ color: 'red', fontWeight: 600 }}>YourCodeStorageSite</span>/</b></div>
+          <div><mark><b>NOTE:</b></mark> {RequestStorageHere}</div> */}
+          
+
+          <div className={ 'fps-pph-topic' }>Source pages search</div>
+          <div>This group applies to all other pages which can configure your own search buttons.</div>
+          <div>For each type of page, you can type in semi-colon ; separated words that you commonly use on that page.</div>
+          <div>The words turn into Search buttons for those page.</div>
+
+          <div className={ 'fps-pph-topic' }>Benefits of configuring search buttons:</div>
+          <ul>
+            <li>Easier to find things that are most important to you and your team.</li>
+            <li>Search buttons are quicker to use and improve speed of search.</li>
+            <li>Eliminates common spelling errors.</li>
+            <li>Your entire team can benefit by using the buttons created by the page owner.</li>
+          </ul>
+
+          <div className={ 'fps-pph-topic' }><mark>Search button Suggestions:</mark></div>
+          <ul>
+            <li>Use single words:  less cluttery, easier to find what is most important</li>
+            <li>Do not use phrases if possible - long buttons will start wrapping on the page</li>
+            <li>Do not over-do it.  Try to limit buttons to the top 7 or less buttons you use most often</li>
+            <li>Always test your filters to make sure they are finding the items you expect</li>
+            <li>Upper and Lower case do not matter.  Searching 'AHO', will find all items with 'AHO', 'Aho', 'aho', 'AhO'.</li>
+            <li>You can filter on any text including acronyms, names, partial words</li>
+            <li>Search looks for any instance of the word.  If you have a button called 'Count', it will also find any items that have 'account'.</li>
+            <li>To reset search, either re-install the web part on the page, add to another page and copy settings</li>
+            <li>You can also click on the 'Sheild' tab in this page to see all of the preset values</li>
+          </ul>
+
+        </div>
+      </PivotItem>
+
+      <PivotItem headerText={ 'Page Prefs' } > 
+        <div className={ 'fps-pph-content' }>
+
+          <div className={ 'fps-pph-topic' }>This group applies to some tabs that load Site Pages</div>
+          <div>Includes:  <b>General, News, Help</b> and some places where you see <b>Standards</b>.</div>
+
+          <div className={ 'fps-pph-topic' }>On click behavior</div>
+          <div>When you see a list of pages on the left side, this determines what happens when you click on the item title.</div>
+
+          <div className={ 'fps-pph-topic' }>How to fit images on the page</div>
+          <div>Determines how you want to see images found on the page.</div>
+          <div><mark><b>NOTE:</b></mark> site pages shown in this app may not show all web parts so this gives you control of how to display images in the same shape and size.</div>
+
+          <div className={ 'fps-pph-topic' }>Image Height</div>
+          <div>How tall you want images to be in the app.  This gives you control to make them shorter if you use smaller devices.</div>
+
+          <div className={ 'fps-pph-topic' }>Image Width</div>
+          <div>How wide you want the image to be.  Recommended 100%.</div>
+
+          <div className={ 'fps-pph-topic' }>Debug Mode</div>
+          <div>Maybe be used by tech Support.</div>
         </div>
       </PivotItem>
 

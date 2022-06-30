@@ -5,7 +5,7 @@ import { DisplayMode, Version } from '@microsoft/sp-core-library';
 
 import { IAlvFinManProps, IAlvFinManState, IFMBuckets, ILayoutNPage, ILayoutGPage, ILayoutSPage, ILayoutAPage,
   ILayoutQPage, ILayoutHPage, IAnyContent, IFinManSearch, IAppFormat, ISearchBucket,
-  IPagesContent, ILayoutLPage, ILayoutEPage, ILayoutSourcesPage, ISourcePage, ICategoryPage, ILayoutCategorizedPage, ILayoutStdPage, ILayoutSupPage, IDeepLink, IMainPage, IDefaultPage, IDefMainPage, mainDefPivots, pivotHeadingCatgorized, pivotHeadingSources, IEntityContent, IAllContentType, IAcronymContent, IDeepLogic } from './IAlvFinManProps';
+  IPagesContent, ILayoutLPage, ILayoutEPage, ILayoutSourcesPage, ISourcePage, ICategoryPage, ILayoutCategorizedPage, ILayoutStdPage, ILayoutSupPage, IDeepLink, IMainPage, IDefaultPage, IDefMainPage, mainDefPivots, pivotHeadingCatgorized, pivotHeadingSources, IEntityContent, IAllContentType, IAcronymContent, IDeepLogic, IFormContent } from './IAlvFinManProps';
 
 import { ILayout1Page, ILayout1PageProps, Layout1PageValues } from './Layout1Page/ILayout1PageProps';
 import { ILayout2Page,  } from './Layout2Page/ILayout2Props';
@@ -388,6 +388,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       fetchedHelp: false,
       fetchedAcronyms: false,
       fetchedEntities: false,
+      fetchedForms: false,
 
       search: JSON.parse(JSON.stringify( this.props.search )),
       appLinks: [],
@@ -400,6 +401,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
       news: [],
       help: [],
+      forms: [],
 
       buckets: createEmptyBuckets(),
       standards: createEmptyBuckets(),
@@ -465,6 +467,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     let sups: IAnyContent[] = this.state.sups;
     let news: IPagesContent[] = this.state.news;
     let help: IPagesContent[] = this.state.help;
+    let forms: IFormContent[] = this.state.forms;
     // let accounts: IAnyContent[] = this.state.accounts;
     let accounts: any = this.state.accounts;
 
@@ -472,6 +475,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
     let fetchedSups = this.state.fetchedSups === true ? true : false;
     let fetchedNews = this.state.fetchedNews === true ? true : false;
     let fetchedHelp = this.state.fetchedHelp === true ? true : false;
+    let fetchedForms = this.state.fetchedForms === true ? true : false;
     let fetchedEntities = this.state.fetchedEntities === true ? true : false;
     let fetchedAcronyms = this.state.fetchedAcronyms === true ? true : false;
 
@@ -538,6 +542,14 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       count = news.length;
     }
 
+    if ( deepestKey === 'Forms' ) { count = this.state.forms.length ; } //Presets count in case it is already loaded
+    if ( fetchedForms !== true && ( deepestKey === 'Forms' || deepestKey === 'Search' ) ) {
+      forms = await getALVFinManContent( SourceInfo.forms, this.props.search );
+      search = updateSearchCounts( 'forms', forms as IAnyContent[], search );
+      fetchedForms = true;
+      count = forms.length;
+    }
+
     if ( deepestKey === 'Help' ) { count = this.state.help.length ; } //Presets count in case it is already loaded
     if ( fetchedHelp !== true && ( deepestKey === 'Help' || deepestKey === 'Search' ) ) {
       help = await getALVFinManContent( SourceInfo.help, this.props.search );
@@ -559,7 +571,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       buckets = updateBuckets( buckets, sups, true );
     }
     // debugger;
-    search = updateSearchTypes( [ ...appLinks, ...manual, ...sups, ...accounts, ], search );
+    search = updateSearchTypes( [ ...appLinks, ...manual, ...sups, ...accounts, ...forms ], search );
     let deepSecond = deepestKey && deepestKey !== mainPivotKey ? deepestKey : '';
 
     let deepChange: IDeepStateChange = this.bumpDeepState( mainPivotKey, deepSecond ,  [], '',  this.state.deepLinks, count );
@@ -569,8 +581,9 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       entities: entities, acronyms: acronyms,
       mainPivotKey: mainPivotKey, sourcePivotKey: sourcePivotKey, categorizedPivotKey: categorizedPivotKey, 
       deepLinks: deepChange.deepLinks, deepestPivot: deepestKey, deepProps: deepProps,
-      accounts: accounts, news: news, help: help, refreshId: this.newRefreshId(),
-      fetchedStds: fetchedStds, fetchedSups: fetchedSups, fetchedNews: fetchedNews, fetchedHelp: fetchedHelp, fetchedEntities: fetchedEntities,  fetchedAcronyms: fetchedAcronyms,
+      accounts: accounts, news: news, help: help, forms: forms,
+      refreshId: this.newRefreshId(),
+      fetchedStds: fetchedStds, fetchedSups: fetchedSups, fetchedNews: fetchedNews, fetchedHelp: fetchedHelp, fetchedEntities: fetchedEntities,  fetchedAcronyms: fetchedAcronyms, fetchedForms: fetchedForms,
       showSpinner: false,
     });
 
@@ -701,6 +714,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       appLinks={ this.state.appLinks }
       accounts={ this.state.accounts }
       manual={ this.state.manual }
+      forms={ this.state.forms as IAnyContent[] }
       // stds={ this.state.stds }
       sups={ this.state.sups }
       buckets={ this.state.buckets }
@@ -773,7 +787,22 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
       deepProps={ this.state.deepProps }
       canvasOptions={ this.props.canvasOptions }
     ></SourcePages>;
-    
+        
+    const forms = this.state.mainPivotKey !== 'Sources' || this.state.sourcePivotKey !== 'Forms' ? null : <SourcePages
+      source={ SourceInfo }
+      search={ this.state.search }
+      primarySource={ SourceInfo.forms }
+      pageWidth={ 1000 }
+      topButtons={ this.props.search.forms }
+      refreshId={ this.state.refreshId }
+      fetchTime={ 797979 }
+      items={ this.state.forms as IAnyContent[] }
+      debugMode={ this.state.debugMode }
+      bumpDeepLinks= { this.bumpDeepStateFromComponent.bind(this) }
+      deepProps={ this.state.deepProps }
+      canvasOptions={ this.props.canvasOptions }
+    ></SourcePages>;
+
     const supportingDocs = this.state.mainPivotKey !== 'Sources' || this.state.sourcePivotKey !== 'SupportDocs' ? null : <SourcePages
       source={ SourceInfo }
       search={ this.state.search }
@@ -929,6 +958,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
             { standards }
             { supportingDocs }
             { news }
+            { forms }
             { SearchContent }
             { help }
             { history }
