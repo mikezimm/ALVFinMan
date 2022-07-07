@@ -157,7 +157,7 @@ import { ILayout2Page } from './Layout2Page/ILayout2Props';
 export interface IFMBuckets {
   Functions: string[];
   Topics: string[];
-  ALGroup: string[];
+  Form: string[];
   // Sections: string[];
   Reporting: string[];
   Processes: string[];
@@ -167,7 +167,7 @@ export interface IFMBuckets {
 export interface IFMBucketItems {
   Functions: IAnyContent[];
   Topics: IAnyContent[];
-  ALGroup: IAnyContent[];
+  Form: IAnyContent[];
   // Sections: IAnyContent[];
   Reporting: IAnyContent[];
   Processes: IAnyContent[];
@@ -330,6 +330,21 @@ export interface IAcronymContent extends Partial<IAnyContent> {
   Official: any;
   StandardDocuments: string;
   SupportDocuments: string;
+
+}
+
+export interface IAccountContent extends Partial<IAnyContent> {
+  ID: string;
+  Title: string;
+  HFMAccount: string;
+  AccountType: string;
+  Description: string;
+  // SearchWords: string;
+  SubCategory: any;
+  RCM: string;
+  ReportingForms: string[];
+  ReportingFormsStr: string;
+  Name1: string;
 
 }
 

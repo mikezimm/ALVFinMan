@@ -136,7 +136,9 @@ public async updateWebInfo (   ) {
 
   public render(): React.ReactElement<ISourcePagesProps> {
 
-    const topButtons = this.props.topButtons;
+    const { primarySource , topButtons, debugMode } = this.props;
+    const { showThisItem ,  } = this.state;
+    // const topButtons = this.props.topButtons;
     
     let topSearch: any[] = [];  //All major future to be grid components
 
@@ -146,12 +148,12 @@ public async updateWebInfo (   ) {
       topSearch.push( <div className={ classNames.join(' ') } style={ null }  onClick={ this._clickTop.bind( this, searchObject )}>{ searchObject }</div> );
     });
 
-    const topSearchContent = <div className={ styles.topSearch } style={ { background : this.props.debugMode === true ? 'pink' : null }} >{ topSearch }</div>;
+    const topSearchContent = <div className={ styles.topSearch } style={ { background : debugMode === true ? 'pink' : null }} >{ topSearch }</div>;
 
     let filtered = [];
     this.state.filtered.map( item => {
       if ( filtered.length < this.state.slideCount ) {
-        switch ( this.props.primarySource.key  ) {
+        switch ( primarySource.key  ) {
 
           case 'entities':
           filtered.push( createEntityRow( item, this.state.searchText, null )); break;
@@ -164,17 +166,17 @@ public async updateWebInfo (   ) {
 
           case 'manual':
           // filtered.push( this.createModernRowHere( item, this.state.searchText, this.clickModernItem.bind(this) )); break;
-          filtered.push( createModernRow( item, this.state.searchText, this.clickModernItem.bind(this), null )); break;
+          filtered.push( createModernRow( item, this.state.searchText, this.clickModernItem.bind( this ), null )); break;
 
           case 'sups':
           // filtered.push( this.createModernRowHere( item, this.state.searchText, this.clickModernItem.bind(this) )); break;
-          filtered.push( createFileRow( item, this.state.searchText, this.clickFileItem.bind(this) )); break;
+          filtered.push( createFileRow( item, this.state.searchText, this.clickFileItem.bind( this ) )); break;
 
           case 'accounts':
-          filtered.push( createAccountRow( item, this.state.searchText, null )); break;
+          filtered.push( createAccountRow( item, this.state.searchText, this.clickListItem.bind( this ) )); break;
 
           case 'history':
-          filtered.push( createHistoryRow( item, this.state.searchText, null, this.jumpToDeepLink.bind(this) )); break;
+          filtered.push( createHistoryRow( item, this.state.searchText, null, this.jumpToDeepLink.bind( this ) )); break;
 
         }
       }
@@ -202,41 +204,87 @@ public async updateWebInfo (   ) {
     </div>;
 
 
-      const gotoListLink = !this.props.primarySource.webRelativeLink ? null : <div className={ [ stylesA.searchStatus, styles.goToLink ].join(' ')} onClick={ () => { window.open( `${this.props.primarySource.webUrl}${this.props.primarySource.webRelativeLink}`,'_blank' ) ; } }>
+      const gotoListLink = !primarySource.webRelativeLink ? null : <div className={ [ stylesA.searchStatus, styles.goToLink ].join(' ')} onClick={ () => { window.open( `${primarySource.webUrl}${primarySource.webRelativeLink}`,'_blank' ) ; } }>
         Go to full list <Icon iconName='OpenInNewTab'></Icon>
       </div>;
 
-      const debugContent = this.props.debugMode !== true ? null : <div>
-        App in debugMode - Change in Web Part Properties - Page Preferences.  <b><em>Currently in {this.props.primarySource.listTitle}</em></b>
+      const debugContent = debugMode !== true ? null : <div>
+        App in debugMode - Change in Web Part Properties - Page Preferences.  <b><em>Currently in {primarySource.listTitle}</em></b>
       </div>;
 
-      const searchSourceDesc = !this.props.primarySource.searchSourceDesc ? null : <div className={ styles.searchSourceDesc }>
-        <div className={ styles.sourceDesc }>{ this.props.primarySource.searchSourceDesc }</div>
+      const searchSourceDesc = !primarySource.searchSourceDesc ? null : <div className={ styles.searchSourceDesc }>
+        <div className={ styles.sourceDesc }>{ primarySource.searchSourceDesc }</div>
         { gotoListLink }
       </div>;
 
-      const deepHistory = this.props.debugMode !== true ? null :  
-        <ReactJson src={ this.state.filtered } name={ this.props.primarySource.listTitle } collapsed={ false } displayDataTypes={ false } displayObjectSize={ false } enableClipboard={ true } style={{ padding: '20px 0px' }} theme= { 'rjv-default' } indentWidth={ 2}/>;
+      const deepHistory = debugMode !== true ? null :  
+        <ReactJson src={ this.state.filtered } name={ primarySource.listTitle } collapsed={ false } displayDataTypes={ false } displayObjectSize={ false } enableClipboard={ true } style={{ padding: '20px 0px' }} theme= { 'rjv-default' } indentWidth={ 2}/>;
 
-      const userPanel = this.state.showItemPanel !== true ? null : <div><Panel
-        isOpen={ this.state.showItemPanel === true ? true : false }
-        // this prop makes the panel non-modal
-        isBlocking={true}
-        onDismiss={ this._onClosePanel.bind(this) }
-        closeButtonAriaLabel="Close"
-        type = { PanelType.large }
-        isLightDismiss = { true }
-        >
-        <SingleModernPage 
-          page= { this.state.showThisItem }
-          showCanvasContent1= { true }
-          source= { this.props.primarySource }
-          refreshId= { this.props.refreshId  }
-          canvasOptions= { this.props.canvasOptions }
-          imageStyle= { this.imageStyle }
-          debugMode= { this.props.debugMode }
-        ></SingleModernPage>
-      </Panel></div>;
+
+      let thePanel = null;
+      if ( this.state.showItemPanel === true ) {
+        let panelContent = null;
+        if ( !showThisItem ) {
+          panelContent = <div>Very strange indeed.... No item was detected...</div>;
+        } else if ( primarySource.key === 'accounts' ) {
+          panelContent = <div>
+              <h3 style={{ display: 'flex', justifyContent: 'flex-start', }}>
+                { showThisItem.ID }
+                { showThisItem.Title }
+                <div style={{ cursor: 'pointer', paddingTop: '15px', marginBottom: '0px' }} 
+                  onClick={ () => { window.open( `${primarySource.viewItemLink.replace('{{item.ID}}', showThisItem.ID ) } `, '_blank' ) ; } }>
+                  Click here to open item ( in a new tab ) <Icon iconName='OpenInNewTab'></Icon></div>
+              </h3>
+
+            <div>
+              <h3>Searched Properties</h3>
+              {
+                primarySource.searchProps.map( field => { return <div>{ field }: { showThisItem[ field ] }</div> ; })
+              }
+            </div>
+
+            <div>
+            <h3>Selected Properties</h3>
+              {
+                primarySource.selectThese.map( field => { return <div>{ field }: { showThisItem[ field ] }</div> ; })
+              }
+            </div>
+
+          </div>;
+
+        // } else if ( primarySource.defType === 'account' ) {
+
+        } else if ( ['news','help', 'manual', 'std', ].indexOf( primarySource.defType ) > -1 ) {
+          panelContent = <SingleModernPage 
+            page= { this.state.showThisItem as IPagesContent }
+            showCanvasContent1= { true }
+            source= { primarySource }
+            refreshId= { this.props.refreshId  }
+            canvasOptions= { this.props.canvasOptions }
+            imageStyle= { this.imageStyle }
+            debugMode= { debugMode }
+          ></SingleModernPage>;
+        // } else if ( primarySource.defType === 'account' ) {
+
+        }
+
+        thePanel = <div><Panel
+          isOpen={ this.state.showItemPanel === true ? true : false }
+          // this prop makes the panel non-modal
+          isBlocking={true}
+          onDismiss={ this._onClosePanel.bind(this) }
+          closeButtonAriaLabel="Close"
+          type = { PanelType.large }
+          isLightDismiss = { true }
+          >
+          { panelContent }
+        </Panel></div>;
+
+      }
+
+
+      
+
 
     // const FetchingSpinner = this.props.items.length > 0 ? null : <Spinner size={SpinnerSize.large} label={"Fetching Page ..."} style={{ padding: 30 }} />;
 
@@ -253,7 +301,7 @@ public async updateWebInfo (   ) {
               { filtered }
               {/* { FetchingSpinner } */}
               { deepHistory }
-              { userPanel }
+              { thePanel }
 
               {/* { componentPivot }
               { showPage }
@@ -426,13 +474,21 @@ public async updateWebInfo (   ) {
 
   }
 
+  private clickListItem( ID: number, category: string, item: IAnyContent, e: any ) {  //this, item.ID, 'files', item
+    console.log('clickNewsItem:', ID, item );
+    // debugger;
+
+    this.setState({ showItemPanel : true , showThisItem: item }) ;
+
+  }
+
   //getDocWiki( item: IPagesContent, source: ISourceProps,  canvasOptions: ICanvasContentOptions, callBack: any )
   private updateModernState( item: IPagesContent, showCanvasContent1: boolean ) {
 
     this.setState({ 
       showItemPanel: true, 
       showCanvasContent1: showCanvasContent1, 
-      showThisItem: item });
+      showThisItem: item as IAnyContent });
 
   }
 

@@ -29,7 +29,7 @@ import ReactJson from "react-json-view";
 
 import { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfunctions/dist/Lists/getFunctions';
 import { IFMSearchType, SearchTypes } from '../DataInterface';
-import { IAnyContent, ISearchObject } from '../IAlvFinManProps';
+import { IAccountContent, IAnyContent, ISearchObject } from '../IAlvFinManProps';
 import { NoItems } from '@mikezimm/npmfunctions/dist/Icons/iconNames';
 import { getHighlightedText } from '../Elements/HighlightedText';
 import { createAccountRow } from '../SourcePages/Accounts/AccountItem';
@@ -218,7 +218,7 @@ public async updateWebInfo (   ) {
         if ( filtered.length < this.state.slideCount ) {
           if ( item.type === 'account' ) {
             filtered.push( 
-              createAccountRow( item , this.state.searchText, this._onClickItem.bind( this, item ) )
+              createAccountRow( item as IAccountContent , this.state.searchText, this._onClickItem.bind( this, item ) )
             );
           } else {
             filtered.push( <div className={ stylesS.listItem }>

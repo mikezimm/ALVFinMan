@@ -36,7 +36,7 @@ export interface ISourcePagesState {
   topSearch: string[];
   
   showItemPanel: boolean;
-  showThisItem: any;
+  showThisItem: IAnyContent;
   showCanvasContent1: boolean;
   showPanelJSON: boolean;
 

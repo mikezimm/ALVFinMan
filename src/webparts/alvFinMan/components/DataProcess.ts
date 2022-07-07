@@ -8,7 +8,7 @@ export function createEmptyBuckets() {
   return  {
     Functions: [],
     Topics: [],
-    ALGroup: [],
+    Form: [],
     // Sections: [],
     Reporting: [],
     Processes: [],

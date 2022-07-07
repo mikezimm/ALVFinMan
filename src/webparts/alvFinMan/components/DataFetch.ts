@@ -477,9 +477,19 @@ export function createEmptySearchBucket () {
         if ( !searchDesc && item.SearchWords ) { searchDesc = item.LinkColumn.Description; }
       }
 
+      //Just add this prop to everything for ease of use.
+      if ( item.ReportingForms ) {
+        if ( Array.isArray( item.ReportingForms) === true ) {
+          item.ReportingFormsStr = item.ReportingForms.map( form => { return form.Title ; } ).join('; ');
+        } else { item.ReportingFormsStr = item.ReportingForms; }
+      } else {
+        item.ReportingForms = [];
+        item.ReportingFormsStr = '';
+      }
+
       if ( item.type === 'account' ) {
         searchTitle = '';
-        searchDesc = [ item.type, item.ALGroup, item.SubCategory, item.Name1, item.Description ] .join ('<>');
+        searchDesc = [ item.type, item.ReportingForms.Title, item.SubCategory, item.Name1, item.Description ] .join ('<>');
         if ( item.Description && ( item.Description.indexOf('&quot;') > -1 || item.Description.indexOf('\<\/') > -1 ) ) { item.descIsHTML = true ; }
         searchHref = '';
       }

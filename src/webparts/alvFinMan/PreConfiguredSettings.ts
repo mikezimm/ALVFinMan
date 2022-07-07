@@ -98,6 +98,7 @@ export const PresetEverywhere : IPreConfigSettings = {
         acronymsSearch: 'AB;CM;MPV;NPH;PS;RDE;Systems;Above;Below',
         supsSearch: 'xls;ppt;doc;pdf;Process;Instruction;Capex;Load',
         formsSearch: 'Internal;External;Reconciliation',
+        accountsSearch: 'Input Account;Sum Account',
 
         sourcePagesCount: 20,
 

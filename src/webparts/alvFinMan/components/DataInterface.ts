@@ -23,7 +23,7 @@ export const ModernSitePagesSearch: string[] = ['Title','Description','Author/Ti
 //sitePagesColumns was used for the classic pages.
 // export const sitePagesColumns: string[] = [ "ID", "Title0", "Author/Title", "Editor/Title", "File/ServerRelativeUrl", "FileRef","FileLeafRef", "Created", "Modified" ]; //Do not exist on old SitePages library:   "Descritpion","BannerImageUrl.Url", "ServerRelativeUrl"
 export const libraryColumns: string[] = [ 'ID','FileRef','FileLeafRef','ServerRedirectedEmbedUrl','Author/Title','Editor/Title','Author/Name','Editor/Name','Modified','Created','CheckoutUserId','HasUniqueRoleAssignments','Title','FileSystemObjectType','FileSizeDisplay','File_x0020_Type','FileLeafRef','LinkFilename','OData__UIVersion','OData__UIVersionString','DocIcon'];
-export const LookupColumns: string[] = ['Functions/Title', 'Topics/Title', 'ALGroup/Title', 'ReportingSections/Title','Processes/Title' ]; // removed 'Sections/Title', for now since it should be ReportingSections
+export const LookupColumns: string[] = ['Functions/Title', 'Topics/Title', 'ReportingForms/Title', 'ReportingSections/Title','Processes/Title' ]; // removed 'Sections/Title', for now since it should be ReportingSections
 
 //ClassicSitePageColumns was used for the classic pages.
 // export const ClassicSitePageColumns: string [] = [ ...sitePagesColumns, ...LookupColumns, ...[ 'DocumentType/Title' ] ];
@@ -41,6 +41,7 @@ export interface ISourceProps {
     webUrl: string;
     listTitle: string;
     webRelativeLink: string;
+    viewItemLink?: string;
     columns: string[];
     searchProps: string[];
     selectThese?: string[];
@@ -81,6 +82,7 @@ export const SourceInfo: ISourceInfo = {
         webUrl: `${FinManSite}Manual/`,
         listTitle: "ReportingForms",
         webRelativeLink: "lists/ReportingForms",
+        viewItemLink: `${FinManSite}Manual/lists/ReportingForms/DispForm.aspx?ID={{item.ID}}`,
         searchSource: 'Forms',
         searchSourceDesc:  'List in Manual Subsite',
         columns: [ 'ID','Title', 'Description', 'RelatedForms/Title', ],
@@ -146,6 +148,7 @@ export const SourceInfo: ISourceInfo = {
         defType: 'link',
         webUrl: `${FinManSite}Manual/`,
         webRelativeLink: "lists/ALVFMAppLinks",
+        viewItemLink: `${FinManSite}Manual/lists/ALVFMAppLinks/DispForm.aspx?ID={{item.ID}}`,
         searchSource: 'AppLinks',
         searchSourceDesc:  'ALVFMAppLinks list in Manual Subsite',
         listTitle: "ALVFMAppLinks",
@@ -161,14 +164,15 @@ export const SourceInfo: ISourceInfo = {
         defType: 'account',
         webUrl: `${FinManSite}Manual/`,
         webRelativeLink: "lists/Accounts",
+        viewItemLink: `${FinManSite}Manual/lists/Accounts/DispForm.aspx?ID={{item.ID}}`,
         searchSource: 'Accounts',
         searchSourceDesc:  'Accounts list in Manual Subsite',
         listTitle: "Accounts",
-        columns: [ 'ID','ALGroup','Description','Name1','RCM','SubCategory'],
-        searchProps: [ 'Title', 'Description', 'ALGroup', 'Name1','RCM','SubCategory', 'HFMAccount' ],
-        selectThese: [ '*', 'ID','ALGroup','Description','Name1','RCM','SubCategory', 'HFMAccount' ],
+        columns: [ 'ID','Description','Name1','RCM','SubCategory','AccountType','ReportingForms/Title',],
+        searchProps: [ 'Title', 'Description', 'Name1','AccountType','ReportingForms/Title','RCM','SubCategory', 'HFMAccount' ],
+        selectThese: [ '*', 'ID','Description','Name1','RCM','SubCategory', 'HFMAccount','AccountType','ReportingForms/Title', ],
         isModern: true,
-        defSearchButtons: [],
+        defSearchButtons: ['Input Account','Sum Account'],
     },
 
     entities: {
@@ -176,6 +180,7 @@ export const SourceInfo: ISourceInfo = {
         defType: 'entity',
         webUrl: `${FinManSite}Manual/`,
         webRelativeLink: "lists/Entities",
+        viewItemLink: `${FinManSite}Manual/lists/Entities/DispForm.aspx?ID={{item.ID}}`,
         searchSource: 'Entities',
         searchSourceDesc:  'Entities list in Manual Subsite',
         listTitle: "Entities",
@@ -191,6 +196,7 @@ export const SourceInfo: ISourceInfo = {
         defType: 'acronym',
         webUrl: `${FinManSite}Manual/`,
         webRelativeLink: "lists/Acronyms",
+        viewItemLink: `${FinManSite}Manual/lists/Acronyms/DispForm.aspx?ID={{item.ID}}`,
         searchSource: 'Acronyms',
         searchSourceDesc:  'Acronyms list in Manual Subsite',
         listTitle: "Acronyms",
