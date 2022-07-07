@@ -34,7 +34,7 @@ import { getWebPartHelpElement } from './PropPaneHelp/PropPaneHelp';
 import { getBannerPages, IBannerPages } from './HelpPanel/AllContent';
 
 
-import { defaultBannerCommandStyles, } from "@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/defaults";
+import { defaultBannerCommandStyles, redDark, } from "@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/defaults";
 import { _LinkIsValid, _LinkStatus } from "@mikezimm/npmfunctions/dist/Links/AllLinks";
 import { encodeDecodeString, } from "@mikezimm/npmfunctions/dist/Services/Strings/urlServices";
 
@@ -935,6 +935,10 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
 
     ></WebpartBanner>;
 
+    let notProdHeader = <div style={{ color: 'red', background: 'yellow', height: '40px', fontSize: 'larger', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}><div>
+      App under development.  For current official manual, please go to <a href="/sites/AutolivFinancialManual/" target="_blank">Official Finance Manual</a>
+    </div></div>;
+
     let devHeader = this.state.showDevHeader === true ? <div><b>Props: </b> { 'this.props.lastPropChange' + ', ' + 'this.props.lastPropDetailChange' } - <b>State: lastStateChange: </b> { this.state.lastStateChange  } </div> : null ;
 
     const spinnerStyles : ISpinnerStyles = { label: {fontSize: '20px', fontWeight: '600',  }};
@@ -946,6 +950,7 @@ export default class AlvFinMan extends React.Component<IAlvFinManProps, IAlvFinM
           <div className={ styles.row }>
             {/* <div className={ styles.column }> */}
             { devHeader }
+            { notProdHeader }
             { Banner }
             { mainPivot }
             { this.state.mainPivotKey === 'Sources' ? sourcePivot : null }
