@@ -3,7 +3,7 @@
   "solution": {
     "name": "alv-fin-man-7-client-side-solution",
     "id": "6a0435ea-2625-4294-832f-45d61891debd",
-    "version": "1.0.0.9",
+    "version": "1.0.0.10",
     "includeClientSideAssets": true,
     "skipFeatureDeployment": true,
     "isDomainIsolated": false,
