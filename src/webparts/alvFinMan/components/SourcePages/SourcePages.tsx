@@ -33,6 +33,7 @@ import { createAccountRow } from './Accounts/AccountItem';
 import { createHistoryRow } from './History/HistoryItem';
 import { createModernRow } from './Modern/ModernItem';
 import { createFormRow } from './Forms/FormItem';
+import ItemPane from './ItemPane/component';
 
 import { IAnyContent, IDeepLink, IPagesContent } from '../IAlvFinManProps';
 import SingleModernPage from '../ModernPages/SinglePage/SingleModernPage';
@@ -220,37 +221,51 @@ public async updateWebInfo (   ) {
       const deepHistory = debugMode !== true ? null :  
         <ReactJson src={ this.state.filtered } name={ primarySource.listTitle } collapsed={ false } displayDataTypes={ false } displayObjectSize={ false } enableClipboard={ true } style={{ padding: '20px 0px' }} theme= { 'rjv-default' } indentWidth={ 2}/>;
 
+      let thePanel = <ItemPane 
+        item= { this.state.showThisItem as IAnyContent }
+        showCanvasContent1= { true }
+        source= { this.props.source }
+        primarySource= { primarySource }
+        refreshId= { this.props.refreshId  }
+        canvasOptions= { this.props.canvasOptions }
+        imageStyle= { this.imageStyle }
+        debugMode= { debugMode }
+        search= { this.props.search  }
+        topButtons= { topButtons }
+      >
 
-      let thePanel = null;
-      if ( this.state.showItemPanel === true ) {
-        let panelContent = null;
-        if ( !showThisItem ) {
-          panelContent = <div>Very strange indeed.... No item was detected...</div>;
-        } else if ( primarySource.key === 'accounts' ) {
-          panelContent = <div>
-              <h3 style={{ display: 'flex', justifyContent: 'flex-start', }}>
-                { showThisItem.ID }
-                { showThisItem.Title }
-                <div style={{ cursor: 'pointer', paddingTop: '15px', marginBottom: '0px' }} 
-                  onClick={ () => { window.open( `${primarySource.viewItemLink.replace('{{item.ID}}', showThisItem.ID ) } `, '_blank' ) ; } }>
-                  Click here to open item ( in a new tab ) <Icon iconName='OpenInNewTab'></Icon></div>
-              </h3>
+      </ItemPane>;
 
-            <div>
-              <h3>Searched Properties</h3>
-              {
-                primarySource.searchProps.map( field => { return <div>{ field }: { showThisItem[ field ] }</div> ; })
-              }
-            </div>
 
-            <div>
-            <h3>Selected Properties</h3>
-              {
-                primarySource.selectThese.map( field => { return <div>{ field }: { showThisItem[ field ] }</div> ; })
-              }
-            </div>
+      // if ( this.state.showItemPanel === true ) {
+      //   let panelContent = null;
+      //   if ( !showThisItem ) {
+      //     panelContent = <div>Very strange indeed.... No item was detected...</div>;
+      //   } else if ( primarySource.key === 'accounts' ) {
+      //     panelContent = <div>
+      //         <h3 style={{ display: 'flex', justifyContent: 'flex-start', }}>
+      //           { showThisItem.ID }
+      //           { showThisItem.Title }
+      //           <div style={{ cursor: 'pointer', paddingTop: '15px', marginBottom: '0px' }} 
+      //             onClick={ () => { window.open( `${primarySource.viewItemLink.replace('{{item.ID}}', showThisItem.ID ) } `, '_blank' ) ; } }>
+      //             Click here to open item ( in a new tab ) <Icon iconName='OpenInNewTab'></Icon></div>
+      //         </h3>
 
-          </div>;
+      //       <div>
+      //         <h3>Searched Properties</h3>
+      //         {
+      //           primarySource.searchProps.map( field => { return <div>{ field }: { showThisItem[ field ] }</div> ; })
+      //         }
+      //       </div>
+
+      //       <div>
+      //       <h3>Selected Properties</h3>
+      //         {
+      //           primarySource.selectThese.map( field => { return <div>{ field }: { showThisItem[ field ] }</div> ; })
+      //         }
+      //       </div>
+
+      //     </div>;
 
         // } else if ( primarySource.defType === 'account' ) {
 
@@ -281,10 +296,6 @@ public async updateWebInfo (   ) {
         </Panel></div>;
 
       }
-
-
-      
-
 
     // const FetchingSpinner = this.props.items.length > 0 ? null : <Spinner size={SpinnerSize.large} label={"Fetching Page ..."} style={{ padding: 30 }} />;
 
