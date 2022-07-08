@@ -227,7 +227,6 @@ public async updateWebInfo (   ) {
                 { getHighlightedText( `${ item.searchTitle } - ${ item.searchDesc }`, this.state.searchText )  }</div>
             </div>);
           }
-
         }
       });
 
