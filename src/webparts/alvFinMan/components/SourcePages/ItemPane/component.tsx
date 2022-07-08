@@ -99,7 +99,7 @@ export default class ItemPane extends React.Component<IItemPaneProps, IItemPaneS
     } else {
 
       const gotoListLink = !primarySource.webRelativeLink ? null : <div className={ [ stylesA.searchStatus, stylesP.goToLink ].join(' ')} onClick={ () => { window.open( `${primarySource.webUrl}${primarySource.webRelativeLink}`,'_blank' ) ; } }>
-        Go to full list <Icon iconName='OpenInNewTab'></Icon>
+        Open list in new tab <Icon iconName='OpenInNewTab'></Icon>
       </div>;
 
       const debugContent = this.props.debugMode !== true ? null : <div>
@@ -122,12 +122,14 @@ export default class ItemPane extends React.Component<IItemPaneProps, IItemPaneS
         <div>Modified</div> <div>{ showThisItem.modifiedLoc }</div> <div>{ showThisItem['Editor/Title'] }</div>
       </div>
 
-      <div style={{ paddingBottom: '20px'}}>
-        <h3 style={{ cursor: 'pointer', paddingTop: '15px', marginBottom: '0px' }} 
-          onClick={ this.clickOpenInNewTab.bind( this, showThisItem.FileRef ? showThisItem.FileRef : showThisItem.searchHref ) }>
-          Click here to go to full page item ( in a new tab ) <Icon iconName='OpenInNewTab'></Icon></h3>
-        <div>File Location: { showThisItem.FileRef ? showThisItem.FileRef : showThisItem.searchHref }</div>
-      </div>
+      <h3 style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', paddingBottom: '20px' }}>
+        <div style={{ paddingRight: '30px' }}>{ showThisItem.ID }</div>
+        <div style={{ cursor: 'pointer' }} 
+          onClick={ () => { window.open( `${primarySource.viewItemLink.replace('{{item.ID}}', showThisItem.ID ) } `, '_blank' ) ; } }>
+          Open item in new tab <Icon iconName='OpenInNewTab'></Icon></div>
+        { gotoListLink }
+      </h3>
+
       {/* <div className={ styles.dateStamps}>
         <div>Version</div> <div>{ showThisItem.modifiedLoc }</div> <div>{ showThisItem['Editor/Title'] }</div>
       </div> */}
@@ -148,22 +150,19 @@ export default class ItemPane extends React.Component<IItemPaneProps, IItemPaneS
 
 
         let itemContent = <div>
-        <h3 style={{ display: 'flex', justifyContent: 'flex-start', }}>
-          { showThisItem.ID }
-          { showThisItem.Title }
-          <div style={{ cursor: 'pointer', paddingTop: '15px', marginBottom: '0px' }} 
-            onClick={ () => { window.open( `${primarySource.viewItemLink.replace('{{item.ID}}', showThisItem.ID ) } `, '_blank' ) ; } }>
-            Click here to open item ( in a new tab ) <Icon iconName='OpenInNewTab'></Icon></div>
-        </h3>
-
-        <div>
+        <div className={ styles.properties }>
           <h3>Searched Properties</h3>
-          { primarySource.searchProps.map( field => { return <div>{ field }: { showThisItem[ field ] }</div> ; }) }
+          <ul>
+            { primarySource.searchProps.map( field => { return <li><div>{ field }:</div> <div>{ showThisItem[ field ] }</div></li> ; }) }
+          </ul>
+
         </div>
 
-        <div>
+        <div className={ styles.properties }>
           <h3>Selected Properties</h3>
-          { primarySource.selectThese.map( field => { return <div>{ field }: { showThisItem[ field ] }</div> ; }) }
+          <ul>
+            { primarySource.selectThese.map( field => { return <li><div>{ field }:</div> <div>{ showThisItem[ field ] }</div></li> ; }) }
+          </ul>
         </div>
 
       </div>;

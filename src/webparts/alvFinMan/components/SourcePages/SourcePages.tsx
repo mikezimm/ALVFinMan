@@ -35,11 +35,13 @@ import { createModernRow } from './Modern/ModernItem';
 import { createFormRow } from './Forms/FormItem';
 import ItemPane from './ItemPane/component';
 
-import { IAnyContent, IDeepLink, IPagesContent } from '../IAlvFinManProps';
+import { IAnyContent, IAppFormat, IDeepLink, IPagesContent } from '../IAlvFinManProps';
 import SingleModernPage from '../ModernPages/SinglePage/SingleModernPage';
 import { getDocWiki } from '../ModernPages/SinglePage/getModernContent';
 import { getHighlightedText } from '../Elements/HighlightedText';
 import { createFileRow } from './Files/FileItem';
+
+const ItemPaneKeys: IAppFormat[] = [ 'accounts', 'acronyms', 'appLinks', 'entities', 'forms', ];
 
 const pivotStyles = {
   root: {
@@ -221,53 +223,54 @@ public async updateWebInfo (   ) {
       const deepHistory = debugMode !== true ? null :  
         <ReactJson src={ this.state.filtered } name={ primarySource.listTitle } collapsed={ false } displayDataTypes={ false } displayObjectSize={ false } enableClipboard={ true } style={{ padding: '20px 0px' }} theme= { 'rjv-default' } indentWidth={ 2}/>;
 
-      let thePanel = <ItemPane 
-        item= { this.state.showThisItem as IAnyContent }
-        showCanvasContent1= { true }
-        source= { this.props.source }
-        primarySource= { primarySource }
-        refreshId= { this.props.refreshId  }
-        canvasOptions= { this.props.canvasOptions }
-        imageStyle= { this.imageStyle }
-        debugMode= { debugMode }
-        search= { this.props.search  }
-        topButtons= { topButtons }
-      >
 
-      </ItemPane>;
+      let thePanel = null;
 
+      if ( this.state.showItemPanel === true ) {
+        let panelContent = null;
+        if ( !showThisItem ) {
+          panelContent = <div>Very strange indeed.... No item was detected...</div>;
 
-      // if ( this.state.showItemPanel === true ) {
-      //   let panelContent = null;
-      //   if ( !showThisItem ) {
-      //     panelContent = <div>Very strange indeed.... No item was detected...</div>;
-      //   } else if ( primarySource.key === 'accounts' ) {
-      //     panelContent = <div>
-      //         <h3 style={{ display: 'flex', justifyContent: 'flex-start', }}>
-      //           { showThisItem.ID }
-      //           { showThisItem.Title }
-      //           <div style={{ cursor: 'pointer', paddingTop: '15px', marginBottom: '0px' }} 
-      //             onClick={ () => { window.open( `${primarySource.viewItemLink.replace('{{item.ID}}', showThisItem.ID ) } `, '_blank' ) ; } }>
-      //             Click here to open item ( in a new tab ) <Icon iconName='OpenInNewTab'></Icon></div>
-      //         </h3>
+        } else if ( ItemPaneKeys.indexOf( primarySource.key ) > -1 ) {
 
-      //       <div>
-      //         <h3>Searched Properties</h3>
-      //         {
-      //           primarySource.searchProps.map( field => { return <div>{ field }: { showThisItem[ field ] }</div> ; })
-      //         }
-      //       </div>
+          panelContent = <ItemPane 
+              item= { this.state.showThisItem as IAnyContent }
+              showCanvasContent1= { true }
+              source= { this.props.source }
+              primarySource= { primarySource }
+              refreshId= { this.props.refreshId  }
+              canvasOptions= { this.props.canvasOptions }
+              imageStyle= { this.imageStyle }
+              debugMode= { debugMode }
+              search= { this.props.search  }
+              topButtons= { topButtons }
+            >
+          </ItemPane>;
 
-      //       <div>
-      //       <h3>Selected Properties</h3>
-      //         {
-      //           primarySource.selectThese.map( field => { return <div>{ field }: { showThisItem[ field ] }</div> ; })
-      //         }
-      //       </div>
+          // panelContent = <div>
+          //     <h3 style={{ display: 'flex', justifyContent: 'flex-start', }}>
+          //       { showThisItem.ID }
+          //       { showThisItem.Title }
+          //       <div style={{ cursor: 'pointer', paddingTop: '15px', marginBottom: '0px' }} 
+          //         onClick={ () => { window.open( `${primarySource.viewItemLink.replace('{{item.ID}}', showThisItem.ID ) } `, '_blank' ) ; } }>
+          //         Click here to open item ( in a new tab ) <Icon iconName='OpenInNewTab'></Icon></div>
+          //     </h3>
 
-      //     </div>;
+          //   <div>
+          //     <h3>Searched Properties</h3>
+          //     {
+          //       primarySource.searchProps.map( field => { return <div>{ field }: { showThisItem[ field ] }</div> ; })
+          //     }
+          //   </div>
 
-        // } else if ( primarySource.defType === 'account' ) {
+          //   <div>
+          //   <h3>Selected Properties</h3>
+          //     {
+          //       primarySource.selectThese.map( field => { return <div>{ field }: { showThisItem[ field ] }</div> ; })
+          //     }
+          //   </div>
+
+          // </div>;
 
         } else if ( ['news','help', 'manual', 'std', ].indexOf( primarySource.defType ) > -1 ) {
           panelContent = <SingleModernPage 
